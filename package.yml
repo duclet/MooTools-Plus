@@ -1,0 +1,6 @@
+name: "Plus"
+
+exports: "mootools-plus.js"
+
+sources:
+  - "Plus/Plus.js"
