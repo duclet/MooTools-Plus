@@ -1,0 +1,3 @@
+[submodule "YUITest"]
+	path = YUITest
+	url = git@github.com:duclet/YUITest.git
