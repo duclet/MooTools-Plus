@@ -45,9 +45,9 @@ provides: [Element.Delegation.Plus]
 			if(should_set) {
 				handlers.push(fn);
 				element.store('iehack:submit_event', handlers);
-				element.addEvent('submit', function(event) {
-					fn.pass([event, this]);
-				});
+				element.addEvent('submit', function(fn, element, event) {
+					fn.attempt([event, element]);
+				}.curry([fn, element]));
 			}
 		}.curry(fn));
 	};

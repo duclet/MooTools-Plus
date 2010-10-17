@@ -3,4 +3,10 @@ name: "Plus"
 exports: "mootools-plus.js"
 
 sources:
-  - "Plus/Plus.js"
+  - "source/Plus/Plus.js"
+  - "source/Class/Class.Static.js"
+  - "source/Element/Element.Delegation.Plus.js"
+  - "source/Element/Element.Plus.js"
+  - "source/Types/Array.Plus.js"
+  - "source/Types/Function.Plus.js"
+  - "source/Types/String.Plus.js"

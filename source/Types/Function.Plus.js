@@ -32,6 +32,8 @@ Function.implement({
 	 */
 	curry: function(args, bind) {
 		args = Array.from(args);
-		return this.bind.apply(bind, args);
+		args.unshift([bind, null].pick());
+
+		return this.bind.apply(this, args);
 	}
 });

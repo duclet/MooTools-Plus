@@ -15,6 +15,7 @@ authors:
 
 requires:
   - Core/Element
+  - More/Elements.From
 
 provides: [Element.Plus]
 
@@ -22,7 +23,7 @@ provides: [Element.Plus]
 */
 Element.implement({
 	/**
-	 * Get the height of this element minus the padding, margin, and border.
+	 * Get the height of this element minus the padding and border.
 	 *
 	 * @returns int
 	 */
@@ -33,8 +34,6 @@ Element.implement({
 		var height = this.getHeight() -
 			this.getStyle('padding-top').toInt() -
 			this.getStyle('padding-bottom').toInt() -
-			this.getStyle('margin-top').toInt() -
-			this.getStyle('margin-bottom').toInt() -
 			this.getStyle('border-top-width').toInt() -
 			this.getStyle('border-bottom-width').toInt();
 
@@ -43,7 +42,7 @@ Element.implement({
 	},
 
 	/**
-	 * Get the width of this element minus the padding, margin, and border.
+	 * Get the width of this element minus the padding and border.
 	 *
 	 * @returns int
 	 */
@@ -54,13 +53,31 @@ Element.implement({
 		var width = this.getWidth() -
 			this.getStyle('padding-left').toInt() -
 			this.getStyle('padding-right').toInt() -
-			this.getStyle('margin-left').toInt() -
-			this.getStyle('margin-right').toInt() -
 			this.getStyle('border-left-width').toInt() -
 			this.getStyle('border-right-width').toInt();
 
 		this.setStyle('overflow', old_overflow);
 		return width;
+	},
+
+	/**
+	 * Replace this element using the provided HTML.
+	 *
+	 * @param String	html	The HTML to replace this element by.
+	 * @returns Element		This element.
+	 */
+	replacesWith: function(html) {
+		var elements = Elements.from(html);
+		var first_element = elements.shift();
+
+		// Replace this element with the first element from the list
+		first_element.replaces(this);
+
+		// Reverse the remaining elements and insert after the previous element
+		elements.reverse();
+		elements.invoke('inject', first_element, 'after');
+
+		return this;
 	},
 
 	/**
@@ -99,4 +116,4 @@ Element.implement({
 			return id;
 		}
 	};
-});
+})();

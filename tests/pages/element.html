@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Element.Plus</title>
+		<script type="text/javascript" src="http://yui.yahooapis.com/3.2.0/build/yui/yui-min.js"></script>
+		<script type="text/javascript" src="/tests/yuitest/yuitest.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-core.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-more.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-plus.js"></script>
+
+		<style type="text/css">
+		#true_height {
+			border: 2px solid black;
+			height: 90px;
+			margin: 1px;
+			padding: 50px;
+		}
+
+		#true_width {
+			border: 2px solid black;
+			margin: 1px;
+			padding: 50px;
+			width: 90px;
+		}
+		</style>
+	</head>
+	<body class="yui3-skin-sam">
+		<div id="true_height">This element's true height should be 90 pixels.</div>
+		<div id="true_width">This element's true width should be 90 pixels.</div>
+		<div id="update">This has not been updated.</div>
+		<div id="has_id" class="i_have_an_id"></div>
+		<div class="give_me_an_id"></div>
+		<div id="replace_me">Content hasn't been replaced.</div>
+
+		<div id="logger"></div>
+		<div id="test_cases" style="display: none;">Element</div>
+		<script type="text/javascript">
+		window.update_me = false;
+
+		YUITest.Configs.set({
+			tester_type: 'iframe',
+			tester_url_tpt: '{protocol}//{host}/tests/mootools-plus/tester.html'
+		});
+		YUITest.Testee.initialize();
+		</script>
+	</body>
+</html>
