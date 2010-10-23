@@ -4,7 +4,7 @@ YUITest.TestCases.Element = {
 	_should: {
 		ignore: {
 			// IE7 and our test seems incompatible for the true width and height
-			// functions so ignore them
+			// functions so ignore them but it does work
 			testGetTrueHeight: !!(Browser.ie && (Browser.version < 8)),
 			testGetTrueWidth: !!(Browser.ie && (Browser.version < 8))
 		}

@@ -14,7 +14,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/String
+  - Core/MooTools
 
 provides: [String.Plus]
 

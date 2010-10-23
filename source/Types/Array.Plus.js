@@ -14,7 +14,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/Array
+  - Core/MooTools
 
 provides: [Array.Plus]
 

@@ -15,14 +15,21 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/Browser
+  - Core/MooTools
   - More/Element.Delegation
+  - Function.Plus
 
 provides: [Element.Delegation.Plus]
 
 ...
 */
 (function() {
+	var constants = {
+		ie_submit: 'mootools-plus-element-delegation:ie-submit'
+	};
+
+	// ---------------------------------------------------------------------- //
+
 	/**
 	 * Hack to make IE bubble the submit event. This simply attach a focusin
 	 * event to the form which then in turn attaches the submit event to it.
@@ -36,7 +43,7 @@ provides: [Element.Delegation.Plus]
 	var ie_submit = function(element, selectors, fn) {
 		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
 			// Make sure we attach the same handler only once for the element
-			var handlers = element.retrieve('iehack:submit_event') || [];
+			var handlers = element.retrieve(constants.ie_submit) || [];
 			var should_set = true;
 			for(var i = 0; i < handlers.length; ++i) {
 				if(handlers[i] == fn) { should_set = false; }
@@ -44,7 +51,7 @@ provides: [Element.Delegation.Plus]
 
 			if(should_set) {
 				handlers.push(fn);
-				element.store('iehack:submit_event', handlers);
+				element.store(constants.ie_submit, handlers);
 				element.addEvent('submit', function(fn, element, event) {
 					fn.attempt([event, element]);
 				}.curry([fn, element]));

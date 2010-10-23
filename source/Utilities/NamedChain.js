@@ -1,7 +1,7 @@
 /*
 ---
 
-script: NamedChainJS.js
+script: NamedChain.js
 
 name: NamedChainJS
 
@@ -14,8 +14,8 @@ authors:
 
 requires:
   - Core/MooTools
-  - Function.Plus
   - BindInstances
+  - Function.Plus
 
 provides: [NamedChainJS]
 
@@ -40,7 +40,7 @@ var NamedChainJS = new Class({
 	 * @class NamedChainJS
 	 */
 	initialize: function() {
-		BindInstances.bindInstances(this);
+		Class.bindInstances(this);
 		return this;
 	},
 
@@ -51,12 +51,10 @@ var NamedChainJS = new Class({
 	 *
 	 * @param String	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
-	 * @param Mixed		args	Any extra arguments to be set to the function.
-	 * 		If there is more than one argument, it should be set as an array.
 	 * @returns NamedChainJS
 	 */
-	append: function(key, fn, args) {
-		return this.insertAt(this.$fns.length, key, fn, args);
+	append: function(key, fn) {
+		return this.insertAt(this.$fns.length, key, fn);
 	},
 
 	/**
@@ -81,16 +79,14 @@ var NamedChainJS = new Class({
 	 * 		function should be added after.
 	 * @param Stirng	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
-	 * @param Mixed		args	Any extra arguments to be set to the function.
-	 * 		If there is more than one argument, it should be set as an array.
 	 * @returns NamedChainJS
 	 */
-	insertAfter: function(after, key, fn, args) {
+	insertAfter: function(after, key, fn) {
 		var index = this.$keys.indexOf(after);
 		if(index === -1) { index = this.$keys.length; }
 		else { ++index; }
 
-		return this.insertAt(index, key, fn, args);
+		return this.insertAt(index, key, fn);
 	},
 
 	/**
@@ -103,15 +99,13 @@ var NamedChainJS = new Class({
 	 * 		function should be added before.
 	 * @param String	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
-	 * @param Mixed		args	Any extra arguments to be set to the function.
-	 * 		If there is more than one argument, it should be set as an array.
 	 * @returns NamedChainJS
 	 */
-	insertBefore: function(before, key, fn, args) {
+	insertBefore: function(before, key, fn) {
 		var index = this.$keys.indexOf(before);
 		if(index === -1) { index = 0; }
 
-		return this.insertAt(index, key, fn, args);
+		return this.insertAt(index, key, fn);
 	},
 
 	/**
@@ -121,17 +115,13 @@ var NamedChainJS = new Class({
 	 * 		inserted at.
 	 * @param String	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
-	 * @param Mixed		args	Any extra arguments to be set to the function.
-	 * 		If there is more than one argument, it should be set as an array.
 	 * @returns NamedChainJS
 	 */
-	insertAt: function(index, key, fn, args) {
-		if(args) { fn = fn.curry(args); }
-
+	insertAt: function(index, key, fn) {
 		this.$keys.splice(index, 0, key);
 		this.$fns.splice(index, 0, fn);
 		return this;
-	}.protect(),
+	},
 
 	/**
 	 * Insert the provided function at the begining of the chain.
@@ -142,8 +132,8 @@ var NamedChainJS = new Class({
 	 * 		If there is more than one argument, it should be set as an array.
 	 * @returns NamedChainJS
 	 */
-	prepend: function(key, fn, args) {
-		return this.insertAt(0, key, fn, args);
+	prepend: function(key, fn) {
+		return this.insertAt(0, key, fn);
 	},
 
 	/**
@@ -158,6 +148,8 @@ var NamedChainJS = new Class({
 			this.$keys.splice(index, 1);
 			this.$fns.splice(index, 1);
 		}
+
+		return this;
 	},
 
 	/**

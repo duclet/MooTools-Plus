@@ -74,8 +74,7 @@ Element.implement({
 		first_element.replaces(this);
 
 		// Reverse the remaining elements and insert after the previous element
-		elements.reverse();
-		elements.invoke('inject', first_element, 'after');
+		elements.reverse().invoke('inject', first_element, 'after');
 
 		return this;
 	},
@@ -94,6 +93,8 @@ Element.implement({
 		return this;
 	}
 });
+
+// -------------------------------------------------------------------------- //
 
 (function() {
 	var id_counter = 1;

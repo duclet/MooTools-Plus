@@ -14,7 +14,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/Function
+  - Core/MooTools
 
 provides: [Function.Plus]
 
@@ -31,9 +31,12 @@ Function.implement({
 	 * @returns Function	The currified function.
 	 */
 	curry: function(args, bind) {
-		args = Array.from(args);
-		args.unshift([bind, null].pick());
+		var fn = this;
+		var params = Array.from(args);
 
-		return this.bind.apply(this, args);
+		return function() {
+			var args = params.concat(Array.from(arguments));
+			return fn.apply([bind, this].pick(), args);
+		};
 	}
 });

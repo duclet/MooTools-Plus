@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>HtmlOptionsJS</title>
+		<script type="text/javascript" src="http://yui.yahooapis.com/3.2.0/build/yui/yui-min.js"></script>
+		<script type="text/javascript" src="/tests/yuitest/yuitest.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-core.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-more.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-plus.js"></script>
+	</head>
+	<body class="yui3-skin-sam">
+		<div id="logger"></div>
+		<div id="wrapper">
+			<div class="htmloptions" style="display: none;">
+				<div class="boolean" title="visible">false</div>
+				<div class="string" title="id">my_id</div>
+				<div class="integer" title="delay">5000</div>
+				<div class="double" title="price">15.24</div>
+				<div class="eval" title="callback">asEval</div>
+				<div class="event" title="load">asEvent</div>
+			</div>
+		</div>
+		<div id="test_cases" style="display: none;">HtmlOptionsJS</div>
+		<script type="text/javascript">
+		var ChangeMe = {
+			asEval: false,
+			asEvent: false
+		};
+
+		var asEval = function() { ChangeMe.asEval = true; }
+		var asEvent = function() { ChangeMe.asEvent = true; }
+
+		YUITest.Configs.set({
+			tester_type: 'iframe',
+			tester_url_tpt: '{protocol}//{host}/tests/mootools-plus/tester.php'
+		});
+		YUITest.Testee.initialize();
+		</script>
+	</body>
+</html>

@@ -18,31 +18,27 @@ authors:
 
 requires:
   - Core/MooTools
-  - Class.Mutators.Static
-  - Function.Plus
 
 provides: [BindInstances]
 
 ...
 */
-var BindInstances = new Class({
-	Static: {
-		/**
-		 * Bind all instance methods of the provided object to itself.
-		 *
-		 * @param Object	obj		The object to bind.
-		 * @returns Object	The provided object.
-		 */
-		bindInstances: function(bind) {
-			Object.each(bind, function(value, key) {
-				// Only bind it if it is a function and it is not the method
-				// _current so that is special
-				if((typeOf(value) === 'function') && (key !== '_current')) {
-					this[key] = value.bind(this);
-				}
-			}, bind);
-
-			return bind;
+Class.extend({
+	/**
+	 * Bind all instance methods of the provided object to itself.
+	 *
+	 * @param Object	obj		The object to bind.
+	 * @returns Object	The provided object.
+	 */
+	bindInstances: function(bind) {
+		var value;
+		for(var key in bind) {
+			value = bind[key];
+			if((typeOf(value) === 'function') && (key !== '$caller')) {
+				bind[key] = value.bind(bind);
+			}
 		}
+
+		return bind;
 	}
 });

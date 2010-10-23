@@ -1,4 +1,4 @@
-/*
+ /*
 ---
 
 script: StoredInstances.js
@@ -7,7 +7,8 @@ name: StoredInstances
 
 description: Allow classes to stored instances that has been created. While this
 	can technically be used as a stand alone, it is best used as a mixin to
-	another class.
+	another class. Note that if you plan on accessing the static methods, you'll
+	need to mix this class in using both Implements and Static.
 
 license: MIT-style license
 
@@ -40,6 +41,8 @@ var StoredInstances = new Class({
 		}
 	},
 
+	// ---------------------------------------------------------------------- //
+
 	/**
 	 * Get a stored instance. Note that this simply allow you to access the
 	 * static version of this method on the instance itself.
@@ -48,7 +51,7 @@ var StoredInstances = new Class({
 	 * @returns Mixed	The stored instance or null if it does not exists.
 	 */
 	retrieveInstance: function(id) {
-		return this._current._owner.getInstance(id);
+		return this.$caller.$owner.retrieveInstance(id);
 	},
 
 	/**
@@ -64,7 +67,7 @@ var StoredInstances = new Class({
 		var instance = this.retrieveInstance(id);
 		if(instance) { return instance; }
 
-		this._current._owner.$instances[id] = this;
+		this.$caller.$owner.$instances[id] = this;
 		return true;
 	}
 });

@@ -15,6 +15,7 @@ authors:
 requires:
   - Core/MooTools
   - More/Element.Shortcuts
+  - Function.Plus
 
 provides: [HtmlOptionsJS]
 
@@ -77,8 +78,8 @@ var HtmlOptionsJS = new Class({
 	 * Load all the options from the source HTML and then from the provided
 	 * options.
 	 *
-	 * @param Element		wrapper		The wrapper element.
-	 * @param Object		options		Various other options to merge into our
+	 * @param Element	wrapper		The wrapper element.
+	 * @param Object	options		Various other options to merge into our
 	 * 		current list of options
 	 * @returns HtmlOptionsJS
 	 */
@@ -96,11 +97,10 @@ var HtmlOptionsJS = new Class({
 	 * extends. This allow other classes to provide extra functionalities for
 	 * loading configuration from the source.
 	 *
-	 * @param Object		options		The options object.
-	 * @param Element		element		The element holding the configuration
-	 * 		data.
-	 * @param String		type		The source type.
-	 * @param String		key			The configuration key.
+	 * @param Object	options		The options object.
+	 * @param Element	element		The element holding the configuration data.
+	 * @param String	type		The source type.
+	 * @param String	key			The configuration key.
 	 * @returns Boolean		Returns true if the configuration has been set and
 	 * 		the default actions does not need to be executed. Returns false if
 	 * 		the default actions should be taken.
@@ -110,7 +110,7 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Load the options from the source HTML.
 	 *
-	 * @param Element		wrapper		The wrapper element.
+	 * @param Element	wrapper		The wrapper element.
 	 * @returns HtmlOptionsJS
 	 */
 	loadOptions: function(wrapper) {
@@ -125,8 +125,8 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Set the data of the provided element to the provided option.
 	 *
-	 * @param Object		options		The options object.
-	 * @param ELement		element		The element containing the configuration
+	 * @param Object	options		The options object.
+	 * @param Element	element		The element containing the configuration
 	 * 		data to set.
 	 * @returns HtmlOptionsJS
 	 */
