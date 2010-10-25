@@ -276,13 +276,13 @@ var ResponsesJS = new Class({
 		responses.each(function(item) {
 			// For the sake of performance
 			switch(item.type) {
-				case 'alert': this.alertResponse(this, item); break;
-				case 'callback': this.callbackResponse(this, item); break;
-				case 'element_replace': this.elementReplaceResponse(this, item); break;
-				case 'element_update': this.elementUpdateResponse(this, item); break;
-				case 'function_call': this.functionCallResponse(this, item); break;
-				case 'redirect': this.redirectResponse(this, item); break;
-				case 'reload': this.reloadResponse(this, item); break;
+				case 'alert': this.alertResponse(item); break;
+				case 'callback': this.callbackResponse(item); break;
+				case 'element_replace': this.elementReplaceResponse(item); break;
+				case 'element_update': this.elementUpdateResponse(item); break;
+				case 'function_call': this.functionCallResponse(item); break;
+				case 'redirect': this.redirectResponse(item); break;
+				case 'reload': this.reloadResponse(item); break;
 				default: break;
 			}
 

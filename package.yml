@@ -9,6 +9,7 @@ sources:
   - "source/Class/StoredInstances.js"
   - "source/Element/Element.Delegation.Plus.js"
   - "source/Element/Element.Plus.js"
+  - "source/Interface/Layer.js"
   - "source/Request/Responses.js"
   - "source/Types/Array.Plus.js"
   - "source/Types/Function.Plus.js"

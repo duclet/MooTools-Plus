@@ -8,11 +8,9 @@ YUITest.TestCases.ResponsesJS = {
 			Extends: $C.ResponsesJS,
 			$called: false,
 			$message: '',
-			alertResponse: function(responsesjs, response) {
-				if(response.type === 'alert') {
-					this.$called = true;
-					this.$message = response.message;
-				}
+			alertResponse: function(response) {
+				this.$called = true;
+				this.$message = response.message;
 			}
 		});
 
@@ -225,11 +223,9 @@ YUITest.TestCases.ResponsesJS = {
 			Extends: $C.ResponsesJS,
 			$called: false,
 			$url: '',
-			redirectResponse: function(responsesjs, response) {
-				if(response.type === 'redirect') {
-					this.$called = true;
-					this.$url = response.url;
-				}
+			redirectResponse: function(response) {
+				this.$called = true;
+				this.$url = response.url;
 			}
 		});
 
@@ -257,10 +253,8 @@ YUITest.TestCases.ResponsesJS = {
 		var modified = new $C.Class({
 			Extends: $C.ResponsesJS,
 			$called: false,
-			reloadResponse: function(responsesjs, response) {
-				if(response.type === 'reload') {
-					this.$called = true;
-				}
+			reloadResponse: function(response) {
+				this.$called = true;
 			}
 		});
 
