@@ -20,7 +20,7 @@ YUITest.TestCases.ResponsesJS = {
 			url: '/tests/mootools-plus/responses.php',
 			data: 'data=' + JSON.encode([{
 				type: 'alert',
-				message: 'The alerted message',
+				message: 'The alerted message'
 			}]),
 			onFinishProcessing: function(responsesjs) {
 				this.resume(function() {
@@ -213,6 +213,101 @@ YUITest.TestCases.ResponsesJS = {
 				});
 			}.bind(this)
 		});
+
+		responses.send();
+		this.wait(2000);
+	},
+
+	testRedirect: function() {
+		// We need to override the redirect response handler since we'll lose
+		// the page if it got redirected
+		var modified = new $C.Class({
+			Extends: $C.ResponsesJS,
+			$called: false,
+			$url: '',
+			redirectResponse: function(responsesjs, response) {
+				if(response.type === 'redirect') {
+					this.$called = true;
+					this.$url = response.url;
+				}
+			}
+		});
+
+		var responses = new modified({
+			url: '/tests/mootools-plus/responses.php',
+			data: 'data=' + JSON.encode([{
+				type: 'redirect',
+				url: 'http://www.google.com'
+			}]),
+			onFinishProcessing: function(responsesjs) {
+				this.resume(function() {
+					$Y.Assert.isTrue(responsesjs.$called);
+					$Y.Assert.areSame('http://www.google.com', responsesjs.$url);
+				});
+			}.bind(this)
+		});
+
+		responses.send();
+		this.wait(2000);
+	},
+
+	testReload: function() {
+		// We need to override the reload response handler since we'll lose
+		// the page if it got reloaded
+		var modified = new $C.Class({
+			Extends: $C.ResponsesJS,
+			$called: false,
+			reloadResponse: function(responsesjs, response) {
+				if(response.type === 'reload') {
+					this.$called = true;
+				}
+			}
+		});
+
+		var responses = new modified({
+			url: '/tests/mootools-plus/responses.php',
+			data: 'data=' + JSON.encode([{
+				type: 'reload'
+			}]),
+			onFinishProcessing: function(responsesjs) {
+				this.resume(function() {
+					$Y.Assert.isTrue(responsesjs.$called);
+				});
+			}.bind(this)
+		});
+
+		responses.send();
+		this.wait(2000);
+	},
+
+	testMultipleResponses: function() {
+		var callback1 = function() { callback1.$called = true; };
+		var callback2 = function() { callback2.$called = true; };
+		var callback3 = function() { callback3.$called = true; };
+
+		$Y.Assert.isUndefined(callback1.$called);
+		$Y.Assert.isUndefined(callback2.$called);
+		$Y.Assert.isUndefined(callback3.$called);
+
+		var responses = new $C.ResponsesJS({
+			url: '/tests/mootools-plus/responses.php',
+			data: 'data=' + JSON.encode([
+				{ type: 'callback', key: 'callback1' },
+				{ type: 'callback', key: 'callback2' },
+				{ type: 'callback', key: 'callback3' }
+			]),
+			onFinishProcessing: function(responsesjs) {
+				this.resume(function() {
+					$Y.Assert.isTrue(callback1.$called);
+					$Y.Assert.isTrue(callback2.$called);
+					$Y.Assert.isTrue(callback3.$called);
+				});
+			}.bind(this)
+		});
+
+		responses.addHandler('callback1', callback1);
+		responses.addHandler('callback2', callback2);
+		responses.addHandler('callback3', callback3);
 
 		responses.send();
 		this.wait(2000);

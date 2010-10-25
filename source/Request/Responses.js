@@ -37,6 +37,9 @@ provides: [ResponsesJS]
  * 		...
  * 	]
  *
+ * Note that with this, if another request is made before the current one is
+ * finished, this will cancel the previous one.
+ *
  * Events:
  * 		finishProcessing: Fired when all the responses has been processed.
  * 		processItem: Fired for each response received from the server.
@@ -67,8 +70,14 @@ var ResponsesJS = new Class({
 			onStartProcessing: function(responsesjs, responses) {},
 		*/
 
-		change_cursor:	false,
+		change_cursor:	false
 	},
+
+	/**
+	 * @var Object	$extra_args		Extra arguments provided when the request
+	 * 		was made.
+	 */
+	extra_args: null,
 
 	// ---------------------------------------------------------------------- //
 
@@ -82,14 +91,8 @@ var ResponsesJS = new Class({
 		Class.bindInstances(this);
 
 		this.parent(options);
+		this.options.link = 'cancel';
 		this.addEvent('success', this.handleResponse, true);
-		this.addEvent('processItem', this.alertResponse, true);
-		this.addEvent('processItem', this.callbackResponse, true);
-		this.addEvent('processItem', this.elementReplaceResponse, true);
-		this.addEvent('processItem', this.elementUpdateResponse, true);
-		this.addEvent('processItem', this.functionCallResponse, true);
-		this.addEvent('processItem', this.redirectResponse, true);
-		this.addEvent('processItem', this.reloadResponse, true);
 		return this;
 	},
 
@@ -102,14 +105,11 @@ var ResponsesJS = new Class({
 	 * 			message: 'Your message here'
 	 * 		}
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	alertResponse: function(responsesjs, response) {
-		if(response.type === 'alert') {
-			window.alert(item.message);
-		}
+	alertResponse: function(response) {
+		window.alert(response.message);
 	},
 
 	/**
@@ -121,17 +121,14 @@ var ResponsesJS = new Class({
 	 * 			parameters: ['your', 'various', 'parameters']
 	 * 		}
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	callbackResponse: function(responsesjs, response) {
-		if(response.type === 'callback') {
-			responsesjs.fireEvent(
-				this.getHandlerName(response.key),
-				Array.from(response.parameters)
-			);
-		}
+	callbackResponse: function(response) {
+		this.fireEvent(
+			this.getHandlerName(response.key),
+			Array.from(response.parameters)
+		);
 	},
 
 	/**
@@ -145,15 +142,12 @@ var ResponsesJS = new Class({
 	 * 			html: '<p>The HTML to replace the element with.</p>'
 	 * 		}
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	elementReplaceResponse: function(responsesjs, response) {
-		if(response.type === 'element_replace') {
-			document.id(response.element_id).replacesWith(response.html);
-			response.html.stripScripts(true);
-		}
+	elementReplaceResponse: function(response) {
+		document.id(response.element_id).replacesWith(response.html);
+		response.html.stripScripts(true);
 	},
 
 	/**
@@ -167,14 +161,11 @@ var ResponsesJS = new Class({
 	 * 			html: '<p>The updated HTML</p>'
 	 * 		}
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	elementUpdateResponse: function(responsesjs, response) {
-		if(response.type === 'element_update') {
-			document.id(response.element_id).update(response.html);
-		}
+	elementUpdateResponse: function(response) {
+		document.id(response.element_id).update(response.html);
 	},
 
 	/**
@@ -189,16 +180,13 @@ var ResponsesJS = new Class({
 	 * 			parameters: ['your', 'various', 'parameters']
 	 * 		}
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	functionCallResponse: function(responsesjs, response) {
-		if(response.type === 'function_call') {
-			var fn = eval(response.fn);
-			var scope = eval(response.scope);
-			fn.apply(scope, Array.from(response.parameters));
-		}
+	functionCallResponse: function(response) {
+		var fn = eval(response.fn);
+		var scope = eval(response.scope);
+		fn.apply(scope, Array.from(response.parameters));
 	},
 
 	/**
@@ -208,35 +196,29 @@ var ResponsesJS = new Class({
 	 * 			url: 'url_to_redirect_user'
 	 * 		}
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	redirectResponse: function(responsesjs, response) {
-		if(response.type === 'redirect') {
-			// Because window.location doesn't always work
-			var form = new Element('form', {
-				action: item.url,
-				method: 'post'
-			});
+	redirectResponse: function(response) {
+		// Because window.location doesn't always work
+		var form = new Element('form', {
+			action: item.url,
+			method: 'post'
+		});
 
-			form.inject(document.body);
-			form.submit();
-		}
+		form.inject(document.body);
+		form.submit();
 	},
 
 	/**
 	 * Response handler for "reload". Reload the current page.
 	 * 		{ type: 'reload' }
 	 *
-	 * @param ResponsesJS	responsesjs		The response object.
-	 * @param Object		response		The response from the server.
+	 * @param Object	response	The response from the server.
 	 * @returns void
 	 */
-	reloadResponse: function(responsesjs, response) {
-		if(response.type === 'reload') {
-			window.location.reload();
-		}
+	reloadResponse: function(response) {
+		window.location.reload();
 	},
 
 	// ---------------------------------------------------------------------- //
@@ -252,6 +234,16 @@ var ResponsesJS = new Class({
 	addHandler: function(name, fn) {
 		this.addEvent(this.getHandlerName(name), fn);
 		return this;
+	},
+
+	/**
+	 * Overwrite cancel so that it will clear the extra args.
+	 *
+	 * @returns ResponsesJS
+	 */
+	cancel: function() {
+		this.extra_args = null;
+		return this.parent();
 	},
 
 	/**
@@ -282,10 +274,23 @@ var ResponsesJS = new Class({
 
 		this.fireEvent('startProcessing', [this, responses]);
 		responses.each(function(item) {
+			// For the sake of performance
+			switch(item.type) {
+				case 'alert': this.alertResponse(this, item); break;
+				case 'callback': this.callbackResponse(this, item); break;
+				case 'element_replace': this.elementReplaceResponse(this, item); break;
+				case 'element_update': this.elementUpdateResponse(this, item); break;
+				case 'function_call': this.functionCallResponse(this, item); break;
+				case 'redirect': this.redirectResponse(this, item); break;
+				case 'reload': this.reloadResponse(this, item); break;
+				default: break;
+			}
+
 			this.fireEvent('processItem', [this, item]);
 		}, this);
 		this.fireEvent('finishProcessing', [this, responses]);
 
+		this.extra_args = null;
 		return this;
 	},
 
@@ -294,9 +299,11 @@ var ResponsesJS = new Class({
 	 *
 	 * @param Object	options		Optional. The options for the send Request.
 	 * 		Will also accept data as a query string for compatibility reasons.
+	 * @param Object	extra_args	Optional. Any extra arguments.
 	 * @returns ResponsesJS
 	 */
-	send: function(options) {
+	send: function(options, extra_args) {
+		this.extra_args = extra_args;
 		if(this.options.change_cursor && document.body) {
 			document.body.setStyle('cursor', 'progress');
 		}
