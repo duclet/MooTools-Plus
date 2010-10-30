@@ -72,11 +72,11 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function after a certain function.
 	 *
-	 * Note that if the provided key does not exist, then the function will be
-	 * inserted at the end of the array.
+	 * Note that if the provided key does not exist, then the function will be inserted at the end 
+	 * of the array.
 	 *
-	 * @param String	after	The key of the function that the provided
-	 * 		function should be added after.
+	 * @param String	after	The key of the function that the provided function should be added 
+	 * 		after.
 	 * @param Stirng	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
 	 * @returns NamedChainJS
@@ -92,11 +92,11 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function before a certain function.
 	 *
-	 * Note that if the provided key does not exist, then the function will be
-	 * inserted at the begin of the array.
+	 * Note that if the provided key does not exist, then the function will be inserted at the begin 
+	 * 		of the array.
 	 *
-	 * @param String	before	The key of the function that the provided
-	 * 		function should be added before.
+	 * @param String	before	The key of the function that the provided function should be added 
+	 * 		before.
 	 * @param String	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
 	 * @returns NamedChainJS
@@ -111,8 +111,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the provided index.
 	 *
-	 * @param int		index	The index of where the function should be
-	 * 		inserted at.
+	 * @param int		index	The index of where the function should be inserted at.
 	 * @param String	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
 	 * @returns NamedChainJS
@@ -128,8 +127,8 @@ var NamedChainJS = new Class({
 	 *
 	 * @param String	key		The key for the provided function.
 	 * @param Function	fn		The function to add to the chain.
-	 * @param Mixed		args	Any extra arguments to be set to the function.
-	 * 		If there is more than one argument, it should be set as an array.
+	 * @param Mixed		args	Any extra arguments to be set to the function. If there is more than 
+	 * 		one argument, it should be set as an array.
 	 * @returns NamedChainJS
 	 */
 	prepend: function(key, fn) {

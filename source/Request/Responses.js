@@ -10,23 +10,22 @@ description: Handles JSON responses from the server with some preset callbacks.
 license: MIT-style license
 
 authors:
-- Duc Tri Le
+  - Duc Tri Le
 
 requires:
-- Core/MooTools
-- BindInstances
-- Element.Plus
+  - Core/MooTools
+  - BindInstances
+  - Element.Plus
 
 provides: [ResponsesJS]
 
 ...
 */
 /**
- * The expected result from the server should be a JSON array where each item is
- * an object with the at a minimum the key "type". That type specifies the
- * action to take. Refer to the various response handler functions for how the
- * response for each item would look like. Below is how the entire response
- * should look like:
+ * The expected result from the server should be a JSON array where each item is an object with the 
+ * at a minimum the key "type". That type specifies the action to take. Refer to the various 
+ * response handler functions for how the response for each item would look like. Below is how the 
+ * entire response should look like:
  * 	[
  * 		{
  * 			type: 'the type',
@@ -37,8 +36,8 @@ provides: [ResponsesJS]
  * 		...
  * 	]
  *
- * Note that with this, if another request is made before the current one is
- * finished, this will cancel the previous one.
+ * Note that with this, if another request is made before the current one is finished, this will 
+ * cancel the previous one.
  *
  * Events:
  * 		finishProcessing: Fired when all the responses has been processed.
@@ -54,8 +53,8 @@ var ResponsesJS = new Class({
 	 * 		onProcessItem: (Function) The event "processItem".
 	 * 		onStartProcessing: (Function) The event "startProcessing".
 	 *
-	 * 		change_cursor: (Boolean) Whether or not the change the cursor upon
-	 * 			the request and restore it when done. Defaults to false.
+	 * 		change_cursor: (Boolean) Whether or not the change the cursor upon the request and 
+	 * 			restore it when done. Defaults to false.
 	 *
 	 * @var Object		Various options.
 	 */
@@ -113,8 +112,8 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "callback". Run the callback specified via
-	 * "addHandler" using the provided parameters.
+	 * Response handler for "callback". Run the callback specified via "addHandler" using the 
+	 * provided parameters.
 	 * 		{
 	 * 			type: 'callback',
 	 * 			key: 'key used in addHandler to set callback',
@@ -125,17 +124,13 @@ var ResponsesJS = new Class({
 	 * @returns void
 	 */
 	callbackResponse: function(response) {
-		this.fireEvent(
-			this.getHandlerName(response.key),
-			Array.from(response.parameters)
-		);
+		this.fireEvent(this.getHandlerName(response.key), Array.from(response.parameters));
 	},
 
 	/**
-	 * Response handler for "element_replace". Replaces the element with the
-	 * provided identifier using the provided HTML. Note that this will evaluate
-	 * any included JavaScript within the  script tag after the element has been
-	 * replaced.
+	 * Response handler for "element_replace". Replaces the element with the provided identifier 
+	 * using the provided HTML. Note that this will evaluate any included JavaScript within the 
+	 * script tag after the element has been replaced.
 	 * 		{
 	 * 			type: 'element_replace',
 	 * 			element_id: 'id of element to replace',
@@ -151,10 +146,9 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "element_update". Updates the innerHTML of the
-	 * element with the provided identifier using the provided HTML. Note that
-	 * this will evaluate any included JavaScript within the script tag after
-	 * the element has been updated.
+	 * Response handler for "element_update". Updates the innerHTML of the element with the provided 
+	 * identifier using the provided HTML. Note that this will evaluate any included JavaScript 
+	 * within the script tag after the element has been updated.
 	 * 		{
 	 * 			type: 'element_update',
 	 * 			element_id: 'id of element to update',
@@ -169,10 +163,9 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "function_call". Called the provided function using
-	 * the provided scope and parameters. Note that using this is highly
-	 * discouraged and it should only be used if the "callback" type cannot be
-	 * used.
+	 * Response handler for "function_call". Called the provided function using the provided scope 
+	 * and parameters. Note that using this is highly discouraged and it should only be used if the 
+	 * "callback" type cannot be used.
 	 * 		{
 	 * 			type: 'function_call',
 	 * 			function_name: 'name of the function',
@@ -224,8 +217,7 @@ var ResponsesJS = new Class({
 	// ---------------------------------------------------------------------- //
 
 	/**
-	 * Add a custom handler for the response that will be taken care of by this
-	 * class.
+	 * Add a custom handler for the response that will be taken care of by this class.
 	 *
 	 * @param String	name	The custom handler's name.
 	 * @param Function	fn		The custom handler.
@@ -287,8 +279,8 @@ var ResponsesJS = new Class({
 	/**
 	 * Make the request.
 	 *
-	 * @param Object	options		Optional. The options for the send Request.
-	 * 		Will also accept data as a query string for compatibility reasons.
+	 * @param Object	options		Optional. The options for the send Request. Will also accept 
+	 * 		data as a query string for compatibility reasons.
 	 * @param Object	extra_args	Optional. Any extra arguments.
 	 * @returns ResponsesJS
 	 */

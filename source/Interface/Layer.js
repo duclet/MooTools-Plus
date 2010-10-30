@@ -10,17 +10,17 @@ description: DHTML layers.
 license: MIT-style license
 
 authors:
-- Duc Tri Le
+  - Duc Tri Le
 
 requires:
-- Core/MooTools
-- BindInstances
-- Class.Mutator.Static
-- Element.Plus
-- HtmlOptionsJS
-- NamedChainJS
-- ResponsesJS
-- StoredInstances
+  - Core/MooTools
+  - BindInstances
+  - Class.Mutator.Static
+  - Element.Plus
+  - HtmlOptionsJS
+  - NamedChainJS
+  - ResponsesJS
+  - StoredInstances
 
 provides: [LayerJS]
 
@@ -41,11 +41,9 @@ var LayerJS = new Class({
 		Chain: {
 			/**
 			 * Chain of actions (in order) for the method fetchUrl.
-			 * 		fire_event: The chain item that fires the startFetching
-			 * 			event.
+			 * 		fire_event: The chain item that fires the startFetching event.
 			 * 		fetch: The chain item to actually fetch the item.
-			 * 		wrapup: Wrapup the request and fire the event
-			 * 			finishFetching.
+			 * 		wrapup: Wrapup the request and fire the event finishFetching.
 			 */
 			fetchUrl: {
 				fetch: 'layerjs.fetchUrl:fetch',
@@ -66,8 +64,7 @@ var LayerJS = new Class({
 			/**
 			 * Chain of actions (in order) for the method show.
 			 * 		fire_event: The chain item that fires the show event.
-			 * 		data_request: The chain item that makes a request for the
-			 * 			content of the layer.
+			 * 		data_request: The chain item that makes a request for the content of the layer.
 			 * 		show: The chain item that show the layer.
 			 */
 			show: {
@@ -78,11 +75,9 @@ var LayerJS = new Class({
 
 			/**
 			 * Chain of actions (in order) for the method submiForm.
-			 * 		fire_event: The chain item that fires the startPosting
-			 * 			event.
+			 * 		fire_event: The chain item that fires the startPosting event.
 			 * 		post: The chain item that submits the form.
-			 * 		wrapup: Wrapup the submission and fire the event
-			 * 			finishPosting.
+			 * 		wrapup: Wrapup the submission and fire the event finishPosting.
 			 */
 			submitForm: {
 				fire_event: 'layerjs.submitForm:fire_event',
@@ -101,29 +96,26 @@ var LayerJS = new Class({
 	 * 		onStartFetching: (Function) The event "startFetching".
 	 * 		onStartPosting: (Function) The event "startPosting".
 	 *
-	 * 		element: (Mixed) Either the identifier for the element or the
-	 * 			element itself that is the layer. If not provided, one will be
-	 * 			created.
+	 * 		element: (Mixed) Either the identifier for the element or the element itself that is the 
+	 * 			layer. If not provided, one will be created.
 	 * 		layer_classname: (String) The CSS class name for all the layer.
-	 * 		intercept_classname: (String) The CSS class name for the element
-	 * 			that this layer should intercept and process to update the
-	 * 			layer.
-	 * 		refetch: (Boolean) Whether or not the content of the layer should be
-	 * 			refetched each time it is shown. If set to false, the url option
-	 * 			will become null once fetching has completed.
-	 * 		template: (String) The template for the layer. Note that the
-	 * 			template is only used when the script cannot get the content
-	 * 			area of the layer. As such, the template needs to contain an
-	 * 			element that the provided content_selector specifies.
-	 * 		url: (String) The URL to get the content from. Note that the request
-	 * 			will be made with fetchUrl.
+	 * 		intercept_classname: (String) The CSS class name for the element that this layer should 
+	 * 			intercept and process to update the layer.
+	 * 		refetch: (Boolean) Whether or not the content of the layer should be refetched each time 
+	 * 			it is shown. If set to false, the url option will become null once fetching has 
+	 * 			completed.
+	 * 		template: (String) The template for the layer. Note that the template is only used when 
+	 * 			the script cannot get the content area of the layer. As such, the template needs to 
+	 * 			contain an element that the provided content_selector specifies.
+	 * 		url: (String) The URL to get the content from. Note that the request will be made with 
+	 * 			fetchUrl.
 	 *
-	 * 		content_selector: (String) The CSS selector (relative to the layer
-	 * 			wrapper) for the content of the layer.
-	 * 		hide_selector: (String) The CSS selector (relative to the layer
-	 * 			wrapper) for the element if clicked on, will hide the layer.
+	 * 		content_selector: (String) The CSS selector (relative to the layer wrapper) for the 
+	 * 			content of the layer.
+	 * 		hide_selector: (String) The CSS selector (relative to the layer wrapper) for the element 
+	 * 			if clicked on, will hide the layer.
 	 *
-	 * @var Object		Various options.
+	 * @var Object	Various options.
 	 */
 	options: {
 		/*
@@ -179,7 +171,7 @@ var LayerJS = new Class({
 		else { this.element = document.id(options.element); }
 
 		this.element.addClass(this.options.layer_classname);
-		this.$responses = new ResponsesJS({onProcessItem: this.handleResponse});
+		this.$responses = new ResponsesJS({ onProcessItem: this.handleResponse });
 
 		// Now load all the options and attach the necessary events
 		this.loadAllOptions(this.element, options);
@@ -194,10 +186,7 @@ var LayerJS = new Class({
 	 * @returns LayerJS
 	 */
 	attach: function(selector) {
-		this.element.delegateEvent(
-			'click', this.options.hide_selector, this.onHide
-		);
-
+		this.element.delegateEvent('click', this.options.hide_selector, this.onHide);
 		this.element.delegateEvent('click', 'a', this.onClick);
 		this.element.delegateEvent('submit', 'form', this.onSubmit);
 	},
@@ -228,31 +217,20 @@ var LayerJS = new Class({
 	},
 
 	/**
-	 * Make a request to the provided URL and use the response to update the
-	 * layer. Note that all requests will be made as a GET.
+	 * Make a request to the provided URL and use the response to update the layer. Note that all 
+	 * requests will be made as a GET.
 	 *
 	 * @param String	url		The URL to fetch.
-	 * @param NamedChainJS	caller	Optional and should be used internally. The
-	 * 		chain of actions to continue running when the request is completed.
+	 * @param NamedChainJS	caller	Optional and should be used internally. The chain of actions to 
+	 * 		continue running when the request is completed.
 	 * @returns LayerJS
 	 */
 	fetchUrl: function(url, caller) {
 		var chain = new NamedChainJS();
 
-		chain.append(
-			LayerJS.Chain.fetchUrl.fireEvent,
-			this.__fetchUrlFireEvent.curry(chain)
-		);
-
-		chain.append(
-			LayerJS.Chain.fetchUrl.fetch,
-			this.__fetchUrlFetch.curry([chain, url])
-		);
-
-		chain.append(
-			LayerJS.Chain.fetchUrl.wrapup,
-			this.__fetchUrlWrapup.curry([chain, caller])
-		);
+		chain.append(LayerJS.Chain.fetchUrl.fireEvent, this.__fetchUrlFireEvent.curry(chain));
+		chain.append(LayerJS.Chain.fetchUrl.fetch, this.__fetchUrlFetch.curry([chain, url]));
+		chain.append(LayerJS.Chain.fetchUrl.wrapup, this.__fetchUrlWrapup.curry([chain, caller]));
 
 		chain.run();
 		return this;
@@ -272,8 +250,7 @@ var LayerJS = new Class({
 	},
 
 	/**
-	 * Handles a response from the server. Below are the list of response types
-	 * that is supported:
+	 * Handles a response from the server. Below are the list of response types that is supported:
 	 * 		layerjs:update - Updates the content of the layer with the provided
 	 * 			html.
 	 * 			{
@@ -287,9 +264,7 @@ var LayerJS = new Class({
 	 */
 	handleResponse: function(responses, response) {
 		switch(response.type) {
-			case 'layerjs:update':
-				this.updateContent(response.html);
-				break;
+			case 'layerjs:update': this.updateContent(response.html); break;
 			default: break;
 		}
 	},
@@ -302,15 +277,8 @@ var LayerJS = new Class({
 	hide: function() {
 		var chain = new NamedChainJS();
 
-		chain.append(
-			LayerJS.Chain.hide.fire_event,
-			this.__hideFireEvent.curry(chain)
-		);
-
-		chain.append(
-			LayerJS.Chain.hide.hide,
-			this.__hideHide.curry(chain)
-		);
+		chain.append(LayerJS.Chain.hide.fire_event, this.__hideFireEvent.curry(chain));
+		chain.append(LayerJS.Chain.hide.hide, this.__hideHide.curry(chain));
 
 		chain.run();
 		return this;
@@ -381,20 +349,9 @@ var LayerJS = new Class({
 	show: function() {
 		var chain = new NamedChainJS();
 
-		chain.append(
-			LayerJS.Chain.show.fire_event,
-			this.__showFireEvent.curry(chain)
-		);
-
-		chain.append(
-			LayerJS.Chain.hide.data_request,
-			this.__showDataRequest.curry(chain)
-		);
-
-		chain.append(
-			LayerJS.Chain.show.show,
-			this.__showShow.curry(chain)
-		);
+		chain.append(LayerJS.Chain.show.fire_event, this.__showFireEvent.curry(chain));
+		chain.append(LayerJS.Chain.hide.data_request, this.__showDataRequest.curry(chain));
+		chain.append(LayerJS.Chain.show.show, this.__showShow.curry(chain));
 
 		chain.run();
 		return this;
@@ -426,20 +383,9 @@ var LayerJS = new Class({
 	submitForm: function(form) {
 		var chain = new NamedChainJS();
 
-		chain.append(
-			LayerJS.Chain.submitForm.fireEvent,
-			this.__submitFormFireEvent.curry(chain)
-		);
-
-		chain.append(
-			LayerJS.Chain.submitForm.post,
-			this.__submitFormPost.curry([widget, form])
-		);
-
-		chain.append(
-			LayerJS.Chain.submitForm.wrapup,
-			this.__submitFormWrapup.curry(chain)
-		);
+		chain.append(LayerJS.Chain.submitForm.fireEvent, this.__submitFormFireEvent.curry(chain));
+		chain.append(LayerJS.Chain.submitForm.post, this.__submitFormPost.curry([widget, form]));
+		chain.append(LayerJS.Chain.submitForm.wrapup, this.__submitFormWrapup.curry(chain));
 
 		chain.run();
 		return this;

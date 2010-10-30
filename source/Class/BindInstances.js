@@ -13,10 +13,10 @@ description: Add ability to bind all instance methods to the current object. Pre
 license: MIT-style license
 
 authors:
-- Duc Tri Le
+  - Duc Tri Le
 
 requires:
-- Core/MooTools
+  - Core/MooTools
 
 provides: [BindInstances]
 

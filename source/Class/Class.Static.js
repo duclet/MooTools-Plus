@@ -11,10 +11,10 @@ description: Mutator to allow the data given to it to be set to the class itself
 license: MIT-style license
 
 authors:
-- Duc Tri Le
+  - Duc Tri Le
 
 requires:
-- Core/MooTools
+  - Core/MooTools
 
 provides: [Class.Mutators.Static]
 

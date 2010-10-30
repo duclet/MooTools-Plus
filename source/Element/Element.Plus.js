@@ -5,8 +5,7 @@ script: Element.Plus.js
 
 name: Element.Plus
 
-description: Extends the Element native object to include useful methods to
-	work with elements.
+description: Extends the Element native object to include useful methods to work with elements.
 
 license: MIT-style license
 
@@ -80,8 +79,7 @@ Element.implement({
 	},
 
 	/**
-	 * Update the inner HTML of the element and evaluate any scripts within the
-	 * HTML.
+	 * Update the inner HTML of the element and evaluate any scripts within the HTML.
 	 *
 	 * @param String	html	The HTML.
 	 * @returns Element		This element.
@@ -94,14 +92,14 @@ Element.implement({
 	}
 });
 
-// -------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------------------------- //
 
 (function() {
 	var id_counter = 1;
 	Element.Properties.id = {
 		/**
-		 * Get the identifier of this element or create one and set it to the
-		 * element then return it.
+		 * Get the identifier of this element or create one and set it to the element then return 
+		 * it.
 		 *
 		 * @returns String
 		 */

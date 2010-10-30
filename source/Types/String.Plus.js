@@ -24,10 +24,9 @@ String.implement({
 	/**
 	 * Get all the configuration data from this string.
 	 *
-	 * This parses the string by first splitting on each white space. For each
-	 * item, if it contains the colon, the text before it becomes the key and
-	 * the text after it becomes the value. This is mainly used for parsing
-	 * configuration data from the class names of an element.
+	 * This parses the string by first splitting on each white space. For each item, if it contains 
+	 * the colon, the text before it becomes the key and the text after it becomes the value. This 
+	 * is mainly used for parsing configuration data from the class names of an element.
 	 *
 	 * @returns Object
 	 */

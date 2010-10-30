@@ -24,10 +24,9 @@ Function.implement({
 	/**
 	 * Curry the provided arguments.
 	 *
-	 * @param Mixed		args	The arguments to always pass to the function
-	 * 		(must be an array if passing more than one argument).
-	 * @param Mixed		bind	The object that the "this" of the function will
-	 * 		refer to.
+	 * @param Mixed		args	The arguments to always pass to the function (must be an array if 
+	 * 		passing more than one argument).
+	 * @param Mixed		bind	The object that the "this" of the function will refer to.
 	 * @returns Function	The currified function.
 	 */
 	curry: function(args, bind) {
