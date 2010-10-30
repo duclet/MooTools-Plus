@@ -10,12 +10,12 @@ description: Load configuration options from the HTML source.
 license: MIT-style license
 
 authors:
-  - Duc Tri Le
+- Duc Tri Le
 
 requires:
-  - Core/MooTools
-  - More/Element.Shortcuts
-  - Function.Plus
+- Core/MooTools
+- More/Element.Shortcuts
+- Function.Plus
 
 provides: [HtmlOptionsJS]
 
@@ -118,7 +118,10 @@ var HtmlOptionsJS = new Class({
 		if(!config_wrapper) { return this; }
 
 		config_wrapper.hide();
-		config_wrapper.getChildren().each(this.setOption.curry(this.options), this);
+		config_wrapper.getChildren().each(
+			this.setOption.curry(this.options), this
+		);
+
 		return this;
 	},
 

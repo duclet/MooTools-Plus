@@ -10,12 +10,12 @@ description: Handles JSON responses from the server with some preset callbacks.
 license: MIT-style license
 
 authors:
-  - Duc Tri Le
+- Duc Tri Le
 
 requires:
-  - Core/MooTools
-  - BindInstances
-  - Element.Plus
+- Core/MooTools
+- BindInstances
+- Element.Plus
 
 provides: [ResponsesJS]
 
@@ -234,16 +234,6 @@ var ResponsesJS = new Class({
 	addHandler: function(name, fn) {
 		this.addEvent(this.getHandlerName(name), fn);
 		return this;
-	},
-
-	/**
-	 * Overwrite cancel so that it will clear the extra args.
-	 *
-	 * @returns ResponsesJS
-	 */
-	cancel: function() {
-		this.extra_args = null;
-		return this.parent();
 	},
 
 	/**

@@ -10,17 +10,17 @@ description: DHTML layers.
 license: MIT-style license
 
 authors:
-  - Duc Tri Le
+- Duc Tri Le
 
 requires:
-  - Core/MooTools
-  - BindInstances
-  - Class.Mutator.Static
-  - Element.Plus
-  - HtmlOptionsJS
-  - NamedChainJS
-  - ResponsesJS
-  - StoredInstances
+- Core/MooTools
+- BindInstances
+- Class.Mutator.Static
+- Element.Plus
+- HtmlOptionsJS
+- NamedChainJS
+- ResponsesJS
+- StoredInstances
 
 provides: [LayerJS]
 
@@ -132,8 +132,8 @@ var LayerJS = new Class({
 
 			onFinishFetching: function(layerjs, chain) {},
 			onFinishPosting: function(layerjs, chain) {},
-			onHide: function(layerjs) {},
-			onShow: function(layerjs) {},
+			onHide: function(layerjs, chain) {},
+			onShow: function(layerjs, chain) {},
 			onStartFetching: function(layerjs, chain) {},
 			onStartPosting: function(layerjs, chain) {},
 		*/
@@ -232,30 +232,43 @@ var LayerJS = new Class({
 	 * layer. Note that all requests will be made as a GET.
 	 *
 	 * @param String	url		The URL to fetch.
-	 * @param NamedChainJS	caller	Optional and should be used interally. The
+	 * @param NamedChainJS	caller	Optional and should be used internally. The
 	 * 		chain of actions to continue running when the request is completed.
 	 * @returns LayerJS
 	 */
 	fetchUrl: function(url, caller) {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.fetchUrl.fireEvent, function(widget) {
-			widget.fireEvent('startFetching', [widget, this]);
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.fetchUrl.fireEvent,
+			this.__fetchUrlFireEvent.curry(chain)
+		);
 
-		chain.append(LayerJS.Chain.fetchUrl.fetch, function(widget) {
-			widget.$responses.get({ url: url }, { chain: this });
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.fetchUrl.fetch,
+			this.__fetchUrlFetch.curry([chain, url])
+		);
 
-		chain.append(LayerJS.Chain.fetchUrl.wrapup, function(widget, chain) {
-			widget.fireEvent('finishFetching', [widget, this]);
-			chain.run();
-			this.run();
-		}.curry(this, caller));
+		chain.append(
+			LayerJS.Chain.fetchUrl.wrapup,
+			this.__fetchUrlWrapup.curry([chain, caller])
+		);
 
 		chain.run();
 		return this;
+	},
+	__fetchUrlFireEvent: function(chain) {
+		this.fireEvent('startFetching', [this, chain]);
+		chain.run();
+	},
+	__fetchUrlFetch: function(chain, url) {
+		this.$responses.get({ url: url }, { chain: chain });
+		chain.run();
+	},
+	__fetchUrlWrapup: function(chain, parent_chain) {
+		this.fireEvent('finishFetching', [this, chain]);
+		parent_chain.run();
+		chain.run();
 	},
 
 	/**
@@ -289,18 +302,26 @@ var LayerJS = new Class({
 	hide: function() {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.hide.fire_event, function(widget) {
-			widget.fireEvent('hide', widget);
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.hide.fire_event,
+			this.__hideFireEvent.curry(chain)
+		);
 
-		chain.append(LayerJS.Chain.hide.hide, function(widget) {
-			widget.element.hide();
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.hide.hide,
+			this.__hideHide.curry(chain)
+		);
 
 		chain.run();
 		return this;
+	},
+	__hideFireEvent: function(chain) {
+		this.fireEvent('hide', [this, chain]);
+		chain.run();
+	},
+	__hideHide: function(chain) {
+		this.element.hide();
+		chain.run();
 	},
 
 	/**
@@ -314,7 +335,7 @@ var LayerJS = new Class({
 		// If the element matches the hide selector or is a children of it,
 		// we'll let the onHide event handler handle it
 		if(element.match(this.options.hide_selector) ||
-		   element.getParent(this.options.hide_selector)) { return this; }
+		element.getParent(this.options.hide_selector)) { return this; }
 
 		// We'll only need to handle this if the element should be intercepted
 		if(element.hasClass(this.options.intercept_classname)) {
@@ -360,29 +381,40 @@ var LayerJS = new Class({
 	show: function() {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.show.fire_event, function(widget) {
-			widget.fireEvent('show', widget);
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.show.fire_event,
+			this.__showFireEvent.curry(chain)
+		);
 
-		chain.append(LayerJS.Chain.hide.data_request, function(widget) {
-			// See if we actually need to make a request
-			if(widget.options.url) {
-				widget.fetchUrl(widget.options.url, this);
-			} else { this.run(); }
-		});
+		chain.append(
+			LayerJS.Chain.hide.data_request,
+			this.__showDataRequest.curry(chain)
+		);
 
-		chain.append(LayerJS.Chain.show.show, function(widget) {
-			if(widget.options.url && !widget.options.refetch) {
-				widget.options.url = null;
-			}
-
-			widget.element.show();
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.show.show,
+			this.__showShow.curry(chain)
+		);
 
 		chain.run();
 		return this;
+	},
+	__showFireEvent: function(chain) {
+		this.fireEvent('show', [this, chain]);
+		chain.run();
+	},
+	__showDataRequest: function(chain) {
+		// See if we actually need to make a request
+		if(this.options.url) { this.fetchUrl(this.options.url, chain); }
+		else { chain.run(); }
+	},
+	__showShow: function(chain) {
+		if(this.options.url && !this.options.refetch) {
+			this.options.url = null;
+		}
+
+		this.element.show();
+		chain.run();
 	},
 
 	/**
@@ -394,25 +426,37 @@ var LayerJS = new Class({
 	submitForm: function(form) {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.submitForm.fireEvent, function(widget) {
-			widget.fireEvent('startPosting', [widget, this]);
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.submitForm.fireEvent,
+			this.__submitFormFireEvent.curry(chain)
+		);
 
-		chain.append(LayerJS.Chain.submitForm.post, function(widget, form) {
-			widget.$responses.post({
-				url: form.get('action'),
-				data: form
-			}, { chain: this });
-		}.curry(this, form));
+		chain.append(
+			LayerJS.Chain.submitForm.post,
+			this.__submitFormPost.curry([widget, form])
+		);
 
-		chain.append(LayerJS.Chain.submitForm.wrapup, function(widget) {
-			widget.fireEvent('finishPosting', [widget, this]);
-			this.run();
-		}.curry(this));
+		chain.append(
+			LayerJS.Chain.submitForm.wrapup,
+			this.__submitFormWrapup.curry(chain)
+		);
 
 		chain.run();
 		return this;
+	},
+	__submitFormFireEvent: function(chain) {
+		this.fireEvent('startPosting', [this, chain]);
+		chain.run();
+	},
+	__submitFormPost: function(chain, form) {
+		this.$responses.post({
+			url: form.get('action'),
+			data: form.toQueryString()
+		}, { chain: chain });
+	},
+	__submitFormWrapup: function(chain) {
+		this.fireEvent('finishPosting', [this, chain]);
+		chain.run();
 	},
 
 	/**
