@@ -16,7 +16,10 @@ requires:
   - Core/MooTools
   - BindInstances
   - Class.Mutator.Static
+  - Element.Delegation.Plus
   - Element.Plus
+  - Element.Shortcuts
+  - Function.Plus
   - HtmlOptionsJS
   - NamedChainJS
   - ResponsesJS
@@ -96,23 +99,23 @@ var LayerJS = new Class({
 	 * 		onStartFetching: (Function) The event "startFetching".
 	 * 		onStartPosting: (Function) The event "startPosting".
 	 *
-	 * 		element: (Mixed) Either the identifier for the element or the element itself that is the 
+	 * 		element: (Mixed) Either the identifier for the element or the element itself that is the
 	 * 			layer. If not provided, one will be created.
 	 * 		layer_classname: (String) The CSS class name for all the layer.
-	 * 		intercept_classname: (String) The CSS class name for the element that this layer should 
+	 * 		intercept_classname: (String) The CSS class name for the element that this layer should
 	 * 			intercept and process to update the layer.
-	 * 		refetch: (Boolean) Whether or not the content of the layer should be refetched each time 
-	 * 			it is shown. If set to false, the url option will become null once fetching has 
+	 * 		refetch: (Boolean) Whether or not the content of the layer should be refetched each time
+	 * 			it is shown. If set to false, the url option will become null once fetching has
 	 * 			completed.
-	 * 		template: (String) The template for the layer. Note that the template is only used when 
-	 * 			the script cannot get the content area of the layer. As such, the template needs to 
+	 * 		template: (String) The template for the layer. Note that the template is only used when
+	 * 			the script cannot get the content area of the layer. As such, the template needs to
 	 * 			contain an element that the provided content_selector specifies.
-	 * 		url: (String) The URL to get the content from. Note that the request will be made with 
+	 * 		url: (String) The URL to get the content from. Note that the request will be made with
 	 * 			fetchUrl.
 	 *
-	 * 		content_selector: (String) The CSS selector (relative to the layer wrapper) for the 
+	 * 		content_selector: (String) The CSS selector (relative to the layer wrapper) for the
 	 * 			content of the layer.
-	 * 		hide_selector: (String) The CSS selector (relative to the layer wrapper) for the element 
+	 * 		hide_selector: (String) The CSS selector (relative to the layer wrapper) for the element
 	 * 			if clicked on, will hide the layer.
 	 *
 	 * @var Object	Various options.
@@ -151,7 +154,7 @@ var LayerJS = new Class({
 	 */
 	$responses: null,
 
-	// ---------------------------------------------------------------------- //
+	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * Create a new instance.
@@ -217,11 +220,11 @@ var LayerJS = new Class({
 	},
 
 	/**
-	 * Make a request to the provided URL and use the response to update the layer. Note that all 
+	 * Make a request to the provided URL and use the response to update the layer. Note that all
 	 * requests will be made as a GET.
 	 *
 	 * @param String	url		The URL to fetch.
-	 * @param NamedChainJS	caller	Optional and should be used internally. The chain of actions to 
+	 * @param NamedChainJS	caller	Optional and should be used internally. The chain of actions to
 	 * 		continue running when the request is completed.
 	 * @returns LayerJS
 	 */
@@ -412,10 +415,10 @@ var LayerJS = new Class({
 	 * @returns LayerJS
 	 */
 	updateContent: function(html) {
-		var content = this.element.down(this.options.content_selector);
+		var content = this.element.getElement(this.options.content_selector);
 		if(!content && this.options.template) {
 			this.element.update(this.options.template);
-			content = this.element.down(this.options.content_selector);
+			content = this.element.getElement(this.options.content_selector);
 		}
 
 		if(content) { content.update(html); }

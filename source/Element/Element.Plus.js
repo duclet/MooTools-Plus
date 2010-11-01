@@ -98,7 +98,7 @@ Element.implement({
 	var id_counter = 1;
 	Element.Properties.id = {
 		/**
-		 * Get the identifier of this element or create one and set it to the element then return 
+		 * Get the identifier of this element or create one and set it to the element then return
 		 * it.
 		 *
 		 * @returns String

@@ -5,8 +5,7 @@ script: Array.Plus.js
 
 name: Array.Plus
 
-description: Extends the Array native object to include useful methods to work
-	with arrays.
+description: Extends the Array native object to include useful methods to work with arrays.
 
 license: MIT-style license
 

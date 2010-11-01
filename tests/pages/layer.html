@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>LayerJS</title>
+		<script type="text/javascript" src="http://yui.yahooapis.com/3.2.0/build/yui/yui-min.js"></script>
+		<script type="text/javascript" src="/tests/yuitest/yuitest.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-core.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-more.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-plus.js"></script>
+
+		<style type="text/css">
+		.layerjs {
+			background-color: #eee;
+			border: 2px solid #000;
+			height: 300px;
+			position: absolute;
+			width: 400px;
+			z-index: 100;
+		}
+		
+		#existing_layer {
+			right: 0;
+			top: 0;
+		}
+		</style>
+	</head>
+	<body class="yui3-skin-sam">
+		<div id="existing_layer">
+			<div class="htmloptions">
+				<div class="string" title="content_selector">.content</div>
+				<div class="string" title="hide_selector">.hide</div>
+			</div>
+			<a href="#" class="hide">Click to hide layer</a>
+			<div class="content">Update me.</div>
+		</div>
+
+		<div id="logger"></div>
+		<div id="test_cases" style="display: none;">LayerJS</div>
+		<script type="text/javascript">
+		YUITest.Configs.set({
+			tester_type: 'iframe',
+			tester_url_tpt: '{protocol}//{host}/tests/mootools-plus/tester.php'
+		});
+		YUITest.Testee.initialize();
+		</script>
+	</body>
+</html>

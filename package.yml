@@ -6,6 +6,7 @@ sources:
   - "source/Plus/Plus.js"
   - "source/Class/BindInstances.js"
   - "source/Class/Class.Static.js"
+  - "source/Class/HtmlOptions.js"
   - "source/Class/StoredInstances.js"
   - "source/Element/Element.Delegation.Plus.js"
   - "source/Element/Element.Plus.js"
@@ -15,5 +16,4 @@ sources:
   - "source/Types/Function.Plus.js"
   - "source/Types/String.Plus.js"
   - "source/Utilities/Cookie.Plus.js"
-  - "source/Utilities/HtmlOptions.js"
   - "source/Utilities/NamedChain.js"

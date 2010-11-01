@@ -5,7 +5,7 @@ script: Element.Delegation.Plus.js
 
 name: Element.Delegation.Plus
 
-description: Extends the event delegation for elements to allow the submit event to bubble in IE 
+description: Extends the event delegation for elements to allow the submit event to bubble in IE
 	and the focusin and focusout event for browsers that is not IE.
 
 license: MIT-style license
@@ -30,7 +30,7 @@ provides: [Element.Delegation.Plus]
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
-	 * Hack to make IE bubble the submit event. This simply attach a focusin event to the form which 
+	 * Hack to make IE bubble the submit event. This simply attach a focusin event to the form which
 	 * then in turn attaches the submit event to it.
 	 *
 	 * @param Element	element		The parent element where the event will actually occur.
@@ -44,7 +44,7 @@ provides: [Element.Delegation.Plus]
 			var handlers = element.retrieve(constants.ie_submit) || [];
 			var should_set = true;
 			for(var i = 0; i < handlers.length; ++i) {
-				if(handlers[i] == fn) { should_set = false; }
+				if(handlers[i] == fn) { should_set = false; break; }
 			}
 
 			if(should_set) {
@@ -59,17 +59,17 @@ provides: [Element.Delegation.Plus]
 
 	Element.implement({
 		/**
-		 * Simply a wrapper around the element delegation to support the bubbling of the submit 
+		 * Simply a wrapper around the element delegation to support the bubbling of the submit
 		 * event in IE.
 		 *
 		 * @param String	type		The type of the event.
-		 * @param String	children	The selectors to specify the children elements the event 
+		 * @param String	children	The selectors to specify the children elements the event
 		 * 		should be relayed to.
 		 * @param Function	fn			The handler of the event.
 		 * @returns Element		This element.
 		 */
 		delegateEvent: function(type, children, fn) {
-			if(Browser.ie && (type.toLowerCase() === 'submit')) { ie_submit(this, children, fn); } 
+			if(Browser.ie && (type.toLowerCase() === 'submit')) { ie_submit(this, children, fn); }
 			else { this.addEvent(type + ':relay(' + children + ')', fn); }
 		}
 	});

@@ -22,9 +22,9 @@ provides: [ResponsesJS]
 ...
 */
 /**
- * The expected result from the server should be a JSON array where each item is an object with the 
- * at a minimum the key "type". That type specifies the action to take. Refer to the various 
- * response handler functions for how the response for each item would look like. Below is how the 
+ * The expected result from the server should be a JSON array where each item is an object with the
+ * at a minimum the key "type". That type specifies the action to take. Refer to the various
+ * response handler functions for how the response for each item would look like. Below is how the
  * entire response should look like:
  * 	[
  * 		{
@@ -36,7 +36,7 @@ provides: [ResponsesJS]
  * 		...
  * 	]
  *
- * Note that with this, if another request is made before the current one is finished, this will 
+ * Note that with this, if another request is made before the current one is finished, this will
  * cancel the previous one.
  *
  * Events:
@@ -53,7 +53,7 @@ var ResponsesJS = new Class({
 	 * 		onProcessItem: (Function) The event "processItem".
 	 * 		onStartProcessing: (Function) The event "startProcessing".
 	 *
-	 * 		change_cursor: (Boolean) Whether or not the change the cursor upon the request and 
+	 * 		change_cursor: (Boolean) Whether or not the change the cursor upon the request and
 	 * 			restore it when done. Defaults to false.
 	 *
 	 * @var Object		Various options.
@@ -78,7 +78,7 @@ var ResponsesJS = new Class({
 	 */
 	extra_args: null,
 
-	// ---------------------------------------------------------------------- //
+	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * Create a new instance.
@@ -95,7 +95,7 @@ var ResponsesJS = new Class({
 		return this;
 	},
 
-	// ---------------------------------------------------------------------- //
+	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * Response handler for "alert". Alerts a message to the user.
@@ -112,7 +112,7 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "callback". Run the callback specified via "addHandler" using the 
+	 * Response handler for "callback". Run the callback specified via "addHandler" using the
 	 * provided parameters.
 	 * 		{
 	 * 			type: 'callback',
@@ -128,8 +128,8 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "element_replace". Replaces the element with the provided identifier 
-	 * using the provided HTML. Note that this will evaluate any included JavaScript within the 
+	 * Response handler for "element_replace". Replaces the element with the provided identifier
+	 * using the provided HTML. Note that this will evaluate any included JavaScript within the
 	 * script tag after the element has been replaced.
 	 * 		{
 	 * 			type: 'element_replace',
@@ -146,8 +146,8 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "element_update". Updates the innerHTML of the element with the provided 
-	 * identifier using the provided HTML. Note that this will evaluate any included JavaScript 
+	 * Response handler for "element_update". Updates the innerHTML of the element with the provided
+	 * identifier using the provided HTML. Note that this will evaluate any included JavaScript
 	 * within the script tag after the element has been updated.
 	 * 		{
 	 * 			type: 'element_update',
@@ -163,8 +163,8 @@ var ResponsesJS = new Class({
 	},
 
 	/**
-	 * Response handler for "function_call". Called the provided function using the provided scope 
-	 * and parameters. Note that using this is highly discouraged and it should only be used if the 
+	 * Response handler for "function_call". Called the provided function using the provided scope
+	 * and parameters. Note that using this is highly discouraged and it should only be used if the
 	 * "callback" type cannot be used.
 	 * 		{
 	 * 			type: 'function_call',
@@ -214,7 +214,7 @@ var ResponsesJS = new Class({
 		window.location.reload();
 	},
 
-	// ---------------------------------------------------------------------- //
+	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * Add a custom handler for the response that will be taken care of by this class.
@@ -279,7 +279,7 @@ var ResponsesJS = new Class({
 	/**
 	 * Make the request.
 	 *
-	 * @param Object	options		Optional. The options for the send Request. Will also accept 
+	 * @param Object	options		Optional. The options for the send Request. Will also accept
 	 * 		data as a query string for compatibility reasons.
 	 * @param Object	extra_args	Optional. Any extra arguments.
 	 * @returns ResponsesJS

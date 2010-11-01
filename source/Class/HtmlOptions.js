@@ -29,17 +29,17 @@ provides: [HtmlOptionsJS]
  *
  * Configuration Types:
  * 		boolean - The innerText of the element will be used as the value of the configuration. The
- * 			value is treated as a Boolean. All values will be considered true unless it is the 
+ * 			value is treated as a Boolean. All values will be considered true unless it is the
  * 			string "false".
- * 		double - The innerText of the element will be used as the value of the configuration. The 
+ * 		double - The innerText of the element will be used as the value of the configuration. The
  * 			value is treated as a double.
- * 		eval - The innerText of the element will be passed to the function "eval" and the returned 
+ * 		eval - The innerText of the element will be passed to the function "eval" and the returned
  * 			value will be the value of the configuration. Be careful when using this.
- * 		event - The innerText of the element will be passed to the function "eval" and the returned 
+ * 		event - The innerText of the element will be passed to the function "eval" and the returned
  * 			value will be set as an event. Be careful when using this.
- * 		integer - The innerText of the element will be used as the value of the configuration. The 
+ * 		integer - The innerText of the element will be used as the value of the configuration. The
  * 			value is treated as an integer.
- * 		string - The innerText of the element will be used as the value of the configuration. The 
+ * 		string - The innerText of the element will be used as the value of the configuration. The
  * 			value is treated as a string.
  *
  * 	Sample Code:
@@ -61,7 +61,7 @@ var HtmlOptionsJS = new Class({
 
 	/**
 	 * The available options are:
-	 * 		options_selector: (String) The selector for the wrapper element of the options. Note 
+	 * 		options_selector: (String) The selector for the wrapper element of the options. Note
 	 * 		that this will only target the first item that matched this selector.
 	 *
 	 * @var Object	Various options.
@@ -89,14 +89,14 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Load extra options.
 	 *
-	 * This method is here for the sake of subclasses inheriting from it via extends. This allow 
+	 * This method is here for the sake of subclasses inheriting from it via extends. This allow
 	 * other classes to provide extra functionalities for loading configuration from the source.
 	 *
 	 * @param Object	options		The options object.
 	 * @param Element	element		The element holding the configuration data.
 	 * @param String	type		The source type.
 	 * @param String	key			The configuration key.
-	 * @returns Boolean		Returns true if the configuration has been set and the default actions 
+	 * @returns Boolean		Returns true if the configuration has been set and the default actions
 	 * 		does not need to be executed. Returns false if the default actions should be taken.
 	 */
 	loadExtraOptions: function(options, element, type, key) { return false; },
@@ -112,9 +112,7 @@ var HtmlOptionsJS = new Class({
 		if(!config_wrapper) { return this; }
 
 		config_wrapper.hide();
-		config_wrapper.getChildren().each(
-			this.setOption.curry(this.options), this
-		);
+		config_wrapper.getChildren().each(this.setOption.curry(this.options, this));
 
 		return this;
 	},
