@@ -14,11 +14,11 @@ authors:
 
 requires:
   - Core/MooTools
+  - More/Element.Shortcuts
   - BindInstances
-  - Class.Mutator.Static
+  - Class.Mutators.Static
   - Element.Delegation.Plus
   - Element.Plus
-  - Element.Shortcuts
   - Function.Plus
   - HtmlOptionsJS
   - NamedChainJS
@@ -174,7 +174,10 @@ var LayerJS = new Class({
 		else { this.element = document.id(options.element); }
 
 		this.element.addClass(this.options.layer_classname);
-		this.$responses = new ResponsesJS({ onProcessItem: this.handleResponse });
+		this.$responses = new ResponsesJS({
+			onProcessItem: this.handleResponse,
+			onFinishProcessing: this.continueChain
+		});
 
 		// Now load all the options and attach the necessary events
 		this.loadAllOptions(this.element, options);
@@ -243,12 +246,13 @@ var LayerJS = new Class({
 		chain.run();
 	},
 	__fetchUrlFetch: function(chain, url) {
-		this.$responses.get({ url: url }, { chain: chain });
-		chain.run();
+		// Oh Spinner from More
+		this.$responses.extra_args = { chain: chain };
+		this.$responses.send({ method: 'get', url: url });
 	},
 	__fetchUrlWrapup: function(chain, parent_chain) {
 		this.fireEvent('finishFetching', [this, chain]);
-		parent_chain.run();
+		if(parent_chain) { parent_chain.run(); }
 		chain.run();
 	},
 
@@ -387,7 +391,7 @@ var LayerJS = new Class({
 		var chain = new NamedChainJS();
 
 		chain.append(LayerJS.Chain.submitForm.fireEvent, this.__submitFormFireEvent.curry(chain));
-		chain.append(LayerJS.Chain.submitForm.post, this.__submitFormPost.curry([widget, form]));
+		chain.append(LayerJS.Chain.submitForm.post, this.__submitFormPost.curry([chain, form]));
 		chain.append(LayerJS.Chain.submitForm.wrapup, this.__submitFormWrapup.curry(chain));
 
 		chain.run();
@@ -398,10 +402,13 @@ var LayerJS = new Class({
 		chain.run();
 	},
 	__submitFormPost: function(chain, form) {
-		this.$responses.post({
+		// Oh Spinner from More
+		this.$responses.extra_args = { chain: chain };
+		this.$responses.send({
+			method: form.get('method'),
 			url: form.get('action'),
 			data: form.toQueryString()
-		}, { chain: chain });
+		});
 	},
 	__submitFormWrapup: function(chain) {
 		this.fireEvent('finishPosting', [this, chain]);

@@ -285,7 +285,7 @@ var ResponsesJS = new Class({
 	 * @returns ResponsesJS
 	 */
 	send: function(options, extra_args) {
-		this.extra_args = extra_args;
+		if(extra_args) { this.extra_args = extra_args; }
 		if(this.options.change_cursor && document.body) {
 			document.body.setStyle('cursor', 'progress');
 		}
