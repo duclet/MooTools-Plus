@@ -26,10 +26,10 @@ YUITest.TestCases.LayerJS = {
 		var modified = new Class({
 			Extends: $C.LayerJS,
 			__fetchUrlFetch: function(chain, url) {
-				this.$responses.extra_args = { chain: chain };
 				this.$responses.send({
 					method: 'get',
 					url: url,
+					extra_data: { chain: chain },
 					data: 'data=' + JSON.encode([{
 						type: 'layerjs:update',
 						html: 'Data fetched.'
@@ -66,10 +66,10 @@ YUITest.TestCases.LayerJS = {
 		var modified = new Class({
 			Extends: $C.LayerJS,
 			__submitFormPost: function(chain, form) {
-				this.$responses.extra_args = { chain: chain };
 				this.$responses.send({
 					method: form.get('method'),
 					url: form.get('action'),
+					extra_data: { chain: chain },
 					data: 'data=' + JSON.encode([{
 						type: 'layerjs:update',
 						html: 'Data submitted.'

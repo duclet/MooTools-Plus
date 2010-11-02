@@ -217,8 +217,8 @@ var LayerJS = new Class({
 	 * @returns void
 	 */
 	continueChain: function(responsesjs, responses) {
-		if(responsesjs.extra_args && responsesjs.extra_args.chain) {
-			responsesjs.extra_args.chain.run();
+		if(responsesjs.options.extra_data && responsesjs.options.extra_data.chain) {
+			responsesjs.options.extra_data.chain.run();
 		}
 	},
 
@@ -246,9 +246,11 @@ var LayerJS = new Class({
 		chain.run();
 	},
 	__fetchUrlFetch: function(chain, url) {
-		// Oh Spinner from More
-		this.$responses.extra_args = { chain: chain };
-		this.$responses.send({ method: 'get', url: url });
+		this.$responses.send({
+			method: 'get',
+			url: url,
+			extra_data : { chain: chain }
+		});
 	},
 	__fetchUrlWrapup: function(chain, parent_chain) {
 		this.fireEvent('finishFetching', [this, chain]);
@@ -402,12 +404,11 @@ var LayerJS = new Class({
 		chain.run();
 	},
 	__submitFormPost: function(chain, form) {
-		// Oh Spinner from More
-		this.$responses.extra_args = { chain: chain };
 		this.$responses.send({
 			method: form.get('method'),
 			url: form.get('action'),
-			data: form.toQueryString()
+			data: form.toQueryString(),
+			extra_data: { chain: chain }
 		});
 	},
 	__submitFormWrapup: function(chain) {

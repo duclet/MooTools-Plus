@@ -55,6 +55,9 @@ var ResponsesJS = new Class({
 	 *
 	 * 		change_cursor: (Boolean) Whether or not the change the cursor upon the request and
 	 * 			restore it when done. Defaults to false.
+	 * 		extra_data: (Object) Any extra data that the user wants the handler to have when it
+	 * 			parses the response. Note that this will be set to null once all the parsing is
+	 * 			completed.
 	 *
 	 * @var Object		Various options.
 	 */
@@ -69,14 +72,9 @@ var ResponsesJS = new Class({
 			onStartProcessing: function(responsesjs, responses) {},
 		*/
 
-		change_cursor:	false
+		change_cursor:	false,
+		extra_data: null
 	},
-
-	/**
-	 * @var Object	$extra_args		Extra arguments provided when the request
-	 * 		was made.
-	 */
-	extra_args: null,
 
 	// ------------------------------------------------------------------------------------------ //
 
@@ -272,7 +270,7 @@ var ResponsesJS = new Class({
 		}, this);
 		this.fireEvent('finishProcessing', [this, responses]);
 
-		this.extra_args = null;
+		this.options.extra_data = null;
 		return this;
 	},
 
@@ -281,11 +279,10 @@ var ResponsesJS = new Class({
 	 *
 	 * @param Object	options		Optional. The options for the send Request. Will also accept
 	 * 		data as a query string for compatibility reasons.
-	 * @param Object	extra_args	Optional. Any extra arguments.
 	 * @returns ResponsesJS
 	 */
-	send: function(options, extra_args) {
-		if(extra_args) { this.extra_args = extra_args; }
+	send: function(options) {
+		if(options && options.extra_data) { this.options.extra_data = options.extra_data; }
 		if(this.options.change_cursor && document.body) {
 			document.body.setStyle('cursor', 'progress');
 		}
