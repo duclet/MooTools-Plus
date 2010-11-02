@@ -39,6 +39,7 @@ YUITest.TestCases.LayerJS = {
 		});
 
 		var layer = new modified('fetch_url', {
+			url: '/tests/mootools-plus/responses.php',
 			template: '<div class="layer_content"></div>',
 			onFinishFetching: function(widget, chain) {
 				this.resume(function() {
@@ -54,7 +55,8 @@ YUITest.TestCases.LayerJS = {
 
 		$Y.Assert.isNotNull(layer.element);
 		$Y.Assert.isNull(layer.element.getElement('.layer_content'));
-		layer.fetchUrl('/tests/mootools-plus/responses.php');
+
+		layer.show();
 		this.wait(2000);
 	},
 
@@ -94,6 +96,7 @@ YUITest.TestCases.LayerJS = {
 
 		$Y.Assert.isNotNull(layer.element);
 		$Y.Assert.isNotNull(layer.element.getElement('.layer_content'));
+
 		layer.submitForm(form);
 		this.wait(2000);
 	},
