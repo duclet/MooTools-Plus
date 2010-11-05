@@ -24,10 +24,37 @@ provides: [Element.Delegation.Plus]
 */
 (function() {
 	var constants = {
+		ie_change: 'mootools-plus-element-delegation:ie-change',
 		ie_submit: 'mootools-plus-element-delegation:ie-submit'
 	};
 
 	// ------------------------------------------------------------------------------------------ //
+
+	/**
+	 * Check to see whether or not we should set the provided handler to the provided element.
+	 *
+	 * @param String	name		One of the above constants.
+	 * @param Element	element		The element to check against.
+	 * @param Function	fn			The function to check for.
+	 * @returns Boolean
+	 */
+	var should_set = function(name, element, fn) {
+		var handlers = element.retrieve(name) || [];
+		var result = true;
+		for(var i = 0, l = handlers.length; i < l; ++i) {
+			if(handlers[i] == fn) {
+				result = false;
+				break;
+			}
+		}
+
+		if(result) {
+			handlers.push(fn);
+			element.store(name, handlers);
+		}
+
+		return result;
+	};
 
 	/**
 	 * Hack to make IE bubble the submit event. This simply attach a focusin event to the form which
@@ -40,17 +67,26 @@ provides: [Element.Delegation.Plus]
 	 */
 	var ie_submit = function(element, selectors, fn) {
 		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
-			// Make sure we attach the same handler only once for the element
-			var handlers = element.retrieve(constants.ie_submit) || [];
-			var should_set = true;
-			for(var i = 0; i < handlers.length; ++i) {
-				if(handlers[i] == fn) { should_set = false; break; }
-			}
-
-			if(should_set) {
-				handlers.push(fn);
-				element.store(constants.ie_submit, handlers);
+			if(should_set(constants.ie_submit, element, fn)) {
 				element.addEvent('submit', function(fn, element, event) {
+					fn.attempt([event, element]);
+				}.curry([fn, element]));
+			}
+		}.curry(fn));
+	};
+
+	/**
+	 * Hack to set the change event on various inputs using focusin.
+	 *
+	 * @param Element	element		The parent element where the event will occur.
+	 * @param String	selectors	The selectors for the children elements.
+	 * @param Function	fn			The handler function.
+	 * @returns void
+	 */
+	var ie_change = function(element, selectors, fn) {
+		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
+			if(should_set(constants.ie_change, element, fn)) {
+				element.addEvent('change', function(fn, element, event) {
 					fn.attempt([event, element]);
 				}.curry([fn, element]));
 			}
@@ -70,7 +106,13 @@ provides: [Element.Delegation.Plus]
 		 */
 		delegateEvent: function(type, children, fn) {
 			if(Browser.ie && (type.toLowerCase() === 'submit')) { ie_submit(this, children, fn); }
-			else { this.addEvent(type + ':relay(' + children + ')', fn); }
+			if(Browser.id) {
+				type = type.toLowerCase();
+				switch(type) {
+					case 'change': ie_change(this, children, fn); break;
+					case 'submit': ie_submit(this, children, fn); break;
+				}
+			} else { this.addEvent(type + ':relay(' + children + ')', fn); }
 		}
 	});
 
