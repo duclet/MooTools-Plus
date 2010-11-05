@@ -104,8 +104,7 @@ provides: [Element.Delegation.Plus]
 		 * @returns Element		This element.
 		 */
 		delegateEvent: function(type, children, fn) {
-			if(Browser.ie && (type.toLowerCase() === 'submit')) { ie_submit(this, children, fn); }
-			if(Browser.id) {
+			if(Browser.ie) {
 				type = type.toLowerCase();
 				switch(type) {
 					case 'change': ie_change(this, children, fn); break;
