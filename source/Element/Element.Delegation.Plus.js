@@ -5,8 +5,7 @@ script: Element.Delegation.Plus.js
 
 name: Element.Delegation.Plus
 
-description: Extends the event delegation for elements to allow the submit event to bubble in IE
-	and the focusin and focusout event for browsers that is not IE.
+description: Extends the event delegation for extra support.
 
 license: MIT-style license
 
@@ -57,6 +56,24 @@ provides: [Element.Delegation.Plus]
 	};
 
 	/**
+	 * Hack to set the change event on various inputs using focusin.
+	 *
+	 * @param Element	element		The parent element where the event will occur.
+	 * @param String	selectors	The selectors for the children elements.
+	 * @param Function	fn			The handler function.
+	 * @returns void
+	 */
+	var ie_change = function(element, selectors, fn) {
+		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
+			if(should_set(constants.ie_change, element, fn)) {
+				element.addEvent('change', function(fn, element, event) {
+					fn.attempt([event, element]);
+				}.curry([fn, element]));
+			}
+		}.curry(fn));
+	};
+
+	/**
 	 * Hack to make IE bubble the submit event. This simply attach a focusin event to the form which
 	 * then in turn attaches the submit event to it.
 	 *
@@ -69,24 +86,6 @@ provides: [Element.Delegation.Plus]
 		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
 			if(should_set(constants.ie_submit, element, fn)) {
 				element.addEvent('submit', function(fn, element, event) {
-					fn.attempt([event, element]);
-				}.curry([fn, element]));
-			}
-		}.curry(fn));
-	};
-
-	/**
-	 * Hack to set the change event on various inputs using focusin.
-	 *
-	 * @param Element	element		The parent element where the event will occur.
-	 * @param String	selectors	The selectors for the children elements.
-	 * @param Function	fn			The handler function.
-	 * @returns void
-	 */
-	var ie_change = function(element, selectors, fn) {
-		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
-			if(should_set(constants.ie_change, element, fn)) {
-				element.addEvent('change', function(fn, element, event) {
 					fn.attempt([event, element]);
 				}.curry([fn, element]));
 			}
