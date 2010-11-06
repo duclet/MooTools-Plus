@@ -65,8 +65,11 @@ provides: [Element.Delegation.Plus]
 	 */
 	var ie_change = function(element, selectors, fn) {
 		element.addEvent('focusin:relay(' + selectors + ')', function(fn, event, element) {
-			if(should_set(constants.ie_change, element, fn)) {
-				element.addEvent('change', function(fn, element, event) {
+			if(should_set(constants.ie_submit, element, fn)) {
+				var event_name = element.match('input[type=checkbox], input[type=radio]') ?
+					'click' : 'change';
+
+				element.addEvent(event_name, function(fn, element, event) {
 					fn.attempt([event, element]);
 				}.curry([fn, element]));
 			}

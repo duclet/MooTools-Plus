@@ -3,8 +3,7 @@ YUITest.TestCases.StoredInstances = {
 
 	testStoredInstances: function() {
 		var MyClass = new $C.Class({
-			Static: [$C.StoredInstances],
-			Implements: [$C.StoredInstances],
+			StoredInstances: true,
 			name: null,
 			changed: false,
 			initialize: function(name) {

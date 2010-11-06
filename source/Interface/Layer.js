@@ -17,13 +17,13 @@ requires:
   - More/Element.Shortcuts
   - BindInstances
   - Class.Mutators.Static
+  - Class.Mutators.StoredInstances
   - Element.Delegation.Plus
   - Element.Plus
   - Function.Plus
   - HtmlOptionsJS
   - NamedChainJS
   - ResponsesJS
-  - StoredInstances
 
 provides: [LayerJS]
 
@@ -39,7 +39,8 @@ provides: [LayerJS]
  * 		startPosting: Fired when the layer is starting to post a form.
  */
 var LayerJS = new Class({
-	Implements: [StoredInstances, HtmlOptionsJS],
+	Implements: [HtmlOptionsJS],
+	StoredInstances: true,
 	Static: {
 		Chain: {
 			/**
@@ -87,6 +88,24 @@ var LayerJS = new Class({
 				post: 'layerjs.submitForm:post',
 				wrapup: 'layerjs.submitForm:wrapup'
 			}
+		},
+
+		/**
+		 * Get the instanced stored at the provided name or create a new one and store it there
+		 * using the provided options.
+		 *
+		 * @param String	name		A unique name for the instance.
+		 * @param Object	options		Refer to the options property. Optional.
+		 * @returns LayerJS
+		 */
+		singleton: function(name, options) {
+			var result = this.retrieveInstance(name);
+			if(!result) {
+				result = new LayerJS(options);
+				result.storeInstance(name);
+			}
+
+			return result;
 		}
 	},
 
@@ -122,8 +141,8 @@ var LayerJS = new Class({
 	 */
 	options: {
 		/*
-			// layerjs: This LayerJS instance.
 			// chain: The chain of actions.
+			// layerjs: This LayerJS instance.
 
 			onFinishFetching: function(layerjs, chain) {},
 			onFinishPosting: function(layerjs, chain) {},
@@ -159,14 +178,10 @@ var LayerJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param String	name		A unique name for the instance.
 	 * @param Object	options		Refer to the options property. Optional.
 	 * @class LayerJS
 	 */
-	initialize: function(name, options) {
-		var instance = this.storeInstance(name);
-		if(instance !== true) { return instance; }
-
+	initialize: function(options) {
 		Class.bindInstances(this);
 
 		// Build the layer if no element was provided
@@ -226,7 +241,7 @@ var LayerJS = new Class({
 	 * Make a request to the provided URL and use the response to update the layer. Note that all
 	 * requests will be made as a GET.
 	 *
-	 * @param String	url		The URL to fetch.
+	 * @param String		url		The URL to fetch.
 	 * @param NamedChainJS	caller	Optional and should be used internally. The chain of actions to
 	 * 		continue running when the request is completed.
 	 * @returns LayerJS
@@ -312,7 +327,7 @@ var LayerJS = new Class({
 		// If the element matches the hide selector or is a children of it,
 		// we'll let the onHide event handler handle it
 		if(element.match(this.options.hide_selector) ||
-		element.getParent(this.options.hide_selector)) { return this; }
+		   element.getParent(this.options.hide_selector)) { return this; }
 
 		// We'll only need to handle this if the element should be intercepted
 		if(element.hasClass(this.options.intercept_classname)) {
@@ -370,14 +385,11 @@ var LayerJS = new Class({
 		chain.run();
 	},
 	__showDataRequest: function(chain) {
-		// See if we actually need to make a request
 		if(this.options.url) { this.fetchUrl(this.options.url, chain); }
 		else { chain.run(); }
 	},
 	__showShow: function(chain) {
-		if(this.options.url && !this.options.refetch) {
-			this.options.url = null;
-		}
+		if(this.options.url && !this.options.refetch) { this.options.url = null; }
 
 		this.element.show();
 		chain.run();

@@ -81,12 +81,14 @@ Element.implement({
 	/**
 	 * Update the inner HTML of the element and evaluate any scripts within the HTML.
 	 *
-	 * @param String	html	The HTML.
+	 * @param Mixed		html	The HTML to update the element with. This will be converted to a
+	 * 		String using toString if it exists, if not, it will be forcefully made a string.
 	 * @returns Element		This element.
 	 */
 	update: function(html) {
-		this.set('html', html);
-		html.stripScripts(true);
+		var processed = html.toString ? html.toString() : ('' + html);
+		this.set('html', processed);
+		processed.stripScripts(true);
 
 		return this;
 	}

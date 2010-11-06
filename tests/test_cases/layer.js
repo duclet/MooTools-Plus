@@ -7,7 +7,7 @@ YUITest.TestCases.LayerJS = {
 		$Y.Assert.isNotNull(element);
 		$Y.Assert.isFalse(element.hasClass('layerjs'));
 
-		var layer = new $C.LayerJS('existing_layer', { element: element });
+		var layer = $C.LayerJS.singleton('existing_layer', { element: element });
 
 		$Y.Assert.isTrue(element.hasClass('layerjs'));
 
@@ -38,7 +38,7 @@ YUITest.TestCases.LayerJS = {
 			}
 		});
 
-		var layer = new modified('fetch_url', {
+		var layer = new modified({
 			url: '/tests/mootools-plus/responses.php',
 			template: '<div class="layer_content"></div>',
 			onFinishFetching: function(widget, chain) {
@@ -78,7 +78,7 @@ YUITest.TestCases.LayerJS = {
 			}
 		});
 
-		var layer = new modified('submit_form', {
+		var layer = new modified({
 			element: wrapper,
 			onFinishPosting: function(widget, chain) {
 				this.resume(function() {
@@ -102,7 +102,7 @@ YUITest.TestCases.LayerJS = {
 	},
 
 	testUpdatingLayer: function() {
-		var layer = new $C.LayerJS('existing_layer');
+		var layer = $C.LayerJS.singleton('existing_layer');
 		var content = layer.element.getElement('.content');
 		layer.show();
 
