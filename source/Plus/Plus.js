@@ -13,7 +13,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/MooTools
+  - Core/*
 
 provides: Plus
 

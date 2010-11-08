@@ -1,7 +1,7 @@
  /*
 ---
 
-script: StoredInstances.js
+script: Class.Mutators.StoredInstances.js
 
 name: Class.Mutators.StoredInstances
 
@@ -13,7 +13,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/MooTools
+  - Core/*
 
 provides: [Class.Mutators.StoredInstances]
 

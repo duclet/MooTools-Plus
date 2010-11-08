@@ -13,7 +13,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/MooTools
+  - Core/*
   - More/Element.Delegation
   - Function.Plus
 

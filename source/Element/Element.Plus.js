@@ -13,7 +13,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/Element
+  - Core/*
   - More/Elements.From
 
 provides: [Element.Plus]

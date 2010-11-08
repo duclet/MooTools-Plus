@@ -1,7 +1,7 @@
 /*
 ---
 
-script: Class.Static.js
+script: Class.Mutators.Static.js
 
 name: Class.Mutators.Static
 
@@ -14,7 +14,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/MooTools
+  - Core/*
 
 provides: [Class.Mutators.Static]
 

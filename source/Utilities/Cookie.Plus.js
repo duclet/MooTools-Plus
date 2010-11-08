@@ -14,7 +14,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/MooTools
+  - Core/*
   - More/Class.Refactor
 
 provides: [Cookie.Plus]
