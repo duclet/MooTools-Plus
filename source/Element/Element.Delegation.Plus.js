@@ -110,10 +110,12 @@ provides: [Element.Delegation.Plus]
 			if(Browser.ie) {
 				type = type.toLowerCase();
 				switch(type) {
-					case 'change': ie_change(this, children, fn); break;
-					case 'submit': ie_submit(this, children, fn); break;
+					case 'change': ie_change(this, children, fn); return this;
+					case 'submit': ie_submit(this, children, fn); return this;
 				}
-			} else { this.addEvent(type + ':relay(' + children + ')', fn); }
+			}
+
+			return this.addEvent(type + ':relay(' + children + ')', fn);
 		}
 	});
 
