@@ -92,14 +92,22 @@ provides:
 
 	// ------------------------------------------------------------------------------------------ //
 
+	var focusInElements = [];
+	var focusOutElements = [];
+
 	/**
 	 * Custom handler for the focus/blur event so that it would bubbles.
 	 *
 	 * @param event		{Event}		The event that was triggered.
 	 * @returns void
 	 */
-	var focusInHandler = function(event) { this.fireEvent('focusin'); };
-	var focusOutHandler = function(event) { this.fireEvent('focusout'); };
+	var focusInHandler = function(event) {
+		focusInElements.invoke('fireEvent', 'focusin', event);
+	};
+
+	var focusOutHandler = function(event) {
+		focusOutElements.invoke('fireEvent', 'focusout', event);
+	};
 
 	// Use event capturing to monitor the focus and blur event on browsers that isn't it
 	if(!Browser.ie) {
@@ -127,11 +135,16 @@ provides:
 		 * @returns {Element}
 		 */
 		delegateEvent: function(type, selectors, fn) {
+			type = type.toLowerCase();
 			if(Browser.ie) {
-				type = type.toLowerCase();
 				switch(type) {
 					case 'change': ie_change(this, selectors, fn); return this;
 					case 'submit': ie_submit(this, selectors, fn); return this;
+				}
+			} else {
+				switch(type) {
+					case 'focusin': focusInElements.include(this); break;
+					case 'focusout': focusOutElements.include(this); break;
 				}
 			}
 
