@@ -1,8 +1,6 @@
 /*
 ---
 
-script: HtmlOptions.js
-
 name: HtmlOptionsJS
 
 description: Load configuration options from the HTML source.
@@ -13,11 +11,12 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - More/Element.Shortcuts
   - Function.Plus
 
-provides: [HtmlOptionsJS]
+provides:
+  - HtmlOptionsJS
 
 ...
 */
@@ -59,12 +58,14 @@ provides: [HtmlOptionsJS]
 var HtmlOptionsJS = new Class({
 	Implements: [Events, Options],
 
+	// ------------------------------------------------------------------------------------------ //
+
 	/**
 	 * The available options are:
 	 * 		options_selector: (String) The selector for the wrapper element of the options. Note
-	 * 		that this will only target the first item that matched this selector.
+	 * 			that this will only target the first item that matched this selector.
 	 *
-	 * @var Object	Various options.
+	 * @type {Object}	Various options.
 	 */
 	options: {
 		options_selector: '.htmloptions'
@@ -75,9 +76,9 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Load all the options from the source HTML and then from the provided options.
 	 *
-	 * @param Element	wrapper		The wrapper element.
-	 * @param Object	options		Various other options to merge into our current list of options.
-	 * @returns HtmlOptionsJS
+	 * @param wrapper	{Element}	The wrapper element.
+	 * @param options	{Object}	Various other options to merge into our current list of options.
+	 * @returns {HtmlOptionsJS}
 	 */
 	loadAllOptions: function(wrapper, options) {
 		this.loadOptions(wrapper);
@@ -92,11 +93,11 @@ var HtmlOptionsJS = new Class({
 	 * This method is here for the sake of subclasses inheriting from it via extends. This allow
 	 * other classes to provide extra functionalities for loading configuration from the source.
 	 *
-	 * @param Object	options		The options object.
-	 * @param Element	element		The element holding the configuration data.
-	 * @param String	type		The source type.
-	 * @param String	key			The configuration key.
-	 * @returns Boolean		Returns true if the configuration has been set and the default actions
+	 * @param options	{Object}	The options object.
+	 * @param element	{Element}	The element holding the configuration data.
+	 * @param type		{String}	The source type.
+	 * @param key		{String}	The configuration key.
+	 * @returns {Boolean}	Returns true if the configuration has been set and the default actions
 	 * 		does not need to be executed. Returns false if the default actions should be taken.
 	 */
 	loadExtraOptions: function(options, element, type, key) { return false; },
@@ -104,8 +105,8 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Load the options from the source HTML.
 	 *
-	 * @param Element	wrapper		The wrapper element.
-	 * @returns HtmlOptionsJS
+	 * @param wrapper	{Element}	The wrapper element.
+	 * @returns {HtmlOptionsJS}
 	 */
 	loadOptions: function(wrapper) {
 		var config_wrapper = wrapper.getElement(this.options.options_selector);
@@ -120,9 +121,9 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Set the data of the provided element to the provided option.
 	 *
-	 * @param Object	options		The options object.
-	 * @param Element	element		The element containing the configuration data to set.
-	 * @returns HtmlOptionsJS
+	 * @param options	{Object}	The options object.
+	 * @param element	{Element}	The element containing the configuration data to set.
+	 * @returns {HtmlOptionsJS}
 	 */
 	setOption: function(options, element) {
 		var type = element.get('class');

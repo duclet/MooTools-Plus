@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Cookie.Plus.js
-
 name: Cookie.Plus
 
 description: Enhance the base Cookie class so you can provide a type for the duration such as
@@ -14,16 +12,17 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - More/Class.Refactor
 
-provides: [Cookie.Plus]
+provides:
+  - Cookie.Plus
 
 ...
 */
 Class.refactor(Cookie, {
 	/**
-	 * @var Object	Adds another option to specify the type of the duration. The supported types
+	 * @type {Object}	Adds another option to specify the type of the duration. The supported types
 	 * 		are: years, days, hours, minutes, and seconds. Defaults to days.
 	 */
 	options: { type: 'days' },
@@ -32,8 +31,8 @@ Class.refactor(Cookie, {
 	 * Overwrite to update the duration only when setting so that it takes the type into
 	 * consideration.
 	 *
-	 * @param String	value	The value to set to the cookie.
-	 * @returns Cookie
+	 * @param value		{String}	The value to set to the cookie.
+	 * @returns {Cookie}
 	 */
 	write: function(value) {
 		// Get the provided duration

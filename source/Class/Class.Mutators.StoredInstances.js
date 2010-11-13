@@ -1,8 +1,6 @@
  /*
 ---
 
-script: Class.Mutators.StoredInstances.js
-
 name: Class.Mutators.StoredInstances
 
 description: Allow classes to stored instances that has been created.
@@ -13,24 +11,25 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
 
-provides: [Class.Mutators.StoredInstances]
+provides:
+  - Class.Mutators.StoredInstances
 
 ...
 */
 Class.Mutators.StoredInstances = function() {
 	this.extend({
 		/**
-		 * @var Object	All the instances that has been stored.
+		 * @type {Object}	All the instances that has been stored.
 		 */
 		$instances: {},
 
 		/**
 		 * Get a stored instance.
 		 *
-		 * @param String	id	The identifier that the instance was stored by.
-		 * @returns Mixed	The stored instance or null if it does not exists.
+		 * @param id	{String}	The identifier that the instance was stored by.
+		 * @returns {Mixed}		The stored instance or null if it does not exists.
 		 */
 		retrieveInstance: function(id) {
 			return [this.$instances[id]].pick();
@@ -40,8 +39,8 @@ Class.Mutators.StoredInstances = function() {
 		 * Get a stored instance. Note that this simply allow you to access the static version of
 		 * this method on the instance itself.
 		 *
-		 * @param String	id	The identifier that the instance was stored by.
-		 * @returns Mixed	The stored instance or null if it does not exists.
+		 * @param id	{String}	The identifier that the instance was stored by.
+		 * @returns {Mixed}		The stored instance or null if it does not exists.
 		 */
 		retrieveInstance: function(id) {
 			return this.$caller.$owner.retrieveInstance(id);
@@ -51,8 +50,8 @@ Class.Mutators.StoredInstances = function() {
 		 * Store this instance. Note that this will NOT overwrite another instance if the provided
 		 * id already exists.
 		 *
-		 * @param String	id	The identifier for this instance.
-		 * @returns Mixed	Returns true if the instance was successfully stored. If the another
+		 * @param id	{String}	The identifier for this instance.
+		 * @returns {Mixed}		Returns true if the instance was successfully stored. If the another
 		 * 		instance was already stored with the provided id, that instance is returned.
 		 */
 		storeInstance: function(id) {

@@ -13,7 +13,7 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - More/Element.Shortcuts
   - BindInstances
   - Class.Mutators.Static
@@ -25,7 +25,8 @@ requires:
   - NamedChainJS
   - ResponsesJS
 
-provides: [LayerJS]
+provides:
+  - LayerJS
 
 ...
 */
@@ -44,49 +45,49 @@ var LayerJS = new Class({
 	Static: {
 		Chain: {
 			/**
-			 * Chain of actions (in order) for the method fetchUrl.
+			 * Chain of actions for the method fetchUrl.
 			 * 		fire_event: The chain item that fires the startFetching event.
-			 * 		fetch: The chain item to actually fetch the item.
+			 * 		request: The chain item to actually fetch the item.
 			 * 		wrapup: Wrapup the request and fire the event finishFetching.
 			 */
 			fetchUrl: {
-				fetch: 'layerjs.fetchUrl:fetch',
-				fire_event: 'layerjs.fetchUrl:fire_event',
-				wrapup: 'layerjs.fetchUrl:wrapup'
+				fire_event: 'LayerJS.fetchUrl:fire_event',
+				request: 'LayerJS.fetchUrl:request',
+				wrapup: 'LayerJS.fetchUrl:wrapup'
 			},
 
 			/**
-			 * Chain of actions (in order) for the method hide.
+			 * Chain of actions for the method hide.
 			 * 		fire_event: The chain item that fires the hide event.
 			 * 		hide: The chain item that hides the layer.
 			 */
 			hide: {
-				fire_event: 'layerjs.hide:fire_event',
-				hide: 'layerjs.hide:hide'
+				fire_event: 'LayerJS.hide:fire_event',
+				hide: 'LayerJS.hide:hide'
 			},
 
 			/**
-			 * Chain of actions (in order) for the method show.
+			 * Chain of actions for the method show.
 			 * 		fire_event: The chain item that fires the show event.
-			 * 		data_request: The chain item that makes a request for the content of the layer.
+			 * 		request: The chain item that makes a request for the content of the layer.
 			 * 		show: The chain item that show the layer.
 			 */
 			show: {
-				data_request: 'layerjs.show:data_request',
-				fire_event: 'layerjs.show:fire_event',
-				show: 'layerjs.show:show'
+				fire_event: 'LayerJS.show:fire_event',
+				request: 'LayerJS.show:request',
+				show: 'LayerJS.show:show'
 			},
 
 			/**
-			 * Chain of actions (in order) for the method submiForm.
+			 * Chain of actions for the method submiForm.
 			 * 		fire_event: The chain item that fires the startPosting event.
-			 * 		post: The chain item that submits the form.
+			 * 		request: The chain item that submits the form.
 			 * 		wrapup: Wrapup the submission and fire the event finishPosting.
 			 */
 			submitForm: {
-				fire_event: 'layerjs.submitForm:fire_event',
-				post: 'layerjs.submitForm:post',
-				wrapup: 'layerjs.submitForm:wrapup'
+				fire_event: 'LayerJS.submitForm:fire_event',
+				request: 'LayerJS.submitForm:request',
+				wrapup: 'LayerJS.submitForm:wrapup'
 			}
 		},
 
@@ -94,8 +95,8 @@ var LayerJS = new Class({
 		 * Get the instanced stored at the provided name or create a new one and store it there
 		 * using the provided options.
 		 *
-		 * @param String	name		A unique name for the instance.
-		 * @param Object	options		Refer to the options property. Optional.
+		 * @param name		{String}	A unique name for the instance.
+		 * @param options	{Object}	Optional. Refer to the options property.
 		 * @returns LayerJS
 		 */
 		singleton: function(name, options) {
@@ -108,6 +109,8 @@ var LayerJS = new Class({
 			return result;
 		}
 	},
+
+	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * The options are:
@@ -137,7 +140,7 @@ var LayerJS = new Class({
 	 * 		hide_selector: (String) The CSS selector (relative to the layer wrapper) for the element
 	 * 			if clicked on, will hide the layer.
 	 *
-	 * @var Object	Various options.
+	 * @type {Object}	Various options.
 	 */
 	options: {
 		/*
@@ -163,13 +166,17 @@ var LayerJS = new Class({
 		hide_selector:		'.hide_layer'
 	},
 
+	// ------------------------------------------------------------------------------------------ //
+
 	/**
-	 * @var Element		The layer.
+	 * @type {Element}	The layer.
 	 */
 	element: null,
 
+	// ------------------------------------------------------------------------------------------ //
+
 	/**
-	 * @var ResponsesJS		Handles all AJAX requests.
+	 * @type {ResponsesJS}	Handles all AJAX requests.
 	 */
 	$responses: null,
 
@@ -178,7 +185,7 @@ var LayerJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param Object	options		Refer to the options property. Optional.
+	 * @param options	{Object}	Optional. Refer to the options property.
 	 * @class LayerJS
 	 */
 	initialize: function(options) {
@@ -204,7 +211,7 @@ var LayerJS = new Class({
 	/**
 	 * Attach all the necessary events.
 	 *
-	 * @returns LayerJS
+	 * @returns {LayerJS}
 	 */
 	attach: function(selector) {
 		this.element.delegateEvent('click', this.options.hide_selector, this.onHide);
@@ -215,7 +222,7 @@ var LayerJS = new Class({
 	/**
 	 * Build the layer.
 	 *
-	 * @returns LayerJS
+	 * @returns {LayerJS}
 	 */
 	build: function() {
 		this.element = new Element('div');
@@ -227,40 +234,43 @@ var LayerJS = new Class({
 	/**
 	 * Continue running the chain stored to the responses object.
 	 *
-	 * @param ResponsesJS	responsesjs		The requestor.
-	 * @param Array			responses		All the responses.
-	 * @returns void
+	 * @param responsesjs	{ResponsesJS}	The request object.
+	 * @param responses		{Array}			All the responses.
+	 * @returns {LayerJS}
 	 */
 	continueChain: function(responsesjs, responses) {
-		if(responsesjs.options.extra_data && responsesjs.options.extra_data.chain) {
+		if(responsesjs.options.extra_data &&
+		   instanceOf(responsesjs.options.extra_data.chain, NamedChainJS)) {
 			responsesjs.options.extra_data.chain.run();
 		}
+
+		return this;
 	},
 
 	/**
 	 * Make a request to the provided URL and use the response to update the layer. Note that all
 	 * requests will be made as a GET.
 	 *
-	 * @param String		url		The URL to fetch.
-	 * @param NamedChainJS	caller	Optional and should be used internally. The chain of actions to
-	 * 		continue running when the request is completed.
-	 * @returns LayerJS
+	 * @param url		{String}		The URL to fetch.
+	 * @param caller	{NamedChainJS}	Optional and should be used internally. The chain of actions
+	 * 		to continue running when the request is completed.
+	 * @returns {LayerJS}
 	 */
 	fetchUrl: function(url, caller) {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.fetchUrl.fireEvent, this.__fetchUrlFireEvent.curry(chain));
-		chain.append(LayerJS.Chain.fetchUrl.fetch, this.__fetchUrlFetch.curry([chain, url]));
-		chain.append(LayerJS.Chain.fetchUrl.wrapup, this.__fetchUrlWrapup.curry([chain, caller]));
+		chain.append(LayerJS.Chain.fetchUrl.fire_event, this.__fetchUrlFireEvent.curry(chain))
+			.append(LayerJS.Chain.fetchUrl.request, this.__fetchUrlRequest.curry([chain, url]))
+			.append(LayerJS.Chain.fetchUrl.wrapup, this.__fetchUrlWrapup.curry([chain, caller]))
+			.run();
 
-		chain.run();
 		return this;
 	},
 	__fetchUrlFireEvent: function(chain) {
 		this.fireEvent('startFetching', [this, chain]);
 		chain.run();
 	},
-	__fetchUrlFetch: function(chain, url) {
+	__fetchUrlRequest: function(chain, url) {
 		this.$responses.send({
 			method: 'get',
 			url: url,
@@ -269,7 +279,7 @@ var LayerJS = new Class({
 	},
 	__fetchUrlWrapup: function(chain, parent_chain) {
 		this.fireEvent('finishFetching', [this, chain]);
-		if(parent_chain) { parent_chain.run(); }
+		if(instanceOf(parent_chain, NamedChainJS)) { parent_chain.run(); }
 		chain.run();
 	},
 
@@ -282,29 +292,31 @@ var LayerJS = new Class({
 	 * 				html: '<p>The HTML to update with.</p>'
 	 * 			}
 	 *
-	 * @param ResponsesJS	responses	The requestor.
-	 * @param Object		response	The response from the server.
-	 * @returns void
+	 * @param responses		{ResponsesJS}	The request object.
+	 * @param response		{Object}		The response from the server.
+	 * @returns {LayerJS}
 	 */
 	handleResponse: function(responses, response) {
 		switch(response.type) {
 			case 'layerjs:update': this.updateContent(response.html); break;
 			default: break;
 		}
+
+		return this;
 	},
 
 	/**
 	 * Hide this layer.
 	 *
-	 * @returns LayerJS
+	 * @returns {LayerJS}
 	 */
 	hide: function() {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.hide.fire_event, this.__hideFireEvent.curry(chain));
-		chain.append(LayerJS.Chain.hide.hide, this.__hideHide.curry(chain));
+		chain.append(LayerJS.Chain.hide.fire_event, this.__hideFireEvent.curry(chain))
+			.append(LayerJS.Chain.hide.hide, this.__hideHide.curry(chain))
+			.run();
 
-		chain.run();
 		return this;
 	},
 	__hideFireEvent: function(chain) {
@@ -319,13 +331,13 @@ var LayerJS = new Class({
 	/**
 	 * Event handler for clicking on a link within the layer.
 	 *
-	 * @param Event		event		The event that was triggered.
-	 * @param Element	element		The element that was clicked on.
-	 * @returns LayerJS
+	 * @param event		{Event}		The event that was triggered.
+	 * @param element	{Element}	The element that was clicked on.
+	 * @returns {LayerJS}
 	 */
 	onClick: function(event, element) {
-		// If the element matches the hide selector or is a children of it,
-		// we'll let the onHide event handler handle it
+		// If the element matches the hide selector or is a children of it, we'll let the onHide
+		// event handler handle it
 		if(element.match(this.options.hide_selector) ||
 		   element.getParent(this.options.hide_selector)) { return this; }
 
@@ -341,9 +353,9 @@ var LayerJS = new Class({
 	/**
 	 * Event handler for hiding the layer.
 	 *
-	 * @param Event		event		The event that was triggered.
-	 * @param Element	element		The element that triggered the event.
-	 * @returns LayerJS
+	 * @param event		{Event}		The event that was triggered.
+	 * @param element	{Element}	The element that triggered the event.
+	 * @returns {LayerJS}
 	 */
 	onHide: function(event, element) {
 		event.preventDefault();
@@ -353,8 +365,8 @@ var LayerJS = new Class({
 	/**
 	 * Event handler for submitting a form with the layer.
 	 *
-	 * @param Event		event		The event that was triggered.
-	 * @param Element	element		The form element.
+	 * @param event		{Event}		The event that was triggered.
+	 * @param element	{Element}	The form element.
 	 * @returns LayerJS
 	 */
 	onSubmit: function(event, element) {
@@ -363,28 +375,30 @@ var LayerJS = new Class({
 			event.preventDefault();
 			this.submitForm(element);
 		}
+
+		return this;
 	},
 
 	/**
 	 * Show this layer.
 	 *
-	 * @returns LayerJS
+	 * @returns {LayerJS}
 	 */
 	show: function() {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.show.fire_event, this.__showFireEvent.curry(chain));
-		chain.append(LayerJS.Chain.hide.data_request, this.__showDataRequest.curry(chain));
-		chain.append(LayerJS.Chain.show.show, this.__showShow.curry(chain));
+		chain.append(LayerJS.Chain.show.fire_event, this.__showFireEvent.curry(chain))
+			.append(LayerJS.Chain.show.request, this.__showRequest.curry(chain))
+			.append(LayerJS.Chain.show.show, this.__showShow.curry(chain))
+			.run();
 
-		chain.run();
 		return this;
 	},
 	__showFireEvent: function(chain) {
 		this.fireEvent('show', [this, chain]);
 		chain.run();
 	},
-	__showDataRequest: function(chain) {
+	__showRequest: function(chain) {
 		if(this.options.url) { this.fetchUrl(this.options.url, chain); }
 		else { chain.run(); }
 	},
@@ -398,24 +412,24 @@ var LayerJS = new Class({
 	/**
 	 * Submit the provided form.
 	 *
-	 * @param Element	form	The form to submit.
-	 * @returns LayerJS
+	 * @param form	{Element}	The form to submit.
+	 * @returns {LayerJS}
 	 */
 	submitForm: function(form) {
 		var chain = new NamedChainJS();
 
-		chain.append(LayerJS.Chain.submitForm.fireEvent, this.__submitFormFireEvent.curry(chain));
-		chain.append(LayerJS.Chain.submitForm.post, this.__submitFormPost.curry([chain, form]));
-		chain.append(LayerJS.Chain.submitForm.wrapup, this.__submitFormWrapup.curry(chain));
+		chain.append(LayerJS.Chain.submitForm.fireEvent, this.__submitFormFireEvent.curry(chain))
+			.append(LayerJS.Chain.submitForm.request, this.__submitFormRequest.curry([chain, form]))
+			.append(LayerJS.Chain.submitForm.wrapup, this.__submitFormWrapup.curry(chain))
+			.run();
 
-		chain.run();
 		return this;
 	},
 	__submitFormFireEvent: function(chain) {
 		this.fireEvent('startPosting', [this, chain]);
 		chain.run();
 	},
-	__submitFormPost: function(chain, form) {
+	__submitFormRequest: function(chain, form) {
 		this.$responses.send({
 			method: form.get('method'),
 			url: form.get('action'),
@@ -431,8 +445,8 @@ var LayerJS = new Class({
 	/**
 	 * Update the content of the layer.
 	 *
-	 * @param String	html	The content for the layer.
-	 * @returns LayerJS
+	 * @param html	{String}	The content for the layer.
+	 * @returns {LayerJS}
 	 */
 	updateContent: function(html) {
 		var content = this.element.getElement(this.options.content_selector);

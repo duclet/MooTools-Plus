@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Plus.js
-
 name: Plus
 
 description: MooTools More Plus
@@ -13,9 +11,10 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
 
-provides: Plus
+provides:
+  - Plus
 
 ...
 */

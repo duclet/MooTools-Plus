@@ -1,8 +1,6 @@
 /*
 ---
 
-script: String.Plus.js
-
 name: String.Plus
 
 description: Extends the String native object to include useful methods to work with strings.
@@ -13,9 +11,10 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
 
-provides: [String.Plus]
+provides:
+  - String.Plus
 
 ...
 */
@@ -27,7 +26,7 @@ String.implement({
 	 * the colon, the text before it becomes the key and the text after it becomes the value. This
 	 * is mainly used for parsing configuration data from the class names of an element.
 	 *
-	 * @returns Object
+	 * @returns {Object}
 	 */
 	toConfigurationData: function() {
 		var result = {};

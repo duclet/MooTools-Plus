@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Element.Plus.js
-
 name: Element.Plus
 
 description: Extends the Element native object to include useful methods to work with elements.
@@ -13,10 +11,11 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - More/Elements.From
 
-provides: [Element.Plus]
+provides:
+  - Element.Plus
 
 ...
 */
@@ -24,7 +23,7 @@ Element.implement({
 	/**
 	 * Get the height of this element minus the padding and border.
 	 *
-	 * @returns int
+	 * @returns {int}
 	 */
 	getTrueHeight: function() {
 		var old_overflow = this.getStyle('overflow');
@@ -43,7 +42,7 @@ Element.implement({
 	/**
 	 * Get the width of this element minus the padding and border.
 	 *
-	 * @returns int
+	 * @returns {int}
 	 */
 	getTrueWidth: function() {
 		var old_overflow = this.getStyle('overflow');
@@ -62,8 +61,8 @@ Element.implement({
 	/**
 	 * Replace this element using the provided HTML.
 	 *
-	 * @param String	html	The HTML to replace this element by.
-	 * @returns Element		This element.
+	 * @param html	{String}	The HTML to replace this element by.
+	 * @returns {Element}
 	 */
 	replacesWith: function(html) {
 		var elements = Elements.from(html);
@@ -81,9 +80,9 @@ Element.implement({
 	/**
 	 * Update the inner HTML of the element and evaluate any scripts within the HTML.
 	 *
-	 * @param Mixed		html	The HTML to update the element with. This will be converted to a
+	 * @param html	{Mixed}		The HTML to update the element with. This will be converted to a
 	 * 		String using toString if it exists, if not, it will be forcefully made a string.
-	 * @returns Element		This element.
+	 * @returns {Element}
 	 */
 	update: function(html) {
 		var processed = html.toString ? html.toString() : ('' + html);
@@ -103,7 +102,7 @@ Element.implement({
 		 * Get the identifier of this element or create one and set it to the element then return
 		 * it.
 		 *
-		 * @returns String
+		 * @returns {String}
 		 */
 		get: function() {
 			var id = this.id;

@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Responses.js
-
 name: ResponsesJS
 
 description: Handles JSON responses from the server with some preset callbacks.
@@ -13,11 +11,12 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - BindInstances
   - Element.Plus
 
-provides: [ResponsesJS]
+provides:
+  - ResponsesJS
 
 ...
 */
@@ -47,6 +46,8 @@ provides: [ResponsesJS]
 var ResponsesJS = new Class({
 	Extends: Request.JSON,
 
+	// ------------------------------------------------------------------------------------------ //
+
 	/**
 	 * The options are:
 	 * 		onFinishProcessing: (Function) The event "finishProcessing".
@@ -59,7 +60,7 @@ var ResponsesJS = new Class({
 	 * 			parses the response. Note that this will be set to null once all the parsing is
 	 * 			completed.
 	 *
-	 * @var Object		Various options.
+	 * @type {Object}	Various options.
 	 */
 	options: {
 		/*
@@ -73,7 +74,7 @@ var ResponsesJS = new Class({
 		*/
 
 		change_cursor:	false,
-		extra_data: null
+		extra_data:		null
 	},
 
 	// ------------------------------------------------------------------------------------------ //
@@ -81,8 +82,8 @@ var ResponsesJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param Object	options		Refer to the options property. Optional.
-	 * @class ResponsesJS
+	 * @param options	{Object}	Optional. Refer to the options property.
+	 * @class {ResponsesJS}
 	 */
 	initialize: function(options) {
 		Class.bindInstances(this);
@@ -102,11 +103,12 @@ var ResponsesJS = new Class({
 	 * 			message: 'Your message here'
 	 * 		}
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	alertResponse: function(response) {
 		window.alert(response.message);
+		return this;
 	},
 
 	/**
@@ -118,11 +120,12 @@ var ResponsesJS = new Class({
 	 * 			parameters: ['your', 'various', 'parameters']
 	 * 		}
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	callbackResponse: function(response) {
 		this.fireEvent(this.getHandlerName(response.key), Array.from(response.parameters));
+		return this;
 	},
 
 	/**
@@ -135,12 +138,13 @@ var ResponsesJS = new Class({
 	 * 			html: '<p>The HTML to replace the element with.</p>'
 	 * 		}
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	elementReplaceResponse: function(response) {
 		document.id(response.element_id).replacesWith(response.html);
 		response.html.stripScripts(true);
+		return this;
 	},
 
 	/**
@@ -153,11 +157,12 @@ var ResponsesJS = new Class({
 	 * 			html: '<p>The updated HTML</p>'
 	 * 		}
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	elementUpdateResponse: function(response) {
 		document.id(response.element_id).update(response.html);
+		return this;
 	},
 
 	/**
@@ -171,13 +176,15 @@ var ResponsesJS = new Class({
 	 * 			parameters: ['your', 'various', 'parameters']
 	 * 		}
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	functionCallResponse: function(response) {
 		var fn = eval(response.fn);
 		var scope = eval(response.scope);
 		fn.apply(scope, Array.from(response.parameters));
+
+		return this;
 	},
 
 	/**
@@ -187,8 +194,8 @@ var ResponsesJS = new Class({
 	 * 			url: 'url_to_redirect_user'
 	 * 		}
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	redirectResponse: function(response) {
 		// Because window.location doesn't always work
@@ -199,17 +206,19 @@ var ResponsesJS = new Class({
 
 		form.inject(document.body);
 		form.submit();
+		return this;
 	},
 
 	/**
 	 * Response handler for "reload". Reload the current page.
 	 * 		{ type: 'reload' }
 	 *
-	 * @param Object	response	The response from the server.
-	 * @returns void
+	 * @param response	{Object}	The response from the server.
+	 * @returns {ResponsesJS}
 	 */
 	reloadResponse: function(response) {
 		window.location.reload();
+		return this;
 	},
 
 	// ------------------------------------------------------------------------------------------ //
@@ -217,9 +226,9 @@ var ResponsesJS = new Class({
 	/**
 	 * Add a custom handler for the response that will be taken care of by this class.
 	 *
-	 * @param String	name	The custom handler's name.
-	 * @param Function	fn		The custom handler.
-	 * @returns ResponsesJS
+	 * @param name	{String}	The custom handler's name.
+	 * @param fn	{Function}	The custom handler.
+	 * @returns {ResponsesJS}
 	 */
 	addHandler: function(name, fn) {
 		this.addEvent(this.getHandlerName(name), fn);
@@ -229,8 +238,8 @@ var ResponsesJS = new Class({
 	/**
 	 * Get a unique identifier for the provided handler name.
 	 *
-	 * @param String	name	The custom handler's name.
-	 * @returns String
+	 * @param name	{String}	The custom handler's name.
+	 * @returns {String}
 	 */
 	getHandlerName: function(name) {
 		return 'responsesjs_custom_handler_' + name;
@@ -239,8 +248,8 @@ var ResponsesJS = new Class({
 	/**
 	 * Handles the response from the server.
 	 *
-	 * @param Object	response	The response.
-	 * @returns ResponsesJS
+	 * @param response	{Object}	The response.
+	 * @returns {ResponsesJS}
 	 */
 	handleResponse: function(responses) {
 		if(this.options.change_cursor && document.body) {
@@ -277,9 +286,9 @@ var ResponsesJS = new Class({
 	/**
 	 * Make the request.
 	 *
-	 * @param Object	options		Optional. The options for the send Request. Will also accept
+	 * @param options	{Object}	Optional. The options for the send Request. Will also accept
 	 * 		data as a query string for compatibility reasons.
-	 * @returns ResponsesJS
+	 * @returns {ResponsesJS}
 	 */
 	send: function(options) {
 		if(options && options.extra_data) { this.options.extra_data = options.extra_data; }

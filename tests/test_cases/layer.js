@@ -25,7 +25,7 @@ YUITest.TestCases.LayerJS = {
 	testFetchUrl: function() {
 		var modified = new Class({
 			Extends: $C.LayerJS,
-			__fetchUrlFetch: function(chain, url) {
+			__fetchUrlRequest: function(chain, url) {
 				this.$responses.send({
 					method: 'get',
 					url: url,
@@ -65,7 +65,7 @@ YUITest.TestCases.LayerJS = {
 		var form = wrapper.getElement('form');
 		var modified = new Class({
 			Extends: $C.LayerJS,
-			__submitFormPost: function(chain, form) {
+			__submitFormRequest: function(chain, form) {
 				this.$responses.send({
 					method: form.get('method'),
 					url: form.get('action'),

@@ -1,8 +1,6 @@
 /*
 ---
 
-script: NamedChain.js
-
 name: NamedChainJS
 
 description: Chaining of methods with names.
@@ -13,22 +11,23 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - BindInstances
   - Function.Plus
 
-provides: [NamedChainJS]
+provides:
+  - NamedChainJS
 
 ...
 */
 var NamedChainJS = new Class({
 	/**
-	 * @var Array	The list of functions to run.
+	 * @type {Array}	The list of functions to run.
 	 */
 	$fns: [],
 
 	/**
-	 * @var Array	The keys for each function.
+	 * @type {Array}	The keys for each function.
 	 */
 	$keys: [],
 
@@ -37,7 +36,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @class NamedChainJS
+	 * @class {NamedChainJS}
 	 */
 	initialize: function() {
 		Class.bindInstances(this);
@@ -49,9 +48,9 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the end of the chain.
 	 *
-	 * @param String	key		The key for the provided function.
-	 * @param Function	fn		The function to add to the chain.
-	 * @returns NamedChainJS
+	 * @param key	{String}	The key for the provided function.
+	 * @param fn	{Function}	The function to add to the chain.
+	 * @returns {NamedChainJS}
 	 */
 	append: function(key, fn) {
 		return this.insertAt(this.$fns.length, key, fn);
@@ -60,7 +59,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Clear the chain.
 	 *
-	 * @returns NamedChainJS
+	 * @returns {NamedChainJS}
 	 */
 	clear: function() {
 		this.$fns = [];
@@ -75,11 +74,11 @@ var NamedChainJS = new Class({
 	 * Note that if the provided key does not exist, then the function will be inserted at the end
 	 * of the array.
 	 *
-	 * @param String	after	The key of the function that the provided function should be added
-	 * 		after.
-	 * @param Stirng	key		The key for the provided function.
-	 * @param Function	fn		The function to add to the chain.
-	 * @returns NamedChainJS
+	 * @param after		{String}	The key of the function that the provided function should be
+	 * 		added after.
+	 * @param key		{String}	The key for the provided function.
+	 * @param fn		{Function}	The function to add to the chain.
+	 * @returns {NamedChainJS}
 	 */
 	insertAfter: function(after, key, fn) {
 		var index = this.$keys.indexOf(after);
@@ -95,11 +94,11 @@ var NamedChainJS = new Class({
 	 * Note that if the provided key does not exist, then the function will be inserted at the begin
 	 * 		of the array.
 	 *
-	 * @param String	before	The key of the function that the provided function should be added
-	 * 		before.
-	 * @param String	key		The key for the provided function.
-	 * @param Function	fn		The function to add to the chain.
-	 * @returns NamedChainJS
+	 * @param before	{String}	The key of the function that the provided function should be
+	 * 		added before.
+	 * @param key		{String}	The key for the provided function.
+	 * @param fn		{Function}	The function to add to the chain.
+	 * @returns {NamedChainJS}
 	 */
 	insertBefore: function(before, key, fn) {
 		var index = this.$keys.indexOf(before);
@@ -111,10 +110,10 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the provided index.
 	 *
-	 * @param int		index	The index of where the function should be inserted at.
-	 * @param String	key		The key for the provided function.
-	 * @param Function	fn		The function to add to the chain.
-	 * @returns NamedChainJS
+	 * @param index		{int}		The index of where the function should be inserted at.
+	 * @param key		{String}	The key for the provided function.
+	 * @param fn		{Function}	The function to add to the chain.
+	 * @returns {NamedChainJS}
 	 */
 	insertAt: function(index, key, fn) {
 		this.$keys.splice(index, 0, key);
@@ -125,11 +124,11 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the begining of the chain.
 	 *
-	 * @param String	key		The key for the provided function.
-	 * @param Function	fn		The function to add to the chain.
-	 * @param Mixed		args	Any extra arguments to be set to the function. If there is more than
+	 * @param key	{String}	The key for the provided function.
+	 * @param fn	{Function}	The function to add to the chain.
+	 * @param args	{Mixed}		Any extra arguments to be set to the function. If there is more than
 	 * 		one argument, it should be set as an array.
-	 * @returns NamedChainJS
+	 * @returns {NamedChainJS}
 	 */
 	prepend: function(key, fn) {
 		return this.insertAt(0, key, fn);
@@ -138,8 +137,8 @@ var NamedChainJS = new Class({
 	/**
 	 * Remove the provided chain item.
 	 *
-	 * @param String	key		The key for the function.
-	 * @returns NamedChainJS
+	 * @param key	{String}	The key for the function.
+	 * @returns {NamedChainJS}
 	 */
 	remove: function(key) {
 		var index = this.$keys.indexOf(key);
@@ -154,7 +153,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Pop the function off the top of the chain and run it.
 	 *
-	 * @returns NamedChainJS
+	 * @returns {NamedChainJS}
 	 */
 	run: function() {
 		if(this.$fns.length > 0) {

@@ -1,8 +1,6 @@
 /*
 ---
 
-script: BindInstances.js
-
 name: BindInstances
 
 description: Add ability to bind all instance methods to the current object. Previously this was a
@@ -16,9 +14,10 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
 
-provides: [BindInstances]
+provides:
+  - BindInstances
 
 ...
 */
@@ -26,8 +25,8 @@ Class.extend({
 	/**
 	 * Bind all instance methods of the provided object to itself.
 	 *
-	 * @param Object	obj		The object to bind.
-	 * @returns Object	The provided object.
+	 * @param obj	{Object}	The object to bind.
+	 * @returns {Object}	The provided object.
 	 */
 	bindInstances: function(bind) {
 		var value;

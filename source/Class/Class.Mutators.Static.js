@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Class.Mutators.Static.js
-
 name: Class.Mutators.Static
 
 description: Mutator to allow the data given to it to be set to the class itself and not its
@@ -14,14 +12,15 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
 
-provides: [Class.Mutators.Static]
+provides:
+  - Class.Mutators.Static
 
 ...
 */
 /**
- * @param Mixed		data	The data to be set.
+ * @param data	{Mixed}		The data to be set.
  * @returns void
  */
 Class.Mutators.Static = function(data) {

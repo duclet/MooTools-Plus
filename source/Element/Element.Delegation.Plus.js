@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Element.Delegation.Plus.js
-
 name: Element.Delegation.Plus
 
 description: Extends the event delegation for extra support.
@@ -13,11 +11,12 @@ authors:
   - Duc Tri Le
 
 requires:
-  - Core/*
+  - Core/MooTools
   - More/Element.Delegation
   - Function.Plus
 
-provides: [Element.Delegation.Plus]
+provides:
+  - Element.Delegation.Plus
 
 ...
 */
@@ -32,19 +31,15 @@ provides: [Element.Delegation.Plus]
 	/**
 	 * Check to see whether or not we should set the provided handler to the provided element.
 	 *
-	 * @param String	name		One of the above constants.
-	 * @param Element	element		The element to check against.
-	 * @param Function	fn			The function to check for.
-	 * @returns Boolean
+	 * @param name		{String}	One of the above constants.
+	 * @param element	{Element}	The element to check against.
+	 * @param fn		{Function}	The function to check for.
+	 * @returns {Boolean}
 	 */
 	var should_set = function(name, element, fn) {
-		var handlers = element.retrieve(name) || [];
-		var result = true;
+		var result = true, handlers = element.retrieve(name) || [];
 		for(var i = 0, l = handlers.length; i < l; ++i) {
-			if(handlers[i] == fn) {
-				result = false;
-				break;
-			}
+			if(handlers[i] == fn) { result = false; break; }
 		}
 
 		if(result) {
@@ -58,9 +53,9 @@ provides: [Element.Delegation.Plus]
 	/**
 	 * Hack to set the change event on various inputs using focusin.
 	 *
-	 * @param Element	element		The parent element where the event will occur.
-	 * @param String	selectors	The selectors for the children elements.
-	 * @param Function	fn			The handler function.
+	 * @param element		{Element}	The parent element where the event will occur.
+	 * @param selectors		{String}	The selectors for the children elements.
+	 * @param fn			{Function}	The handler function.
 	 * @returns void
 	 */
 	var ie_change = function(element, selectors, fn) {
@@ -80,9 +75,9 @@ provides: [Element.Delegation.Plus]
 	 * Hack to make IE bubble the submit event. This simply attach a focusin event to the form which
 	 * then in turn attaches the submit event to it.
 	 *
-	 * @param Element	element		The parent element where the event will actually occur.
-	 * @param String	selectors	The selectors for the children elements.
-	 * @param Function	fn			The handler function.
+	 * @param element		{Element}	The parent element where the event will actually occur.
+	 * @param selectors		{String}	The selectors for the children elements.
+	 * @param fn			{Function}	The handler function.
 	 * @returns void
 	 */
 	var ie_submit = function(element, selectors, fn) {
@@ -95,36 +90,12 @@ provides: [Element.Delegation.Plus]
 		}.curry(fn));
 	};
 
-	Element.implement({
-		/**
-		 * Simply a wrapper around the element delegation to support the bubbling of the submit
-		 * event in IE.
-		 *
-		 * @param String	type		The type of the event.
-		 * @param String	children	The selectors to specify the children elements the event
-		 * 		should be relayed to.
-		 * @param Function	fn			The handler of the event.
-		 * @returns Element		This element.
-		 */
-		delegateEvent: function(type, children, fn) {
-			if(Browser.ie) {
-				type = type.toLowerCase();
-				switch(type) {
-					case 'change': ie_change(this, children, fn); return this;
-					case 'submit': ie_submit(this, children, fn); return this;
-				}
-			}
-
-			return this.addEvent(type + ':relay(' + children + ')', fn);
-		}
-	});
-
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * Custom handler for the focus/blur event so that it would bubbles.
 	 *
-	 * @param Event		event	The event that was triggered.
+	 * @param event		{Event}		The event that was triggered.
 	 * @returns void
 	 */
 	var focusInHandler = function(event) { this.fireEvent('focusin'); };
@@ -140,5 +111,31 @@ provides: [Element.Delegation.Plus]
 	Object.append(Element.NativeEvents, {
 		'focusin': 2,
 		'focusout': 2
+	});
+
+	// ------------------------------------------------------------------------------------------ //
+
+	Element.implement({
+		/**
+		 * Simply a wrapper around the element delegation to support the bubbling of the submit
+		 * event in IE.
+		 *
+		 * @param type			{String}	The type of the event.
+		 * @param selectors		{String}	The selectors to specify the children elements the event
+		 * 		should be relayed to.
+		 * @param fn			{Function}	The handler of the event.
+		 * @returns {Element}
+		 */
+		delegateEvent: function(type, selectors, fn) {
+			if(Browser.ie) {
+				type = type.toLowerCase();
+				switch(type) {
+					case 'change': ie_change(this, selectors, fn); return this;
+					case 'submit': ie_submit(this, selectors, fn); return this;
+				}
+			}
+
+			return this.addEvent(type + ':relay(' + selectors + ')', fn);
+		}
 	});
 })();

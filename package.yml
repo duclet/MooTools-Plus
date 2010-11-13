@@ -1,5 +1,13 @@
 name: "Plus"
 
+author: "Duc Tri Le"
+
+category: utilities
+
+tags: [mutator, element, event, layer, json]
+
+current: 0.1
+
 exports: "mootools-plus.js"
 
 sources:
