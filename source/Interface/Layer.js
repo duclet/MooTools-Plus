@@ -97,7 +97,7 @@ var LayerJS = new Class({
 		 *
 		 * @param name		{String}	A unique name for the instance.
 		 * @param options	{Object}	Optional. Refer to the options property.
-		 * @returns LayerJS
+		 * @returns {LayerJS}
 		 */
 		singleton: function(name, options) {
 			var result = this.retrieveInstance(name);
@@ -186,7 +186,7 @@ var LayerJS = new Class({
 	 * Create a new instance.
 	 *
 	 * @param options	{Object}	Optional. Refer to the options property.
-	 * @class LayerJS
+	 * @class {LayerJS}
 	 */
 	initialize: function(options) {
 		Class.bindInstances(this);
@@ -196,10 +196,9 @@ var LayerJS = new Class({
 		else { this.element = document.id(options.element); }
 
 		this.element.addClass(this.options.layer_classname);
-		this.$responses = new ResponsesJS({
-			onProcessItem: this.handleResponse,
-			onFinishProcessing: this.continueChain
-		});
+		this.$responses = new ResponsesJS();
+		this.$responses.addEvent('processItem', this.handleResponse)
+			.addEvent('finishProcessing', this.$responses.continueChain);
 
 		// Now load all the options and attach the necessary events
 		this.loadAllOptions(this.element, options);
@@ -232,22 +231,6 @@ var LayerJS = new Class({
 	},
 
 	/**
-	 * Continue running the chain stored to the responses object.
-	 *
-	 * @param responsesjs	{ResponsesJS}	The request object.
-	 * @param responses		{Array}			All the responses.
-	 * @returns {LayerJS}
-	 */
-	continueChain: function(responsesjs, responses) {
-		if(responsesjs.options.extra_data &&
-		   instanceOf(responsesjs.options.extra_data.chain, NamedChainJS)) {
-			responsesjs.options.extra_data.chain.run();
-		}
-
-		return this;
-	},
-
-	/**
 	 * Make a request to the provided URL and use the response to update the layer. Note that all
 	 * requests will be made as a GET.
 	 *
@@ -265,19 +248,16 @@ var LayerJS = new Class({
 			.run();
 
 		return this;
-	},
-	__fetchUrlFireEvent: function(chain) {
+	}, __fetchUrlFireEvent: function(chain) {
 		this.fireEvent('startFetching', [this, chain]);
 		chain.run();
-	},
-	__fetchUrlRequest: function(chain, url) {
+	}, __fetchUrlRequest: function(chain, url) {
 		this.$responses.send({
 			method: 'get',
 			url: url,
 			extra_data : { chain: chain }
 		});
-	},
-	__fetchUrlWrapup: function(chain, parent_chain) {
+	}, __fetchUrlWrapup: function(chain, parent_chain) {
 		this.fireEvent('finishFetching', [this, chain]);
 		if(instanceOf(parent_chain, NamedChainJS)) { parent_chain.run(); }
 		chain.run();
@@ -318,12 +298,10 @@ var LayerJS = new Class({
 			.run();
 
 		return this;
-	},
-	__hideFireEvent: function(chain) {
+	}, __hideFireEvent: function(chain) {
 		this.fireEvent('hide', [this, chain]);
 		chain.run();
-	},
-	__hideHide: function(chain) {
+	}, __hideHide: function(chain) {
 		this.element.hide();
 		chain.run();
 	},
@@ -393,16 +371,13 @@ var LayerJS = new Class({
 			.run();
 
 		return this;
-	},
-	__showFireEvent: function(chain) {
+	}, __showFireEvent: function(chain) {
 		this.fireEvent('show', [this, chain]);
 		chain.run();
-	},
-	__showRequest: function(chain) {
+	}, __showRequest: function(chain) {
 		if(this.options.url) { this.fetchUrl(this.options.url, chain); }
 		else { chain.run(); }
-	},
-	__showShow: function(chain) {
+	}, __showShow: function(chain) {
 		if(this.options.url && !this.options.refetch) { this.options.url = null; }
 
 		this.element.show();
@@ -424,20 +399,17 @@ var LayerJS = new Class({
 			.run();
 
 		return this;
-	},
-	__submitFormFireEvent: function(chain) {
+	}, __submitFormFireEvent: function(chain) {
 		this.fireEvent('startPosting', [this, chain]);
 		chain.run();
-	},
-	__submitFormRequest: function(chain, form) {
+	}, __submitFormRequest: function(chain, form) {
 		this.$responses.send({
 			method: form.get('method'),
 			url: form.get('action'),
 			data: form.toQueryString(),
 			extra_data: { chain: chain }
 		});
-	},
-	__submitFormWrapup: function(chain) {
+	}, __submitFormWrapup: function(chain) {
 		this.fireEvent('finishPosting', [this, chain]);
 		chain.run();
 	},

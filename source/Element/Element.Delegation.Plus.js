@@ -21,6 +21,9 @@ provides:
 ...
 */
 (function() {
+	/**
+	 * @type {Object}	Constants.
+	 */
 	var constants = {
 		ie_change: 'mootools-plus-element-delegation:ie-change',
 		ie_submit: 'mootools-plus-element-delegation:ie-submit'
@@ -92,21 +95,40 @@ provides:
 
 	// ------------------------------------------------------------------------------------------ //
 
+	/**
+	 * @type {Array}	The list of elements that is monitoring the focusin event.
+	 */
 	var focusInElements = [];
+
+	/**
+	 * @type {Array}	The list of elements that is monitoring the focusout event.
+	 */
 	var focusOutElements = [];
 
 	/**
-	 * Custom handler for the focus/blur event so that it would bubbles.
+	 * Event handler for the focusin event.
 	 *
 	 * @param event		{Event}		The event that was triggered.
 	 * @returns void
 	 */
 	var focusInHandler = function(event) {
-		focusInElements.invoke('fireEvent', 'focusin', event);
+		event = new Event(event);
+		if((this == event.target) || (this.contains(event.target))) {
+			focusInElements.invoke('fireEvent', 'focusin', event);
+		}
 	};
 
+	/**
+	 * Event handler for the focusout event.
+	 *
+	 * @param event		{Event}		The event that was triggered.
+	 * @returns void
+	 */
 	var focusOutHandler = function(event) {
-		focusOutElements.invoke('fireEvent', 'focusout', event);
+		event = new Event(event);
+		if((this == event.target) || (this.contains(event.target))) {
+			focusOutElements.invoke('fireEvent', 'focusout', event);
+		}
 	};
 
 	// Use event capturing to monitor the focus and blur event on browsers that isn't it
@@ -116,10 +138,7 @@ provides:
 	}
 
 	// And finally, allow focusin and focusout to be added as native events
-	Object.append(Element.NativeEvents, {
-		'focusin': 2,
-		'focusout': 2
-	});
+	Object.append(Element.NativeEvents, { 'focusin': 2, 'focusout': 2 });
 
 	// ------------------------------------------------------------------------------------------ //
 

@@ -236,6 +236,19 @@ var ResponsesJS = new Class({
 	},
 
 	/**
+	 * Continue running the chain stored in extra data.
+	 *
+	 * @returns {ResponsesJS}
+	 */
+	continueChain: function() {
+		if(this.options.extra_data && instanceOf(this.options.extra_data.chain, NamedChainJS)) {
+			this.options.extra_data.chain.run();
+		}
+
+		return this;
+	},
+
+	/**
 	 * Get a unique identifier for the provided handler name.
 	 *
 	 * @param name	{String}	The custom handler's name.
@@ -257,6 +270,7 @@ var ResponsesJS = new Class({
 		}
 
 		if(!responses) {
+			this.options.extra_data = null;
 			this.failure();
 			return this;
 		}

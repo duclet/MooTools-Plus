@@ -96,6 +96,9 @@ Element.implement({
 // ---------------------------------------------------------------------------------------------- //
 
 (function() {
+	/**
+	 * @type {int}	Counter for generating IDs.
+	 */
 	var id_counter = 1;
 	Element.Properties.id = {
 		/**

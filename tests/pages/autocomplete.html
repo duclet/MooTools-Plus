@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AutoCompleteJS</title>
+		<script type="text/javascript" src="http://yui.yahooapis.com/3.2.0/build/yui/yui-min.js"></script>
+		<script type="text/javascript" src="/tests/yuitest/yuitest.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-core.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-more.js"></script>
+		<script type="text/javascript" src="/tests/mootools-plus/mootools-plus.js"></script>
+
+		<style type="text/css">
+		.autocompletejs {
+			background-color: #fff;
+			border: 1px solid #000;
+			padding: 5px;
+			position: absolute;
+			width: 200px;
+		}
+
+		.autocompletejs .loading {
+			background: url(http://i.slimg.com/st/ajax-loader-pipe.gif) no-repeat left top;
+			font-size: 0;
+			height: 12px;
+			width: 112px;
+		}
+
+		.autocompletejs .sugggestion {
+			cursor: pointer;
+		}
+
+		.autocompletejs .suggestion.selected {
+			background-color: #eee;
+		}
+
+		.autocompletejs .suggestion .provided {
+			font-weight: bold;
+		}
+		</style>
+	</head>
+	<body class="yui3-skin-sam">
+		<form action="#" method="post">
+			<input type="text" name="autocomplete1" class="autocomplete1" data-hidden-field="hidden_value1" />
+			<input type="hidden" name="autocomplete_v1" id="hidden_value1" />
+		</form>
+
+		<div id="logger"></div>
+		<div id="test_cases" style="display: none;">AutoCompleteJS</div>
+		<script type="text/javascript">
+		var myserver = function(autocompletejs) {
+			var raw = [
+				{value: 'value1', display: 'Display 1'},
+				{value: 'value2', display: 'Display 2'},
+				{value: 'value3', display: 'Display 3'},
+				{value: 'value4', display: 'Display 4'},
+				{value: 'value5', display: 'Display 5'},
+				{value: 'value6', display: 'Display 6'},
+				{value: 'value7', display: 'Display Display 7'},
+				{value: 'value8', display: 'Display 8'},
+				{value: 'value9', display: 'Display 9'},
+				{value: 'value10', display: 'Display 10'}
+			];
+
+			var provided = autocompletejs.input.get('value').toLowerCase();
+			var suggestions = raw.filter(function(item) {
+				if((item.value.toLowerCase().indexOf(provided) !== -1) ||
+				   (item.display.toLowerCase().indexOf(provided) !== -1)) {
+					return true;
+				} else { return false; }
+			});
+
+			return suggestions;
+		}
+
+		var a = new AutoCompleteJS(myserver);
+		a.attach('.autocomplete1');
+
+		YUITest.Configs.set({
+			tester_type: 'iframe',
+			tester_url_tpt: '{protocol}//{host}/tests/mootools-plus/tester.php'
+		});
+		YUITest.Testee.initialize();
+		</script>
+	</body>
+</html>

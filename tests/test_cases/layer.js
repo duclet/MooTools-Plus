@@ -23,23 +23,18 @@ YUITest.TestCases.LayerJS = {
 	},
 
 	testFetchUrl: function() {
-		var modified = new Class({
-			Extends: $C.LayerJS,
-			__fetchUrlRequest: function(chain, url) {
-				this.$responses.send({
-					method: 'get',
-					url: url,
-					extra_data: { chain: chain },
-					data: 'data=' + JSON.encode([{
-						type: 'layerjs:update',
-						html: 'Data fetched.'
-					}])
-				});
-			}
-		});
+		// Set the expected result
+		new Request({
+			url: '/tests/mootools-plus/response_setter.php',
+			async: false,
+			data: 'session_key=layerjs_fetch_url&data=' + JSON.encode([{
+				type: 'layerjs:update',
+				html: 'Data fetched.'
+			}])
+		}).send();
 
-		var layer = new modified({
-			url: '/tests/mootools-plus/responses.php',
+		var layer = new $C.LayerJS({
+			url: '/tests/mootools-plus/responses.php?session_key=layerjs_fetch_url',
 			template: '<div class="layer_content"></div>',
 			onFinishFetching: function(widget, chain) {
 				this.resume(function() {
@@ -61,24 +56,19 @@ YUITest.TestCases.LayerJS = {
 	},
 
 	testSubmitForm: function() {
+		// Set the expected result
+		new Request({
+			url: '/tests/mootools-plus/response_setter.php',
+			async: false,
+			data: 'session_key=layerjs_submit_form&data=' + JSON.encode([{
+				type: 'layerjs:update',
+				html: 'Data submitted.'
+			}])
+		}).send();
+
 		var wrapper = $C.document.id('layer_with_form');
 		var form = wrapper.getElement('form');
-		var modified = new Class({
-			Extends: $C.LayerJS,
-			__submitFormRequest: function(chain, form) {
-				this.$responses.send({
-					method: form.get('method'),
-					url: form.get('action'),
-					extra_data: { chain: chain },
-					data: 'data=' + JSON.encode([{
-						type: 'layerjs:update',
-						html: 'Data submitted.'
-					}])
-				});
-			}
-		});
-
-		var layer = new modified({
+		var layer = new $C.LayerJS({
 			element: wrapper,
 			onFinishPosting: function(widget, chain) {
 				this.resume(function() {

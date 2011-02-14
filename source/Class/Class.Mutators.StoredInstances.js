@@ -3,7 +3,9 @@
 
 name: Class.Mutators.StoredInstances
 
-description: Allow classes to stored instances that has been created.
+description: Allow classes to stored instances that has been created. Note that because this
+	contains static data and methods, any subclass will also need to include this if the parent
+	class has it.
 
 license: MIT-style license
 

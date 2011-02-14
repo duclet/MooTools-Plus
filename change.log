@@ -1,0 +1,16 @@
+
+Version 0.2
+* Fixed bug with the continueChain method of ResponsesJS.
+* Include pre-built files.
+* Added a new script for auto complete.
+* Another bug fix for the focusin and focusout event so that it is only fired if the triggering
+element is that element that the event was attached to or is a child of it.
+* Fixes JSDoc.
+
+----------------------------------------------------------------------------------------------------
+2010/11/13:
+Version 0.1.1:
+* Bug fix with the delegation of the focusin and focusout event.
+
+Version 0.1
+* Initial release.
