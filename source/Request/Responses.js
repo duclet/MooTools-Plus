@@ -89,7 +89,7 @@ var ResponsesJS = new Class({
 		Class.bindInstances(this);
 
 		this.parent(options);
-		this.options.link = 'cancel';
+		this.options.link = options && options.link ? options.link : 'cancel';
 		this.addEvent('success', this.handleResponse, true);
 		return this;
 	},

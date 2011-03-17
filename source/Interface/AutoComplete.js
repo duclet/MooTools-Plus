@@ -14,8 +14,8 @@ authors:
 
 requires:
   - Core/MooTools
-  - More/Element.Shortcuts
   - More/Element.Position
+  - More/Element.Shortcuts
   - Plus/BindInstances
   - Plus/Class.Mutators.Static
   - Plus/Class.Mutators.StoredInstances
@@ -187,7 +187,7 @@ var AutoCompleteJS = new Class({
 	elements: null,
 
 	/**
-	 * @type {Element}	The element that the provided the input for the suggestions.
+	 * @type {Element}	The element that provided the input for the suggestions.
 	 */
 	input: null,
 
@@ -205,7 +205,8 @@ var AutoCompleteJS = new Class({
 		this.setOptions(options);
 		this.server = server;
 		this.$responses = new ResponsesJS();
-		this.$responses.addEvent('processItem', this.handleResponse);
+		this.$responses.addEvent('processItem', this.handleResponse)
+			.addEvent('finishProcessing', this.$responses.continueChain);
 
 		return this.build().attachInternal();
 	},
@@ -323,8 +324,8 @@ var AutoCompleteJS = new Class({
 	 * @returns {AutoCompleteJS}
 	 */
 	attach: function(selector) {
-		document.id(document.body).delegateEvent('focusin', selector, this.onFocus)
-			.delegateEvent('focusout', selector, this.onBlur)
+		document.id(document.body).delegateEvent('focus', selector, this.onFocus)
+			.delegateEvent('blur', selector, this.onBlur)
 			.delegateEvent('keydown', selector, this.onKeyDown)
 			.delegateEvent('keyup', selector, this.onKeyUp);
 
@@ -390,9 +391,9 @@ var AutoCompleteJS = new Class({
 	 * @returns {AutoCompleteJS}
 	 */
 	handleResponse: function(responsesjs, response) {
-		if(response.type === 'autocompletejs') {
-			this.$suggestions = response.data;
-			responsesjs.continueChain();
+		switch(response.type) {
+			case 'AutoCompleteJS:update_suggestions': this.$suggestions = response.data; break;
+			default: break;
 		}
 
 		return this;

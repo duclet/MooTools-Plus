@@ -36,6 +36,8 @@ provides:
  * 			value will be the value of the configuration. Be careful when using this.
  * 		event - The innerText of the element will be passed to the function "eval" and the returned
  * 			value will be set as an event. Be careful when using this.
+ * 		html - The innerHTML of the element will be used as the value of the configuration. The
+ * 			value is treated as a string.
  * 		integer - The innerText of the element will be used as the value of the configuration. The
  * 			value is treated as an integer.
  * 		string - The innerText of the element will be used as the value of the configuration. The
@@ -51,6 +53,7 @@ provides:
  * 				<div class="double" title="delay">15.24</div>
  * 				<div class="eval" title="callback">my_funct</div>
  * 				<div class="event" title="load">loadObserver</div>
+ * 				<div class="html" title="template"><div id="something"></div></div>
  * 			</div>
  * 			...
  * 		</div>
@@ -128,7 +131,7 @@ var HtmlOptionsJS = new Class({
 	setOption: function(options, element) {
 		var type = element.get('class');
 		var key = element.get('title');
-		var data = element.get('text');
+		var data = element.get(type === 'html' ? 'html' : 'text');
 
 		// Let subclasses have priority
 		if(this.loadExtraOptions(options, element, type, key)) { return this; }
@@ -140,7 +143,7 @@ var HtmlOptionsJS = new Class({
 			case 'eval': options[key] = eval(data); break;
 			case 'event': this.addEvent(key, eval(data)); break;
 			case 'integer': options[key] = data.toInt(); break;
-			case 'string': options[key] = data; break;
+			case 'html': case 'string': options[key] = data; break;
 			default: break; // Nothing to do for unsupported type
 		}
 

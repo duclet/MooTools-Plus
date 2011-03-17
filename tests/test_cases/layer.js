@@ -28,7 +28,7 @@ YUITest.TestCases.LayerJS = {
 			url: '/tests/mootools-plus/response_setter.php',
 			async: false,
 			data: 'session_key=layerjs_fetch_url&data=' + JSON.encode([{
-				type: 'layerjs:update',
+				type: 'LayerJS:update',
 				html: 'Data fetched.'
 			}])
 		}).send();
@@ -40,7 +40,7 @@ YUITest.TestCases.LayerJS = {
 				this.resume(function() {
 					$Y.Assert.areSame(
 						'Data fetched.',
-						widget.element.getElement('.layer_content').get('html')
+						widget.element.getElement('.layer-content').get('html')
 					);
 				});
 
@@ -49,7 +49,7 @@ YUITest.TestCases.LayerJS = {
 		});
 
 		$Y.Assert.isNotNull(layer.element);
-		$Y.Assert.isNull(layer.element.getElement('.layer_content'));
+		$Y.Assert.isNull(layer.element.getElement('.layer-content'));
 
 		layer.show();
 		this.wait(2000);
@@ -61,7 +61,7 @@ YUITest.TestCases.LayerJS = {
 			url: '/tests/mootools-plus/response_setter.php',
 			async: false,
 			data: 'session_key=layerjs_submit_form&data=' + JSON.encode([{
-				type: 'layerjs:update',
+				type: 'LayerJS:update',
 				html: 'Data submitted.'
 			}])
 		}).send();
@@ -74,7 +74,7 @@ YUITest.TestCases.LayerJS = {
 				this.resume(function() {
 					$Y.Assert.areSame(
 						'Data submitted.',
-						widget.element.getElement('.layer_content').get('html')
+						widget.element.getElement('.layer-content').get('html')
 					);
 				});
 
@@ -85,7 +85,7 @@ YUITest.TestCases.LayerJS = {
 		layer.hide();
 
 		$Y.Assert.isNotNull(layer.element);
-		$Y.Assert.isNotNull(layer.element.getElement('.layer_content'));
+		$Y.Assert.isNotNull(layer.element.getElement('.layer-content'));
 
 		layer.submitForm(form);
 		this.wait(2000);

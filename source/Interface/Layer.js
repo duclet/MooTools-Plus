@@ -129,9 +129,8 @@ var LayerJS = new Class({
 	 * 		refetch: (Boolean) Whether or not the content of the layer should be refetched each time
 	 * 			it is shown. If set to false, the url option will become null once fetching has
 	 * 			completed.
-	 * 		template: (String) The template for the layer. Note that the template is only used when
-	 * 			the script cannot get the content area of the layer. As such, the template needs to
-	 * 			contain an element that the provided content_selector specifies.
+	 * 		template: (String) The template for the layer. Note that the template is only used to
+	 * 			create the containing element if an element wasn't provided.
 	 * 		url: (String) The URL to get the content from. Note that the request will be made with
 	 * 			fetchUrl.
 	 *
@@ -157,13 +156,13 @@ var LayerJS = new Class({
 
 		element:				null,
 		layer_classname:		'layerjs',
-		intercept_classname:	'layer_intercept',
+		intercept_classname:	'layer-intercept',
 		refetch:				false,
 		template:				null,
 		url:					null,
 
-		content_selector:	'.layer_content',
-		hide_selector:		'.hide_layer'
+		content_selector:	'.layer-content',
+		hide_selector:		'.hide-layer'
 	},
 
 	// ------------------------------------------------------------------------------------------ //
@@ -192,10 +191,10 @@ var LayerJS = new Class({
 		Class.bindInstances(this);
 
 		// Build the layer if no element was provided
-		if(!options || !options.element) { this.build(); }
+		if(!options || !options.element) { this.build(options); }
 		else { this.element = document.id(options.element); }
 
-		this.element.addClass(this.options.layer_classname);
+		this.element.addClass(this.options.layer_classname).get('id');
 		this.$responses = new ResponsesJS();
 		this.$responses.addEvent('processItem', this.handleResponse)
 			.addEvent('finishProcessing', this.$responses.continueChain);
@@ -206,6 +205,61 @@ var LayerJS = new Class({
 
 		return this;
 	},
+
+	// ------------------------------------------------------------------------------------------ //
+
+	/**
+	 * Event handler for clicking on a link within the layer.
+	 *
+	 * @param event		{Event}		The event that was triggered.
+	 * @param element	{Element}	The element that was clicked on.
+	 * @returns {LayerJS}
+	 */
+	onClick: function(event, element) {
+		// If the element matches the hide selector or is a children of it, we'll let the onHide
+		// event handler handle it
+		if(element.match(this.options.hide_selector) ||
+		   element.getParent(this.options.hide_selector)) { return this; }
+
+		// We'll only need to handle this if the element should be intercepted
+		if(element.hasClass(this.options.intercept_classname)) {
+			event.preventDefault();
+			this.fetchUrl(element.getProperty('href'));
+		}
+
+		return this;
+	},
+
+	/**
+	 * Event handler for hiding the layer.
+	 *
+	 * @param event		{Event}		The event that was triggered.
+	 * @param element	{Element}	The element that triggered the event.
+	 * @returns {LayerJS}
+	 */
+	onHide: function(event, element) {
+		event.preventDefault();
+		return this.hide();
+	},
+
+	/**
+	 * Event handler for submitting a form with the layer.
+	 *
+	 * @param event		{Event}		The event that was triggered.
+	 * @param element	{Element}	The form element.
+	 * @returns LayerJS
+	 */
+	onSubmit: function(event, element) {
+		// We'll only need to handle this if the element should be intercepted
+		if(element.hasClass(this.options.intercept_classname)) {
+			event.preventDefault();
+			this.submitForm(element);
+		}
+
+		return this;
+	},
+
+	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * Attach all the necessary events.
@@ -221,12 +275,17 @@ var LayerJS = new Class({
 	/**
 	 * Build the layer.
 	 *
+	 * @param options	{Object}	Options as passed by the user.
 	 * @returns {LayerJS}
 	 */
-	build: function() {
-		this.element = new Element('div');
-		this.element.inject(document.body).hide();
+	build: function(options) {
+		// If a template was provided, use that as the template, otherwise, use an empty div
+		if(options && options.template) {
+			var elements = Element.from(this.options.template);
+			this.element = elements.getFirst();
+		} else { this.element = new Element('div'); }
 
+		this.element.inject(document.body).hide();
 		return this;
 	},
 
@@ -278,7 +337,7 @@ var LayerJS = new Class({
 	 */
 	handleResponse: function(responses, response) {
 		switch(response.type) {
-			case 'layerjs:update': this.updateContent(response.html); break;
+			case 'LayerJS:update': this.updateContent(response.html); break;
 			default: break;
 		}
 
@@ -304,57 +363,6 @@ var LayerJS = new Class({
 	}, __hideHide: function(chain) {
 		this.element.hide();
 		chain.run();
-	},
-
-	/**
-	 * Event handler for clicking on a link within the layer.
-	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that was clicked on.
-	 * @returns {LayerJS}
-	 */
-	onClick: function(event, element) {
-		// If the element matches the hide selector or is a children of it, we'll let the onHide
-		// event handler handle it
-		if(element.match(this.options.hide_selector) ||
-		   element.getParent(this.options.hide_selector)) { return this; }
-
-		// We'll only need to handle this if the element should be intercepted
-		if(element.hasClass(this.options.intercept_classname)) {
-			event.preventDefault();
-			this.fetchUrl(element.get('href'));
-		}
-
-		return this;
-	},
-
-	/**
-	 * Event handler for hiding the layer.
-	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {LayerJS}
-	 */
-	onHide: function(event, element) {
-		event.preventDefault();
-		return this.hide();
-	},
-
-	/**
-	 * Event handler for submitting a form with the layer.
-	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The form element.
-	 * @returns LayerJS
-	 */
-	onSubmit: function(event, element) {
-		// We'll only need to handle this if the element should be intercepted
-		if(element.hasClass(this.options.intercept_classname)) {
-			event.preventDefault();
-			this.submitForm(element);
-		}
-
-		return this;
 	},
 
 	/**
@@ -422,11 +430,6 @@ var LayerJS = new Class({
 	 */
 	updateContent: function(html) {
 		var content = this.element.getElement(this.options.content_selector);
-		if(!content && this.options.template) {
-			this.element.update(this.options.template);
-			content = this.element.getElement(this.options.content_selector);
-		}
-
 		if(content) { content.update(html); }
 		return this;
 	}

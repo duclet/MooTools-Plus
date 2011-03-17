@@ -1,10 +1,16 @@
 
 Version 0.2
+* Changed the default value for various options of LayerJS. Please check your code as this is not
+	backwards compatible.
+* Added ability to store HTML as an option for HtmlOptionsJS.
+* Since now MooTools has delegation support for focus, blur, submit, and change, those
+	functionalities has been removed from Element.Delegation.Plus. The delegateEvent method is still
+	there though and will map the focusin and focusout event to their proper name in MooTools so the
+	code is backwards compatible.
 * Fixed bug with the continueChain method of ResponsesJS.
 * Include pre-built files.
 * Added a new script for auto complete.
-* Another bug fix for the focusin and focusout event so that it is only fired if the triggering
-element is that element that the event was attached to or is a child of it.
+* Upgraded MooTools Core to 1.3.1 and MooTools More to 1.3.1.1.
 * Fixes JSDoc.
 
 ----------------------------------------------------------------------------------------------------
