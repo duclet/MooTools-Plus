@@ -15,6 +15,7 @@ authors:
 requires:
   - Core/MooTools
   - More/Element.Shortcuts
+  - More/Elements.From
   - BindInstances
   - Class.Mutators.Static
   - Class.Mutators.StoredInstances
@@ -281,7 +282,7 @@ var LayerJS = new Class({
 	build: function(options) {
 		// If a template was provided, use that as the template, otherwise, use an empty div
 		if(options && options.template) {
-			var elements = Element.from(this.options.template);
+			var elements = Elements.from(this.options.template);
 			this.element = elements.getFirst();
 		} else { this.element = new Element('div'); }
 

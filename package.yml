@@ -17,6 +17,7 @@ sources:
   - "source/Class/Class.Mutators.StoredInstances.js"
   - "source/Class/HtmlOptions.js"
   - "source/Element/Element.Plus.js"
+  - "source/Element/Element.Delegation.Plus.js"
   - "source/Interface/AutoComplete.js"
   - "source/Interface/Layer.js"
   - "source/Request/Responses.js"
