@@ -35,7 +35,7 @@ YUITest.TestCases.LayerJS = {
 
 		var layer = new $C.LayerJS({
 			url: '/tests/mootools-plus/responses.php?session_key=layerjs_fetch_url',
-			template: '<div class="layer_content"></div>',
+			template: '<div class="layer-content"></div>',
 			onFinishFetching: function(widget, chain) {
 				this.resume(function() {
 					$Y.Assert.areSame(
