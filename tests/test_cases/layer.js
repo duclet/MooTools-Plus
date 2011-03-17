@@ -35,7 +35,7 @@ YUITest.TestCases.LayerJS = {
 
 		var layer = new $C.LayerJS({
 			url: '/tests/mootools-plus/responses.php?session_key=layerjs_fetch_url',
-			template: '<div class="layer-content"></div>',
+			template: '<div><div class="layer-content"></div></div>',
 			onFinishFetching: function(widget, chain) {
 				this.resume(function() {
 					$Y.Assert.areSame(
@@ -49,7 +49,7 @@ YUITest.TestCases.LayerJS = {
 		});
 
 		$Y.Assert.isNotNull(layer.element);
-		$Y.Assert.isNull(layer.element.getElement('.layer-content'));
+		$Y.Assert.isNotNull(layer.element.getElement('.layer-content'));
 
 		layer.show();
 		this.wait(2000);
