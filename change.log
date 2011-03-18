@@ -1,4 +1,5 @@
 
+2011/03/18:
 Version 0.2
 * Changed the default value for various options of LayerJS. Please check your code as this is not
 	backwards compatible.
