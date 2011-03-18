@@ -195,16 +195,14 @@ var LayerJS = new Class({
 		if(!options || !options.element) { this.build(options); }
 		else { this.element = document.id(options.element); }
 
-		this.element.addClass(this.options.layer_classname).get('id');
 		this.$responses = new ResponsesJS();
 		this.$responses.addEvent('processItem', this.handleResponse)
 			.addEvent('finishProcessing', this.$responses.continueChain);
 
-		// Now load all the options and attach the necessary events
 		this.loadAllOptions(this.element, options);
-		this.attach();
+		this.element.addClass(this.options.layer_classname).get('id');
 
-		return this;
+		return this.attach();
 	},
 
 	// ------------------------------------------------------------------------------------------ //
