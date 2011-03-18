@@ -14,6 +14,7 @@ Version 0.2
 * Fixes JSDoc.
 
 ----------------------------------------------------------------------------------------------------
+
 2010/11/13:
 Version 0.1.1:
 * Bug fix with the delegation of the focusin and focusout event.
