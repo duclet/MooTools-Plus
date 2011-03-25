@@ -200,7 +200,7 @@ var ResponsesJS = new Class({
 	redirectResponse: function(response) {
 		// Because window.location doesn't always work
 		var form = new Element('form', {
-			action: item.url,
+			action: response.url,
 			method: 'post'
 		});
 

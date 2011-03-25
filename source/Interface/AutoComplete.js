@@ -1,8 +1,6 @@
 /*
 ---
 
-script: AutoComplete.js
-
 name: AutoCompleteJS
 
 description: Auto complete.

@@ -1,8 +1,6 @@
 /*
 ---
 
-script: Layer.js
-
 name: LayerJS
 
 description: DHTML layers.

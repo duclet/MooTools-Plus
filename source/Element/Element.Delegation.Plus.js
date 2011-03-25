@@ -36,7 +36,7 @@ provides:
 			if(!Browser.ie) {
 				// At a point in time, MooTools didn't have support for the focusin and focusout
 				// event. Now that it does and it sticking to the event being named focus and blur,
-				// we'll need to make the name to make our code backwards compatible.
+				// we'll need to change the name to make our code backwards compatible.
 				switch(type) {
 					case 'focusin': type = 'focus'; break;
 					case 'focusout': type = 'blur'; break;

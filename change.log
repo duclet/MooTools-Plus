@@ -1,4 +1,11 @@
 
+Version 0.3
+* Bug fix with the redirect response for ResponsesJS.
+* Added the method md5 and utf8_encode to String.Plus.
+* Added AssetMangerJS, StoragesJS, and TabJS.
+
+----------------------------------------------------------------------------------------------------
+
 2011/03/18:
 Version 0.2
 * Changed the default value for various options of LayerJS. Please check your code as this is not
