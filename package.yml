@@ -4,9 +4,9 @@ author: "Duc Tri Le"
 
 category: utilities
 
-tags: [mutator, element, event, layer, json, autocomplete]
+tags: [mutator, element, event, layer, autocomplete, tab, storage, chain, asset]
 
-current: 0.2
+current: 0.3
 
 exports: "mootools-plus.js"
 
@@ -16,13 +16,16 @@ sources:
   - "source/Class/Class.Mutators.Static.js"
   - "source/Class/Class.Mutators.StoredInstances.js"
   - "source/Class/HtmlOptions.js"
-  - "source/Element/Element.Plus.js"
   - "source/Element/Element.Delegation.Plus.js"
+  - "source/Element/Element.Plus.js"
   - "source/Interface/AutoComplete.js"
   - "source/Interface/Layer.js"
+  - "source/Interface/Tab.js"
   - "source/Request/Responses.js"
   - "source/Types/Array.Plus.js"
   - "source/Types/Function.Plus.js"
   - "source/Types/String.Plus.js"
+  - "source/Utilities/AssetManager.js"
   - "source/Utilities/Cookie.Plus.js"
   - "source/Utilities/NamedChain.js"
+  - "source/Utilities/Storages.js"
