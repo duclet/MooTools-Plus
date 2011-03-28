@@ -87,38 +87,40 @@ var AssetManagerJS = {
 		// If asset is currently loading, we don't need to do anything else; if it is already
 		// loaded, then run the callbacks
 		if(asset_data.loading) { return AssetManagerJS; }
-		else if(asset_data.loaded) { AssetManagerJS.runCallbacks(type, asset); }
+		else if(asset_data.loaded) { return AssetManagerJS.runCallbacks(type, asset); }
 
 		// If we made it here, then we'll need to load the asset
 		asset_data.loading = true;
-		var chain = new NamedChainJS();
+		var chain = Class.bindInstances(new Chain());
 
 		// First, take care of the dependencies if there are any
 		if(asset_data.requires) {
-			chain.append('asset_load_requires', AssetManagerJS.ready.curry([
-				type, asset_data.requires, chain.run
-			]));
+			chain.chain(AssetManagerJS.ready.curry([type, asset_data.requires, chain.callChain]));
 		}
 
 		// Now load the resource
-		chain.append('asset_load_resource', function(type, asset_data) {
+		chain.chain(function(type, asset_data) {
 			switch(type) {
-				case 'css': Asset.css(asset_data.source, { onLoad: this.run }); break;
-				case 'javascript': Asset.javascript(asset_data.source, { onLoad: this.run }); break;
-				default: this.run(); break;
+				case 'css':
+					Asset.css(asset_data.source, { onLoad: this.callChain });
+					break;
+				case 'javascript':
+					Asset.javascript(asset_data.source, { onLoad: this.callChain});
+					break;
+				default: this.callChain(); break;
 			}
 		}.curry([type, asset_data]));
 
 		// And finally, specify the file has been loaded and run the callback
-		chain.append('asset_load_wrapup', function(type, asset_data) {
+		chain.chain(function(type, asset_data) {
 			asset_data.loading = false;
 			asset_data.loaded = true;
 			AssetManagerJS.runCallbacks(type, asset_data.name);
-			this.run();
+			this.callChain();
 		}.curry([type, asset_data]));
 
 		// Finally, run the chain
-		chain.run();
+		chain.callChain();
 		return AssetManagerJS;
 	},
 
@@ -134,26 +136,26 @@ var AssetManagerJS = {
 	 * @returns {AssetManagerJS}
 	 */
 	ready: function(type, assets, callback) {
-		var chain = new NamedChainJS();
-		var monitor = new AssetManagerJS.LoadMonitor(assets.length, chain.run);
+		var chain = Class.bindInstances(new Chain());
+		var monitor = new AssetManagerJS.LoadMonitor(assets.length, chain.callChain);
 
 		// Load all the assets
-		chain.append('asset_load_resources', function(type, assets, monitor) {
+		chain.chain(function(type, assets, monitor) {
 			assets.each(function(type, monitor, asset) {
 				AssetManagerJS.load(type, asset, monitor.assetLoaded);
-			});
-		}.curry(type, assets, monitor));
+			}.curry([type, monitor]));
+		}.curry([type, assets, monitor]));
 
 		// If callback is provided, add it as the last item of the chain
 		if(typeOf(callback) === 'function') {
-			chain.append('asset_load_callback', function(callback) {
+			chain.chain(function(callback) {
 				callback();
-				this.run();
+				this.callChain();
 			}.curry(callback));
 		}
 
 		// Finally, run the chain
-		chain.run();
+		chain.callChain();
 		return AssetManagerJS;
 	},
 

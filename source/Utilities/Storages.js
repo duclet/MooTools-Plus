@@ -100,6 +100,23 @@ StoragesJS.Engines.Cookie = new Class({
 });
 
 /**
+ * Storage engine that uses cookies but only last for the session.
+ */
+StoragesJS.Engines.CookieSession = new Class({
+	Extends: StoragesJS.Engines.Cookie,
+
+	/**
+	 * The expires parameter is ignored.
+	 *
+	 * @returns {StoragesJS.Engines.CookieSession}
+	 * @see StoragesJS.Engines.Cookie.set
+	*/
+	set: function(key, value) {
+		return this.parent(key, value, 0);
+	}
+});
+
+/**
  * Storage engine that uses localStorage.
  */
 StoragesJS.Engines.LocalStorage = new Class({
@@ -187,22 +204,7 @@ StoragesJS.Engines.SessionStorage = new Class({
 	try { use_session_storage = ('sessionStorage' in window) && (window.sessionStorage !== null); }
 	catch(e) { }
 
-	if(use_session_storage) { StoragesJS.Temporary = new StoragesJS.Engines.SessionStorage(); }
-	else {
-		var tmp = new Class({
-			Extends: StoragesJS.Engines.Cookie,
-
-			/**
-			 * The expires parameter is ignored.
-			 *
-			 * @returns {StoragesJS.Temporary}
-			 * @see StoragesJS.Engines.Cookie.set
-			 */
-			set: function(key, value) {
-				return this.parent(key, value, 0);
-			}
-		});
-
-		StoragesJS.Temporary = new tmp();
-	}
+	StoragesJS.Temporary = use_session_storage ?
+		new StoragesJS.Engines.SessionStorage() :
+		new StoragesJS.Engines.CookieSession();
 })();
