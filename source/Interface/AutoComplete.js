@@ -16,12 +16,12 @@ requires:
   - More/Element.Shortcuts
   - Plus/BindInstances
   - Plus/Class.Mutators.Static
-  - Plus/Class.Mutators.StoredInstances
   - Plus/Element.Delegation.Plus
   - Plus/Element.Plus
   - Plus/Function.Plus
   - Plus/NamedChainJS
   - Plus/ResponsesJS
+  - Plus/Singleton
 
 provides: [AutoCompleteJS]
 
@@ -42,8 +42,14 @@ provides: [AutoCompleteJS]
  */
 var AutoCompleteJS = new Class({
 	Implements: [Events, Options],
-	StoredInstances: true,
 	Static: {
+		/**
+		 * For use with Class.singleton. Returns the unique name of this class.
+		 *
+		 * @return {string}
+		 */
+		getClassName: function() { return 'AutoCompleteJS'; },
+
 		Chain: {
 			/**
 			 * The chain of actions for the method hide.
@@ -86,42 +92,22 @@ var AutoCompleteJS = new Class({
 		Constants: {
 			INDEX: 'AutoCompleteJS.Constants.INDEX',
 			PREVIOUS: 'AutoCompleteJS.Constants.PREVIOUS'
-		},
-
-		/**
-		 * Get the instanced stored at the provided name or create a new one and store it there
-		 * using the provided options.
-		 *
-		 * @param name		{String}			A unique name for the instance.
-		 * @param server	{String|Function}	Refer to the server property. Optional if the
-		 * 		instance already exists.
-		 * @param options	{Object}			Refer to the options property. Optional.
-		 * @returns {AutoCompleteJS}
-		 */
-		singleton: function(name, server, options) {
-			var result = this.retrieveInstance(name);
-			if(!result) {
-				result = new AutoCompleteJS(server, options);
-				result.storeInstance(name);
-			}
-
-			return result;
 		}
 	},
 
 	/**
 	 * The options are:
-	 * 		onHide: (Function) Event handler for the event hide.
-	 * 		onPostShow: (Function) Event handler for the event postShow.
-	 * 		onPreShow: (Function) Event handler for the event preShow.
-	 * 		onSelection: (Function) Event handler for the event selection.
+	 * 		onHide: (function) Event handler for the event hide.
+	 * 		onPostShow: (function) Event handler for the event postShow.
+	 * 		onPreShow: (function) Event handler for the event preShow.
+	 * 		onSelection: (function) Event handler for the event selection.
 	 *
 	 * 		min_length: (int) The minimum number of characters before suggestions are fetched.
-	 * 		query: (String) The name of the parameter to be sent if the server (if it is a string)
+	 * 		query: (string) The name of the parameter to be sent if the server (if it is a string)
 	 * 			that contains the user's input.
 	 * 		extra_data: (Object) Any extra data to send along with the request to the server.
 	 *
-	 * @type {Object}	Various options.
+	 * @type {Object.<string, *>}	Various options.
 	 */
 	options: {
 		/*
@@ -144,34 +130,33 @@ var AutoCompleteJS = new Class({
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
-	 * @type {ResponsesJS}	Handles all AJAX requests.
+	 * @type {ResponsesJS}		Handles all AJAX requests.
 	 */
 	$responses: null,
 
 	/**
-	 * @type {Array}	An array of objects containing all the possible suggestions. Each suggestion
-	 * 		is an object containing the property value and display.
+	 * @type {Array.<{value: string, display: string}>}		An array of objects containing all the
+	 * 		possible suggestions.
 	 */
 	$suggestions: [],
 
 	/**
-	 * @type {Boolean}	Whether or not the auto complete is currently visible.
+	 * @type {boolean}		Whether or not the auto complete is currently visible.
 	 */
 	$visible: false,
 
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
-	 * @type {String|Function}	If it is a string, it must be the URL to the server that will
-	 * 		receive the user's input and must return the possible suggestions (Refer to the method
-	 * 		"handleResponse" for what the response should look like). If it is a function, the
-	 * 		signature of the function is: function(autocompletejs) {}, where autocompletejs is this
-	 * 		instance. You can get the query and the like from the input property.
+	 * @type {string|function}		If it is a string, it must be the URL to the server that will
+	 * 		receive the user's input and must return the possible suggestions. If it is a function,
+	 * 		the signature of the function is: function(autocompletejs) {}, where autocompletejs is
+	 * 		this instance. You can get the query and the like from the input property.
 	 */
 	server: null,
 
 	/**
-	 * @type {Element}	The element that is this AutoCompleteJS instance in the DOM.
+	 * @type {Element}		The element that is this AutoCompleteJS instance in the DOM.
 	 */
 	element: null,
 
@@ -180,12 +165,12 @@ var AutoCompleteJS = new Class({
 	 * 		loading: (Element) The element that has the loading message/image.
 	 * 		suggestions: (Element) The wrapper element of the suggestions.
 	 *
-	 * @type {Object}	References to other elements within the auto complete.
+	 * @type {Object.<string, Element>}		References to other elements within the auto complete.
 	 */
 	elements: null,
 
 	/**
-	 * @type {Element}	The element that provided the input for the suggestions.
+	 * @type {Element}		The element that provided the input for the suggestions.
 	 */
 	input: null,
 
@@ -194,19 +179,22 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param server	{String|Function}	Refer to the server property.
-	 * @param options	{Object}			Refer to the options property. Optional.
-	 * @class {AutoCompleteJS}
+	 * @param {string|function}		server		Refer to the server property.
+	 * @param {?Object}				options		Refer to the options property.
+	 * @constructor
+	 * @implements {Events}
+	 * @implements {Options}
 	 */
 	initialize: function(server, options) {
 		Class.bindInstances(this);
 		this.setOptions(options);
 		this.server = server;
-		this.$responses = new ResponsesJS();
-		this.$responses.addEvent('processItem', this.handleResponse)
-			.addEvent('finishProcessing', this.$responses.continueChain);
 
-		return this.build().attachInternal();
+		this.$responses = new ResponsesJS();
+		this.$responses.addEvent('finishProcessing', this.$responses.continueChain)
+			.addHandler('update_suggestions', this.updateSuggestionsHandler);
+
+		return this.build().setup().attachInternal();
 	},
 
 	// ------------------------------------------------------------------------------------------ //
@@ -214,9 +202,9 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Event handler for bluring out of the input field.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {AutoCompleteJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {AutoCompleteJS}
 	 */
 	onBlur: function(event, element) {
 		return this.hide();
@@ -225,9 +213,9 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Event handler for clicking on a suggestion..
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {AutoCompleteJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {AutoCompleteJS}
 	 */
 	onClick: function(event, element) {
 		event.preventDefault();
@@ -237,22 +225,22 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Event handler for focusing on an input field.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {AutoCompleteJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {AutoCompleteJS}
 	 */
 	onFocus: function(event, element) {
 		// Turn off the browser's auto complete
-		element.set('autocomplete', 'false');
+		element.setProperty('autocomplete', 'false');
 		return this;
 	},
 
 	/**
 	 * Event handler for a key down on the input field.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {AutoCompleteJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {AutoCompleteJS}
 	 */
 	onKeyDown: function(event, element) {
 		// Prevent the enter and esc key but let the tab key selects and continue its behavior
@@ -265,9 +253,9 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Event handler for a key up on the input field.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {AutoCompleteJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {AutoCompleteJS}
 	 */
 	onKeyUp: function(event, element) {
 		this.input = element;
@@ -303,9 +291,9 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Event handler for a mouse over event on a suggestion.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {AutoCompleteJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {AutoCompleteJS}
 	 */
 	onMouseOver: function(event, element) {
 		var index = element.retrieve(AutoCompleteJS.Constants.INDEX);
@@ -315,11 +303,24 @@ var AutoCompleteJS = new Class({
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
+	 * Response handler for updating the suggestions.
+	 *
+	 * @param {Array.<{value: string, display: string}>}	suggestions		The suggestions.
+	 * @returns {AutoCompleteJS}
+	 */
+	updateSuggestionsHandler: function(suggestions) {
+		this.$suggestions = suggestions;
+		return this;
+	},
+
+	// ------------------------------------------------------------------------------------------ //
+
+	/**
 	 * Attach this instance to input fields that matched the provided selector.
 	 *
-	 * @param selector	{String}	The CSS selector for the elements that should have this auto
+	 * @param {string}		selector	The CSS selector for the elements that should have this auto
 	 * 		complete instance.
-	 * @returns {AutoCompleteJS}
+	 * @return {AutoCompleteJS}
 	 */
 	attach: function(selector) {
 		document.id(document.body).delegateEvent('focus', selector, this.onFocus)
@@ -333,7 +334,7 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Attach all the necessary events internally for the auto complete.
 	 *
-	 * @returns {AutoCompleteJS}
+	 * @return {AutoCompleteJS}
 	 */
 	attachInternal: function() {
 		this.element.delegateEvent('click', '.suggestion', this.onClick)
@@ -345,7 +346,7 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Create the wrapper element for the auto complete.
 	 *
-	 * @returns {AutoCompleteJS}
+	 * @return {AutoCompleteJS}
 	 */
 	build: function() {
 		this.elements = {
@@ -363,8 +364,8 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Wrap the provided text.
 	 *
-	 * @param display	{String}	The display text.
-	 * @returns {String}	The display text after processing.
+	 * @param {string}		display		The display text.
+	 * @returns {string}
 	 */
 	getDisplayText: function(display) {
 		return display.replace(
@@ -374,33 +375,9 @@ var AutoCompleteJS = new Class({
 	},
 
 	/**
-	 * Handles the response from the server. The response is expected to be similar to the
-	 * following:
-	 * 		{
-	 * 			type: 'autocompletejs',
-	 * 			data: [
-	 * 				{ value: "value1", display: "Friendly display 1" },
-	 * 				...
-	 * 			]
-	 * 		}
-	 *
-	 * @param responsesjs	{ResponsesJS}	The request object.
-	 * @param response		{Object}		The response to process.
-	 * @returns {AutoCompleteJS}
-	 */
-	handleResponse: function(responsesjs, response) {
-		switch(response.type) {
-			case 'AutoCompleteJS:update_suggestions': this.$suggestions = response.data; break;
-			default: break;
-		}
-
-		return this;
-	},
-
-	/**
 	 * Hide the auto complete.
 	 *
-	 * @returns {AutoCompleteJS}
+	 * @return {AutoCompleteJS}
 	 */
 	hide: function() {
 		var chain = new NamedChainJS();
@@ -422,17 +399,17 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Render the suggestions.
 	 *
-	 * @returns {AutoCompleteJS}
+	 * @return {AutoCompleteJS}
 	 */
 	renderSuggestions: function() {
-		// If there are no suggestions, hide
+		// If there are no suggestions, just hide
 		if(!this.$suggestions.length) { return this.hide(); }
 
 		// Update the suggestions
 		this.elements.suggestions.set('html', '');
 		this.$suggestions.each(function(item, index) {
 			new Element('div.suggestion').store(AutoCompleteJS.Constants.INDEX, index)
-				.update(this.getDisplayText(item.display)).inject(this.elements.suggestions);
+				.set('html', this.getDisplayText(item.display)).inject(this.elements.suggestions);
 		}, this);
 
 		// Make the first item the selected
@@ -443,8 +420,8 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Set the selection.
 	 *
-	 * @param index		{int}	The index of the selection to set.
-	 * @returns {AutoCompleteJS}
+	 * @param {int}		index	The index of the selection to set.
+	 * @return {AutoCompleteJS}
 	 */
 	setSelection: function(index) {
 		var suggestions = this.elements.suggestions.getElements('.suggestion');
@@ -462,9 +439,18 @@ var AutoCompleteJS = new Class({
 	},
 
 	/**
-	 * Show the suggestions for the current input.
+	 * Mainly for sub classes. Is run from constructor after build but before attachInternal.
 	 *
 	 * @returns {AutoCompleteJS}
+	 */
+	setup: function() {
+		return this;
+	},
+
+	/**
+	 * Show the suggestions for the current input.
+	 *
+	 * @return {AutoCompleteJS}
 	 */
 	show: function() {
 		// If this is already visible and the value hasn't changed, no need to do anything
@@ -523,7 +509,7 @@ var AutoCompleteJS = new Class({
 	/**
 	 * Use the currently selected value.
 	 *
-	 * @returns {AutoCompleteJS}
+	 * @return {AutoCompleteJS}
 	 */
 	useSelected: function() {
 		var chain = new NamedChainJS();

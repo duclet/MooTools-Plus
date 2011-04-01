@@ -50,17 +50,17 @@ var ResponsesJS = new Class({
 
 	/**
 	 * The options are:
-	 * 		onFinishProcessing: (Function) The event "finishProcessing".
-	 * 		onProcessItem: (Function) The event "processItem".
-	 * 		onStartProcessing: (Function) The event "startProcessing".
+	 * 		onFinishProcessing: (function) The event "finishProcessing".
+	 * 		onProcessItem: (function) The event "processItem".
+	 * 		onStartProcessing: (function) The event "startProcessing".
 	 *
-	 * 		change_cursor: (Boolean) Whether or not the change the cursor upon the request and
+	 * 		change_cursor: (boolean) Whether or not the change the cursor upon the request and
 	 * 			restore it when done. Defaults to false.
 	 * 		extra_data: (Object) Any extra data that the user wants the handler to have when it
 	 * 			parses the response. Note that this will be set to null once all the parsing is
 	 * 			completed.
 	 *
-	 * @type {Object}	Various options.
+	 * @type {Object.<string, *>}	Various options.
 	 */
 	options: {
 		/*
@@ -82,8 +82,9 @@ var ResponsesJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param options	{Object}	Optional. Refer to the options property.
-	 * @class {ResponsesJS}
+	 * @param {?Object}		options		Refer to the options property.
+	 * @constructor
+	 * @extends {Request.JSON}
 	 */
 	initialize: function(options) {
 		Class.bindInstances(this);
@@ -103,7 +104,7 @@ var ResponsesJS = new Class({
 	 * 			message: 'Your message here'
 	 * 		}
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	alertResponse: function(response) {
@@ -120,7 +121,7 @@ var ResponsesJS = new Class({
 	 * 			parameters: ['your', 'various', 'parameters']
 	 * 		}
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	callbackResponse: function(response) {
@@ -138,7 +139,7 @@ var ResponsesJS = new Class({
 	 * 			html: '<p>The HTML to replace the element with.</p>'
 	 * 		}
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	elementReplaceResponse: function(response) {
@@ -157,7 +158,7 @@ var ResponsesJS = new Class({
 	 * 			html: '<p>The updated HTML</p>'
 	 * 		}
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	elementUpdateResponse: function(response) {
@@ -176,7 +177,7 @@ var ResponsesJS = new Class({
 	 * 			parameters: ['your', 'various', 'parameters']
 	 * 		}
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	functionCallResponse: function(response) {
@@ -194,7 +195,7 @@ var ResponsesJS = new Class({
 	 * 			url: 'url_to_redirect_user'
 	 * 		}
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	redirectResponse: function(response) {
@@ -213,7 +214,7 @@ var ResponsesJS = new Class({
 	 * Response handler for "reload". Reload the current page.
 	 * 		{ type: 'reload' }
 	 *
-	 * @param response	{Object}	The response from the server.
+	 * @param {Object}	response	The response from the server.
 	 * @returns {ResponsesJS}
 	 */
 	reloadResponse: function(response) {
@@ -226,9 +227,9 @@ var ResponsesJS = new Class({
 	/**
 	 * Add a custom handler for the response that will be taken care of by this class.
 	 *
-	 * @param name	{String}	The custom handler's name.
-	 * @param fn	{Function}	The custom handler.
-	 * @returns {ResponsesJS}
+	 * @param {string}		name	The custom handler's name.
+	 * @param {Function}	fn		The custom handler.
+	 * @return {ResponsesJS}
 	 */
 	addHandler: function(name, fn) {
 		this.addEvent(this.getHandlerName(name), fn);
@@ -238,7 +239,7 @@ var ResponsesJS = new Class({
 	/**
 	 * Continue running the chain stored in extra data.
 	 *
-	 * @returns {ResponsesJS}
+	 * @return {ResponsesJS}
 	 */
 	continueChain: function() {
 		if(this.options.extra_data && instanceOf(this.options.extra_data.chain, NamedChainJS)) {
@@ -251,8 +252,8 @@ var ResponsesJS = new Class({
 	/**
 	 * Get a unique identifier for the provided handler name.
 	 *
-	 * @param name	{String}	The custom handler's name.
-	 * @returns {String}
+	 * @param {string}		name	The custom handler's name.
+	 * @return {string}
 	 */
 	getHandlerName: function(name) {
 		return 'responsesjs_custom_handler_' + name;
@@ -261,8 +262,8 @@ var ResponsesJS = new Class({
 	/**
 	 * Handles the response from the server.
 	 *
-	 * @param response	{Object}	The response.
-	 * @returns {ResponsesJS}
+	 * @param {Array.<{type: string, ...*}>}	responses	The responses.
+	 * @return {ResponsesJS}
 	 */
 	handleResponse: function(responses) {
 		if(this.options.change_cursor && document.body) {
@@ -300,9 +301,10 @@ var ResponsesJS = new Class({
 	/**
 	 * Make the request.
 	 *
-	 * @param options	{Object}	Optional. The options for the send Request. Will also accept
-	 * 		data as a query string for compatibility reasons.
-	 * @returns {ResponsesJS}
+	 * @param {?Object}		options		The options for the send Request. Will also accept data as a
+	 * 		query string for compatibility reasons.
+	 * @return {ResponsesJS}
+	 * @override
 	 */
 	send: function(options) {
 		if(options && options.extra_data) { this.options.extra_data = options.extra_data; }

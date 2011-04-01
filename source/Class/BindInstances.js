@@ -25,8 +25,8 @@ Class.extend({
 	/**
 	 * Bind all instance methods of the provided object to itself.
 	 *
-	 * @param obj	{Object}	The object to bind.
-	 * @returns {Object}	The provided object.
+	 * @param {Object}		obj		The object to bind.
+	 * @return {Object}
 	 */
 	bindInstances: function(bind) {
 		var value;

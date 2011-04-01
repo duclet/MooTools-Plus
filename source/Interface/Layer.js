@@ -16,13 +16,13 @@ requires:
   - More/Elements.From
   - BindInstances
   - Class.Mutators.Static
-  - Class.Mutators.StoredInstances
   - Element.Delegation.Plus
   - Element.Plus
   - Function.Plus
   - HtmlOptionsJS
   - NamedChainJS
   - ResponsesJS
+  - Singleton
 
 provides:
   - LayerJS
@@ -40,8 +40,14 @@ provides:
  */
 var LayerJS = new Class({
 	Implements: [HtmlOptionsJS],
-	StoredInstances: true,
 	Static: {
+		/**
+		 * For use with Class.singleton. Returns the unique name of this class.
+		 *
+		 * @return {string}
+		 */
+		getClassName: function() { return 'LayerJS'; },
+
 		Chain: {
 			/**
 			 * Chain of actions for the method fetchUrl.
@@ -88,24 +94,6 @@ var LayerJS = new Class({
 				request: 'LayerJS.submitForm:request',
 				wrapup: 'LayerJS.submitForm:wrapup'
 			}
-		},
-
-		/**
-		 * Get the instanced stored at the provided name or create a new one and store it there
-		 * using the provided options.
-		 *
-		 * @param name		{String}	A unique name for the instance.
-		 * @param options	{Object}	Optional. Refer to the options property.
-		 * @returns {LayerJS}
-		 */
-		singleton: function(name, options) {
-			var result = this.retrieveInstance(name);
-			if(!result) {
-				result = new LayerJS(options);
-				result.storeInstance(name);
-			}
-
-			return result;
 		}
 	},
 
@@ -113,32 +101,32 @@ var LayerJS = new Class({
 
 	/**
 	 * The options are:
-	 * 		onFinishFetching: (Function) The event "finishFetching".
-	 * 		onFinishPosting: (Function) The event "finishPosting".
-	 * 		onHide: (Function) The event "hide".
-	 * 		onShow: (Function) The event "show".
-	 * 		onStartFetching: (Function) The event "startFetching".
-	 * 		onStartPosting: (Function) The event "startPosting".
+	 * 		onFinishFetching: (function) The event "finishFetching".
+	 * 		onFinishPosting: (function) The event "finishPosting".
+	 * 		onHide: (function) The event "hide".
+	 * 		onShow: (function) The event "show".
+	 * 		onStartFetching: (function) The event "startFetching".
+	 * 		onStartPosting: (function) The event "startPosting".
 	 *
-	 * 		element: (Mixed) Either the identifier for the element or the element itself that is the
-	 * 			layer. If not provided, one will be created.
-	 * 		layer_classname: (String) The CSS class name for all the layer.
-	 * 		intercept_classname: (String) The CSS class name for the element that this layer should
+	 * 		element: (string|Element) Either the identifier for the element or the element itself
+	 * 			that is the layer. If not provided, one will be created.
+	 * 		layer_classname: (string) The CSS class name for all the layer.
+	 * 		intercept_classname: (string) The CSS class name for the element that this layer should
 	 * 			intercept and process to update the layer.
-	 * 		refetch: (Boolean) Whether or not the content of the layer should be refetched each time
+	 * 		refetch: (boolean) Whether or not the content of the layer should be refetched each time
 	 * 			it is shown. If set to false, the url option will become null once fetching has
 	 * 			completed.
-	 * 		template: (String) The template for the layer. Note that the template is only used to
+	 * 		template: (string) The template for the layer. Note that the template is only used to
 	 * 			create the containing element if an element wasn't provided.
-	 * 		url: (String) The URL to get the content from. Note that the request will be made with
+	 * 		url: (string) The URL to get the content from. Note that the request will be made with
 	 * 			fetchUrl.
 	 *
-	 * 		content_selector: (String) The CSS selector (relative to the layer wrapper) for the
+	 * 		content_selector: (string) The CSS selector (relative to the layer wrapper) for the
 	 * 			content of the layer.
-	 * 		hide_selector: (String) The CSS selector (relative to the layer wrapper) for the element
+	 * 		hide_selector: (string) The CSS selector (relative to the layer wrapper) for the element
 	 * 			if clicked on, will hide the layer.
 	 *
-	 * @type {Object}	Various options.
+	 * @type {Object.<string, *>}	Various options.
 	 */
 	options: {
 		/*
@@ -167,24 +155,25 @@ var LayerJS = new Class({
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
-	 * @type {Element}	The layer.
-	 */
-	element: null,
-
-	// ------------------------------------------------------------------------------------------ //
-
-	/**
-	 * @type {ResponsesJS}	Handles all AJAX requests.
+	 * @type {ResponsesJS}		Handles all AJAX requests.
 	 */
 	$responses: null,
 
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
+	 * @type {Element}		The layer.
+	 */
+	element: null,
+
+	// ------------------------------------------------------------------------------------------ //
+
+	/**
 	 * Create a new instance.
 	 *
-	 * @param options	{Object}	Optional. Refer to the options property.
-	 * @class {LayerJS}
+	 * @param {?Object}		options		Refer to the options property.
+	 * @constructor
+	 * @implements {HtmlOptionsJS}
 	 */
 	initialize: function(options) {
 		Class.bindInstances(this);
@@ -194,13 +183,13 @@ var LayerJS = new Class({
 		else { this.element = document.id(options.element); }
 
 		this.$responses = new ResponsesJS();
-		this.$responses.addEvent('processItem', this.handleResponse)
-			.addEvent('finishProcessing', this.$responses.continueChain);
+		this.$responses.addEvent('finishProcessing', this.$responses.continueChain)
+			.addHandler('update_content', this.updateContentHandler);
 
 		this.loadAllOptions(this.element, options);
 		this.element.addClass(this.options.layer_classname).get('id');
 
-		return this.attach();
+		return this.setup().this.attach();
 	},
 
 	// ------------------------------------------------------------------------------------------ //
@@ -208,9 +197,9 @@ var LayerJS = new Class({
 	/**
 	 * Event handler for clicking on a link within the layer.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that was clicked on.
-	 * @returns {LayerJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that was clicked on.
+	 * @return {LayerJS}
 	 */
 	onClick: function(event, element) {
 		// If the element matches the hide selector or is a children of it, we'll let the onHide
@@ -230,9 +219,9 @@ var LayerJS = new Class({
 	/**
 	 * Event handler for hiding the layer.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The element that triggered the event.
-	 * @returns {LayerJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The element that triggered the event.
+	 * @return {LayerJS}
 	 */
 	onHide: function(event, element) {
 		event.preventDefault();
@@ -242,9 +231,9 @@ var LayerJS = new Class({
 	/**
 	 * Event handler for submitting a form with the layer.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The form element.
-	 * @returns LayerJS
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The form element.
+	 * @return {LayerJS}
 	 */
 	onSubmit: function(event, element) {
 		// We'll only need to handle this if the element should be intercepted
@@ -259,21 +248,36 @@ var LayerJS = new Class({
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
-	 * Attach all the necessary events.
+	 * Response handler for updating the content of the layer.
 	 *
+	 * @param html		{string}	The HTML for the layer. Note that any JavaScript will be
+	 * 		evaluated.
 	 * @returns {LayerJS}
 	 */
+	updateContentHandler: function(html) {
+		return this.updateContent(html);
+	},
+
+	// ------------------------------------------------------------------------------------------ //
+
+	/**
+	 * Attach all the necessary events.
+	 *
+	 * @return {LayerJS}
+	 */
 	attach: function(selector) {
-		this.element.delegateEvent('click', this.options.hide_selector, this.onHide);
-		this.element.delegateEvent('click', 'a', this.onClick);
-		this.element.delegateEvent('submit', 'form', this.onSubmit);
+		this.element.delegateEvent('click', this.options.hide_selector, this.onHide)
+			.delegateEvent('click', 'a', this.onClick)
+			.delegateEvent('submit', 'form', this.onSubmit);
+
+		return this;
 	},
 
 	/**
 	 * Build the layer.
 	 *
-	 * @param options	{Object}	Options as passed by the user.
-	 * @returns {LayerJS}
+	 * @param {?Object}		options		Options as passed by the user.
+	 * @return {LayerJS}
 	 */
 	build: function(options) {
 		// If a template was provided, use that as the template, otherwise, use an empty div
@@ -290,10 +294,10 @@ var LayerJS = new Class({
 	 * Make a request to the provided URL and use the response to update the layer. Note that all
 	 * requests will be made as a GET.
 	 *
-	 * @param url		{String}		The URL to fetch.
-	 * @param caller	{NamedChainJS}	Optional and should be used internally. The chain of actions
-	 * 		to continue running when the request is completed.
-	 * @returns {LayerJS}
+	 * @param {string}			url			The URL to fetch.
+	 * @param {?NamedChainJS}	caller		Optional and should be used internally. The chain of
+	 * 		actions to continue running when the request is completed.
+	 * @return {LayerJS}
 	 */
 	fetchUrl: function(url, caller) {
 		var chain = new NamedChainJS();
@@ -320,31 +324,9 @@ var LayerJS = new Class({
 	},
 
 	/**
-	 * Handles a response from the server. Below are the list of response types that is supported:
-	 * 		layerjs:update - Updates the content of the layer with the provided
-	 * 			html.
-	 * 			{
-	 * 				type: 'layerjs:update',
-	 * 				html: '<p>The HTML to update with.</p>'
-	 * 			}
-	 *
-	 * @param responses		{ResponsesJS}	The request object.
-	 * @param response		{Object}		The response from the server.
-	 * @returns {LayerJS}
-	 */
-	handleResponse: function(responses, response) {
-		switch(response.type) {
-			case 'LayerJS:update': this.updateContent(response.html); break;
-			default: break;
-		}
-
-		return this;
-	},
-
-	/**
 	 * Hide this layer.
 	 *
-	 * @returns {LayerJS}
+	 * @return {LayerJS}
 	 */
 	hide: function() {
 		var chain = new NamedChainJS();
@@ -363,9 +345,18 @@ var LayerJS = new Class({
 	},
 
 	/**
-	 * Show this layer.
+	 * Mainly for sub classes. Is run from constructor before attaching any events.
 	 *
 	 * @returns {LayerJS}
+	 */
+	setup: function() {
+		return this;
+	},
+
+	/**
+	 * Show this layer.
+	 *
+	 * @return {LayerJS}
 	 */
 	show: function() {
 		var chain = new NamedChainJS();
@@ -392,8 +383,8 @@ var LayerJS = new Class({
 	/**
 	 * Submit the provided form.
 	 *
-	 * @param form	{Element}	The form to submit.
-	 * @returns {LayerJS}
+	 * @param {Element}		form	The form to submit.
+	 * @return {LayerJS}
 	 */
 	submitForm: function(form) {
 		var chain = new NamedChainJS();
@@ -422,8 +413,8 @@ var LayerJS = new Class({
 	/**
 	 * Update the content of the layer.
 	 *
-	 * @param html	{String}	The content for the layer.
-	 * @returns {LayerJS}
+	 * @param {string}		html	The content for the layer.
+	 * @return {LayerJS}
 	 */
 	updateContent: function(html) {
 		var content = this.element.getElement(this.options.content_selector);

@@ -22,7 +22,7 @@ Array.implement({
 	/**
 	 * Get the first item in the array or undefined if it is empty.
 	 *
-	 * @returns {Mixed}
+	 * @return {*}
 	 */
 	getFirst: function() {
 		if(this.length > 0) { return this[0]; }

@@ -22,12 +22,12 @@ provides:
 */
 var NamedChainJS = new Class({
 	/**
-	 * @type {Array}	The list of functions to run.
+	 * @type {Array.<function>}		The list of functions to run.
 	 */
 	$fns: [],
 
 	/**
-	 * @type {Array}	The keys for each function.
+	 * @type {Array.<string>}	The keys for each function.
 	 */
 	$keys: [],
 
@@ -36,7 +36,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @class {NamedChainJS}
+	 * @constructor
 	 */
 	initialize: function() {
 		Class.bindInstances(this);
@@ -48,9 +48,9 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the end of the chain.
 	 *
-	 * @param key	{String}	The key for the provided function.
-	 * @param fn	{Function}	The function to add to the chain.
-	 * @returns {NamedChainJS}
+	 * @param {string}		key		The key for the provided function.
+	 * @param {function}	fn		The function to add to the chain.
+	 * @return {NamedChainJS}
 	 */
 	append: function(key, fn) {
 		return this.insertAt(this.$fns.length, key, fn);
@@ -59,7 +59,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Clear the chain.
 	 *
-	 * @returns {NamedChainJS}
+	 * @return {NamedChainJS}
 	 */
 	clear: function() {
 		this.$fns = [];
@@ -74,11 +74,11 @@ var NamedChainJS = new Class({
 	 * Note that if the provided key does not exist, then the function will be inserted at the end
 	 * of the array.
 	 *
-	 * @param after		{String}	The key of the function that the provided function should be
+	 * @param {string}		after	The key of the function that the provided function should be
 	 * 		added after.
-	 * @param key		{String}	The key for the provided function.
-	 * @param fn		{Function}	The function to add to the chain.
-	 * @returns {NamedChainJS}
+	 * @param {string}		key		The key for the provided function.
+	 * @param {function}	fn		The function to add to the chain.
+	 * @return {NamedChainJS}
 	 */
 	insertAfter: function(after, key, fn) {
 		var index = this.$keys.indexOf(after);
@@ -94,11 +94,11 @@ var NamedChainJS = new Class({
 	 * Note that if the provided key does not exist, then the function will be inserted at the begin
 	 * 		of the array.
 	 *
-	 * @param before	{String}	The key of the function that the provided function should be
+	 * @param {string}		before		The key of the function that the provided function should be
 	 * 		added before.
-	 * @param key		{String}	The key for the provided function.
-	 * @param fn		{Function}	The function to add to the chain.
-	 * @returns {NamedChainJS}
+	 * @param {string}		key			The key for the provided function.
+	 * @param {function}	fn			The function to add to the chain.
+	 * @return {NamedChainJS}
 	 */
 	insertBefore: function(before, key, fn) {
 		var index = this.$keys.indexOf(before);
@@ -110,10 +110,10 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the provided index.
 	 *
-	 * @param index		{int}		The index of where the function should be inserted at.
-	 * @param key		{String}	The key for the provided function.
-	 * @param fn		{Function}	The function to add to the chain.
-	 * @returns {NamedChainJS}
+	 * @param {int}			index	The index of where the function should be inserted at.
+	 * @param {string}		key		The key for the provided function.
+	 * @param {function}	fn		The function to add to the chain.
+	 * @return {NamedChainJS}
 	 */
 	insertAt: function(index, key, fn) {
 		this.$keys.splice(index, 0, key);
@@ -124,10 +124,8 @@ var NamedChainJS = new Class({
 	/**
 	 * Insert the provided function at the begining of the chain.
 	 *
-	 * @param key	{String}	The key for the provided function.
-	 * @param fn	{Function}	The function to add to the chain.
-	 * @param args	{Mixed}		Any extra arguments to be set to the function. If there is more than
-	 * 		one argument, it should be set as an array.
+	 * @param {string}		key		The key for the provided function.
+	 * @param {function}	fn		The function to add to the chain.
 	 * @returns {NamedChainJS}
 	 */
 	prepend: function(key, fn) {
@@ -137,8 +135,8 @@ var NamedChainJS = new Class({
 	/**
 	 * Remove the provided chain item.
 	 *
-	 * @param key	{String}	The key for the function.
-	 * @returns {NamedChainJS}
+	 * @param {string}		key		The key for the function.
+	 * @return {NamedChainJS}
 	 */
 	remove: function(key) {
 		var index = this.$keys.indexOf(key);
@@ -153,7 +151,7 @@ var NamedChainJS = new Class({
 	/**
 	 * Pop the function off the top of the chain and run it.
 	 *
-	 * @returns {NamedChainJS}
+	 * @return {NamedChainJS}
 	 */
 	run: function() {
 		if(this.$fns.length > 0) {

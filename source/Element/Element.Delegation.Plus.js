@@ -25,11 +25,11 @@ provides:
 		/**
 		 * Simply a wrapper around the element delegation.
 		 *
-		 * @param type			{String}	The type of the event.
-		 * @param selectors		{String}	The selectors to specify the children elements the event
+		 * @param {string}		type		The type of the event.
+		 * @param {string}		selectors	The selectors to specify the children elements the event
 		 * 		should be relayed to.
-		 * @param fn			{Function}	The handler of the event.
-		 * @returns {Element}
+		 * @param {function}	fn			The handler of the event.
+		 * @return {Element}
 		 */
 		delegateEvent: function(type, selectors, fn) {
 			type = type.toLowerCase();

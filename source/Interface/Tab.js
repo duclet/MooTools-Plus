@@ -16,12 +16,12 @@ requires:
   - Array.Plus
   - BindInstances
   - Class.Mutators.Static
-  - Class.Mutators.StoredInstances
   - Element.Delegation.Plus
   - Element.Plus
   - Function.Plus
   - HtmlOptionsJS
   - NamedChainJS
+  - Singleton
 
 provides:
   - TabJS
@@ -34,56 +34,42 @@ provides:
  */
 var TabJS = new Class({
 	Implements: [HtmlOptionsJS],
-	StoredInstances: true,
 	Static: {
-			Chain: {
-				/**
-				 * Chain of actions for the method show.
-				 * 		fire_event: The chain item that fires the startFetching event.
-				 * 		change_active: The chain item that change the active tab.
-				 * 		show_tab_content: The chain item that shows the newly active tab content.
-				 */
-				show: {
-					fire_event: 'TabJS.show:fire_event',
-					change_active: 'TabJS.show:change_active',
-					show_tab_content: 'TabJS.show:show_tab_content'
-				}
-			},
+		/**
+		 * For use with Class.singleton. Returns the unique name of this class.
+		 *
+		 * @return {string}
+		 */
+		getClassName: function() { return 'TabJS'; },
 
+		Chain: {
 			/**
-			 * Get the instanced stored at the provided name or create a new one and store it there
-			 * using the provided options.
-			 *
-			 * @param element	{Mixed}		Either the element or its identifier that is the wrapper
-			 * 		of the tabs.
-			 * @param options	{Object}	Optional. Refer to the options property.
-			 * @returns TabJS
+			 * Chain of actions for the method show.
+			 * 		fire_event: The chain item that fires the startFetching event.
+			 * 		change_active: The chain item that change the active tab.
+			 * 		show_tab_content: The chain item that shows the newly active tab content.
 			 */
-			singleton: function(element, options) {
-				element = document.id(element);
-				var result = this.retrieveInstance(element.get('id'));
-				if(!result) {
-						result = new TabJS(element, options);
-						result.storeInstance(element.get('id'));
-				}
-
-				return result;
+			show: {
+				fire_event: 'TabJS.show:fire_event',
+				change_active: 'TabJS.show:change_active',
+				show_tab_content: 'TabJS.show:show_tab_content'
 			}
+		}
 	},
 
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
 	 * The options are:
-	 * 		onShow: (Function) The event "show".
+	 * 		onShow: (function) The event "show".
 	 *
-	 * 		active_class: (String) The CSS class name of the tab that is currently active. Defaults
+	 * 		active_class: (string) The CSS class name of the tab that is currently active. Defaults
 	 * 			to "active".
-	 * 		contents_selector: (String) The CSS selector for the contents of the tabs. Defaults to
+	 * 		contents_selector: (string) The CSS selector for the contents of the tabs. Defaults to
 	 * 			".tab-content".
-	 * 		tabs_selector: (String) The CSS selector for the tabs. Default to ".tab".
+	 * 		tabs_selector: (string) The CSS selector for the tabs. Default to ".tab".
 	 *
-	 * @type {Object}	Various options.
+	 * @type {Object.<string, *>}	Various options.
 	 */
 	options: {
 		/*
@@ -101,6 +87,13 @@ var TabJS = new Class({
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
+	 * @type {int}		The number of times all the tabs has been clicked on.
+	 */
+	$clicks: null,
+
+	// ------------------------------------------------------------------------------------------ //
+
+	/**
 	 * @type {Element}		The wrapper for the tabs.
 	 */
 	element: null,
@@ -111,26 +104,20 @@ var TabJS = new Class({
 	 * 		contents: the list of tab contents
 	 * 		tabs: the list of tabs
 	 *
-	 * @type {Object}	Cache of various other elements selections.
+	 * @type {Object.<string, (Element|Elements)>}	Cache of various other elements selections.
 	 */
 	elements: null,
 
 	// ------------------------------------------------------------------------------------------ //
 
 	/**
-	 * @type {int}		The number of times all the tabs has been clicked on.
-	 */
-	$clicks: null,
-
-	// ------------------------------------------------------------------------------------------ //
-
-	/**
 	 * Create a new instance.
 	 *
-	 * @param element	{Mixed}		Either the element or its identifier that is the wrapper of the
-	 * 		tabs.
-	 * @param options	{Object}	Optional. Refer to the options property.
-	 * @class TabJS
+	 * @param {string|Element}		element		Either the element or its identifier that is the
+	 * 		wrapper of the tabs.
+	 * @param {?Object}				options		Refer to the options property.
+	 * @constructor
+	 * @implements {HtmlOptionsJS}
 	 */
 	initialize: function(element, options) {
 		Class.bindInstances(this);
@@ -150,7 +137,7 @@ var TabJS = new Class({
 			this.setProperty(this.elements.contents[index], 'tab-number', index);
 		}, this);
 
-		return this.attach().show(this.getActiveTab());
+		return this.setup().this.attach().show(this.getActiveTab());
 	},
 
 	// ------------------------------------------------------------------------------------------ //
@@ -158,9 +145,9 @@ var TabJS = new Class({
 	/**
 	 * Event handler for clicking on a tab.
 	 *
-	 * @param event		{Event}		The event that was triggered.
-	 * @param element	{Element}	The tab to show.
-	 * @returns {TabJS}
+	 * @param {Event}		event		The event that was triggered.
+	 * @param {Element}		element		The tab to show.
+	 * @return {TabJS}
 	 */
 	onClick: function(event, element) {
 		event.preventDefault();
@@ -172,7 +159,7 @@ var TabJS = new Class({
 	/**
 	 * Attach all the necessary events.
 	 *
-	 * @returns {TabJS}
+	 * @return {TabJS}
 	 */
 	attach: function() {
 		this.element.delegateEvent('click', this.options.tabs_selector, this.onClick);
@@ -182,7 +169,7 @@ var TabJS = new Class({
 	/**
 	 * Get the currently active tab.
 	 *
-	 * @returns {Element}
+	 * @return {Element}
 	 */
 	getActiveTab: function() {
 		var active = this.elements.tabs.filter(function(item) {
@@ -197,7 +184,7 @@ var TabJS = new Class({
 	/**
 	 * Get the currently active tab content.
 	 *
-	 * @returns {Element}
+	 * @return {Element}
 	 */
 	getActiveTabContent: function() {
 		var active = this.getActiveTab();
@@ -207,8 +194,8 @@ var TabJS = new Class({
 	/**
 	 * Get the value of the provided property stored within the provided element.
 	 *
-	 * @param element		{Element}	The element to get the property from.
-	 * @param property		{String}	The name of the property.
+	 * @param {Element}		element		The element to get the property from.
+	 * @param {string}		property	The name of the property.
 	 * @returns {String}
 	 */
 	getProperty: function(element, property) {
@@ -218,10 +205,10 @@ var TabJS = new Class({
 	/**
 	 * Set the provided property to the provided element.
 	 *
-	 * @param element		{Element}	The element to set the property for.
-	 * @param property		{String}	The name of the property.
-	 * @param value			{String}	The value of the property.
-	 * @returns {TabJS}
+	 * @param {Element}		element		The element to set the property for.
+	 * @param {string}		property	The name of the property.
+	 * @param {string}		value		The value of the property.
+	 * @return {TabJS}
 	 */
 	setProperty: function(element, property, value) {
 		element.setProperty('data-tabjs-' + property, value);
@@ -229,10 +216,19 @@ var TabJS = new Class({
 	},
 
 	/**
+	 * Mainly for sub classes. Is run from constructor before attaching any events.
+	 *
+	 * @returns {TabJS}
+	 */
+	setup: function() {
+		return this;
+	},
+
+	/**
 	 * Show the provided tab.
 	 *
-	 * @param element	{Element}	The tab to show.
-	 * @returns {TabJS}
+	 * @param {Element}		element		The tab to show.
+	 * @return {TabJS}
 	 */
 	show: function(element) {
 		// Nothing to do if the provided tab is currently active

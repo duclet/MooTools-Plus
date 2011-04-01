@@ -32,7 +32,7 @@ var StoragesJS = {};
  */
 StoragesJS.Engines.Base = new Class({
 	/**
-	 * @type {String}	Prefix of all keys.
+	 * @type {string}	Prefix of all keys.
 	 */
 	$prefix: null,
 
@@ -41,7 +41,7 @@ StoragesJS.Engines.Base = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @class StoragesJS.Engines.Base
+	 * @constructor
 	 */
 	initialize: function() {
 		Class.bindInstances(this);
@@ -55,19 +55,19 @@ StoragesJS.Engines.Base = new Class({
 	/**
 	 * Retrieve a stored item.
 	 *
-	 * @param key	{String}	The key that the data was stored with.
-	 * @returns {Mixed}
+	 * @param {string}		key		The key that the data was stored with.
+	 * @return {*}
 	 */
 	get: function(key) { return null; },
 
 	/**
 	 * Store the provided item.
 	 *
-	 * @param key		{String}	The key to store the item with.
-	 * @param value		{Mixed}		The value to store.
-	 * @param expires	{int}		The time, in seconds, for how long the value should be stored
+	 * @param {string}	key			The key to store the item with.
+	 * @param {*}		value		The value to store.
+	 * @param {int}		expires		The time, in seconds, for how long the value should be stored
 	 * 		relative to now.
-	 * @returns {StoragesJS.Engines.Base}
+	 * @return {StoragesJS.Engines.Base}
 	 */
 	set: function(key, value, expires) { return this; }
 });
@@ -79,16 +79,14 @@ StoragesJS.Engines.Cookie = new Class({
 	Extends: StoragesJS.Engines.Base,
 
 	/**
-	 * @returns {Mixed}
-	 * @see StoragesJS.Engines.Base.get
+	 * @inheritDoc
 	 */
 	get: function(key) {
 		return Cookie.read(this.$prefix + key);
 	},
 
 	/**
-	 * @returns {StoragesJS.Engines.Cookie}
-	 * @see StoragesJS.Engines.Base.set
+	 * @inheritDoc
 	 */
 	set: function(key, value, expires) {
 		Cookie.write(this.$prefix + key, value, {
@@ -108,8 +106,7 @@ StoragesJS.Engines.CookieSession = new Class({
 	/**
 	 * The expires parameter is ignored.
 	 *
-	 * @returns {StoragesJS.Engines.CookieSession}
-	 * @see StoragesJS.Engines.Cookie.set
+	 * @inheritDoc
 	*/
 	set: function(key, value) {
 		return this.parent(key, value, 0);
@@ -123,8 +120,7 @@ StoragesJS.Engines.LocalStorage = new Class({
 	Extends: StoragesJS.Engines.Base,
 
 	/**
-	 * @returns {Mixed}
-	 * @see StoragesJS.Engines.Base.get
+	 * @inheritDoc
 	 */
 	get: function(key) {
 		var raw = window.localStorage.getItem(this.$prefix + key);
@@ -137,8 +133,7 @@ StoragesJS.Engines.LocalStorage = new Class({
 	},
 
 	/**
-	 * @returns {StoragesJS.Engines.LocalStorage}
-	 * @see StoragesJS.Engines.Base.set
+	 * @inheritDoc
 	 */
 	set: function(key, value, expires) {
 		window.localStorage.setItem(
@@ -157,8 +152,7 @@ StoragesJS.Engines.SessionStorage = new Class({
 	Extends: StoragesJS.Engines.Base,
 
 	/**
-	 * @returns {Mixed}
-	 * @see StoragesJS.Engines.Base.get
+	 * @inheritDoc
 	 */
 	get: function(key) {
 		var raw = window.sessionStorage.getItem(this.$prefix + key);
@@ -168,11 +162,10 @@ StoragesJS.Engines.SessionStorage = new Class({
 	},
 
 	/**
-	 * Note that the expires parameter is ignored.
+	 * The expires parameter is ignored.
 	 *
-	 * @returns {StoragesJS.Engines.SessionStorage}
-	 * @see StoragesJS.Engines.Base.set
-	 */
+	 * @inheritDoc
+	*/
 	set: function(key, value) {
 		window.sessionStorage.setItem(this.$prefix + key, JSON.encode(value));
 		return this;

@@ -22,8 +22,8 @@ provides:
 */
 Class.refactor(Cookie, {
 	/**
-	 * @type {Object}	Adds another option to specify the type of the duration. The supported types
-	 * 		are: years, days, hours, minutes, and seconds. Defaults to days.
+	 * @type {Object.<string, *>}	Adds another option to specify the type of the duration. The
+	 * 		supported types are: years, days, hours, minutes, and seconds. Defaults to days.
 	 */
 	options: { type: 'days' },
 
@@ -31,7 +31,7 @@ Class.refactor(Cookie, {
 	 * Overwrite to update the duration only when setting so that it takes the type into
 	 * consideration.
 	 *
-	 * @param value		{String}	The value to set to the cookie.
+	 * @param {string}		value	The value to set to the cookie.
 	 * @returns {Cookie}
 	 */
 	write: function(value) {

@@ -22,7 +22,7 @@ String.implement({
 	/**
 	 * Hash this string using the MD5 hashing algorithm. This was taken from: http://phpjs.org.
 	 *
-	 * @returns {String}
+	 * @return {string}
 	 */
 	md5: function() {
 		var xl;
@@ -220,7 +220,7 @@ String.implement({
 	 * the colon, the text before it becomes the key and the text after it becomes the value. This
 	 * is mainly used for parsing configuration data from the class names of an element.
 	 *
-	 * @returns {Object}
+	 * @return {Object}
 	 */
 	toConfigurationData: function() {
 		var result = {};
@@ -240,7 +240,7 @@ String.implement({
 	/**
 	 * UTF-8 encode this string. This was taken from: http://phpjs.org.
 	 *
-	 * @returns {String}
+	 * @return {string}
 	 */
 	utf8_encode: function() {
 		var string = this.replace(/\r\n/g, "\n").replace(/\r/g, "\n");

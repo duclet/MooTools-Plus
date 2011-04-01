@@ -23,7 +23,7 @@ Element.implement({
 	/**
 	 * Get the height of this element minus the padding and border.
 	 *
-	 * @returns {int}
+	 * @return {int}
 	 */
 	getTrueHeight: function() {
 		var old_overflow = this.getStyle('overflow');
@@ -42,7 +42,7 @@ Element.implement({
 	/**
 	 * Get the width of this element minus the padding and border.
 	 *
-	 * @returns {int}
+	 * @return {int}
 	 */
 	getTrueWidth: function() {
 		var old_overflow = this.getStyle('overflow');
@@ -61,8 +61,8 @@ Element.implement({
 	/**
 	 * Replace this element using the provided HTML.
 	 *
-	 * @param html	{String}	The HTML to replace this element by.
-	 * @returns {Element}
+	 * @param {string}		html	The HTML to replace this element by.
+	 * @return {Element}
 	 */
 	replacesWith: function(html) {
 		var elements = Elements.from(html);
@@ -80,9 +80,9 @@ Element.implement({
 	/**
 	 * Update the inner HTML of the element and evaluate any scripts within the HTML.
 	 *
-	 * @param html	{Mixed}		The HTML to update the element with. This will be converted to a
-	 * 		String using toString if it exists, if not, it will be forcefully made a string.
-	 * @returns {Element}
+	 * @param {*}	html	The HTML to update the element with. This will be converted to a string
+	 * 		using toString if it exists, if not, it will be forcefully made a string.
+	 * @return {Element}
 	 */
 	update: function(html) {
 		var processed = html.toString ? html.toString() : ('' + html);
@@ -95,28 +95,21 @@ Element.implement({
 
 // ---------------------------------------------------------------------------------------------- //
 
-(function() {
+Element.Properties.id = {
 	/**
-	 * @type {int}	Counter for generating IDs.
+	 * Get the identifier of this element or create one and set it to the element then return it.
+	 *
+	 * @return {string}
 	 */
-	var id_counter = 1;
-	Element.Properties.id = {
-		/**
-		 * Get the identifier of this element or create one and set it to the element then return
-		 * it.
-		 *
-		 * @returns {String}
-		 */
-		get: function() {
-			var id = this.id;
-			if(id.length < 1) {
-				do { id = 'anonymous_id_' + id_counter++; }
-				while(document.id(id));
+	get: function() {
+		var id = this.id;
+		if(id.length < 1) {
+			do { id = String.uniqueID(); }
+			while(document.id(id));
 
-				this.set('id', id);
-			}
-
-			return id;
+			this.set('id', id);
 		}
-	};
-})();
+
+		return id;
+	}
+};

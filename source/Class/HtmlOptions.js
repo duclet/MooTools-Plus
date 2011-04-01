@@ -68,7 +68,7 @@ var HtmlOptionsJS = new Class({
 	 * 		options_selector: (String) The selector for the wrapper element of the options. Note
 	 * 			that this will only target the first item that matched this selector.
 	 *
-	 * @type {Object}	Various options.
+	 * @type {Object.<string, *>}	Various options.
 	 */
 	options: {
 		options_selector: '.htmloptions'
@@ -79,9 +79,12 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Load all the options from the source HTML and then from the provided options.
 	 *
-	 * @param wrapper	{Element}	The wrapper element.
-	 * @param options	{Object}	Various other options to merge into our current list of options.
-	 * @returns {HtmlOptionsJS}
+	 * @param {Element}		wrapper		The wrapper element.
+	 * @param {Object=}		options		Various other options to merge into our current list of
+	 * 		options.
+	 * @constructor
+	 * @implements {Events}
+	 * @implements {Options}
 	 */
 	loadAllOptions: function(wrapper, options) {
 		this.loadOptions(wrapper);
@@ -96,11 +99,11 @@ var HtmlOptionsJS = new Class({
 	 * This method is here for the sake of subclasses inheriting from it via extends. This allow
 	 * other classes to provide extra functionalities for loading configuration from the source.
 	 *
-	 * @param options	{Object}	The options object.
-	 * @param element	{Element}	The element holding the configuration data.
-	 * @param type		{String}	The source type.
-	 * @param key		{String}	The configuration key.
-	 * @returns {Boolean}	Returns true if the configuration has been set and the default actions
+	 * @param {Object}		options		The options object.
+	 * @param {Element}		element		The element holding the configuration data.
+	 * @param {string}		type		The source type.
+	 * @param {string}		key			The configuration key.
+	 * @return {boolean}	Returns true if the configuration has been set and the default actions
 	 * 		does not need to be executed. Returns false if the default actions should be taken.
 	 */
 	loadExtraOptions: function(options, element, type, key) { return false; },
@@ -108,8 +111,8 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Load the options from the source HTML.
 	 *
-	 * @param wrapper	{Element}	The wrapper element.
-	 * @returns {HtmlOptionsJS}
+	 * @param {Element}		wrapper		The wrapper element.
+	 * @return {HtmlOptionsJS}
 	 */
 	loadOptions: function(wrapper) {
 		var config_wrapper = wrapper.getElement(this.options.options_selector);
@@ -124,9 +127,9 @@ var HtmlOptionsJS = new Class({
 	/**
 	 * Set the data of the provided element to the provided option.
 	 *
-	 * @param options	{Object}	The options object.
-	 * @param element	{Element}	The element containing the configuration data to set.
-	 * @returns {HtmlOptionsJS}
+	 * @param {Object}		options		The options object.
+	 * @param {Element}		element		The element containing the configuration data to set.
+	 * @return {HtmlOptionsJS}
 	 */
 	setOption: function(options, element) {
 		var type = element.get('class');

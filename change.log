@@ -1,8 +1,18 @@
 
 Version 0.3
+* There are a lot of non-backwards compatible changes here so check your code appropriately. But
+	hey, until version 1.0 gets release, future release can also contain non-backwards compatible
+	code.
 * Bug fix with the redirect response for ResponsesJS.
 * Added the method md5 and utf8_encode to String.Plus.
 * Added AssetMangerJS, StoragesJS, and TabJS.
+* Looks to me like JSDoc changed their specs so guess what, I have updated all my docs to meet these
+	new specs but I'm going to be using whatever is specified on the Goolge Closure page for it.
+* Switch to using String.uniqueID for generating the ID in Element.Plus.
+* AutoCompleteJS has changed how it handles the responses and is no longer backwards compatible.
+	Though you'll only need to change the response handler to use the callback feature. Same with
+	LayerJS as well. Reason for doing this is to provide more flexibility for future changes.
+* Added Class.singleton which can be used to create singular instance classes.
 
 ----------------------------------------------------------------------------------------------------
 

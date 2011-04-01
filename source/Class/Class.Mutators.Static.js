@@ -20,8 +20,8 @@ provides:
 ...
 */
 /**
- * @param data	{Mixed}		The data to be set.
- * @returns void
+ * @param {*}	data	The data to be set.
+ * @return {undefined}
  */
 Class.Mutators.Static = function(data) {
 	Array.from(data).each(this.extend, this);

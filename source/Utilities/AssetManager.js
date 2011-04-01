@@ -34,7 +34,7 @@ var AssetManagerJS = {
 	 * 		requires: (Array) An array containing the unique names of the assets that is required to
 	 * 			be loaded before this asset can be loaded.
 	 *
-	 * @type {Object}	The list of available assets.
+	 * @type {Object.<string, *>}	The list of available assets.
 	 */
 	assets: {
 		css: {},
@@ -47,14 +47,14 @@ var AssetManagerJS = {
 	 * Add a resource. Note that this will overwrite resources information if the name provided
 	 * already exists.
 	 *
-	 * @param type		{String}	The type of the resource to add. Can be either css or
+	 * @param {string}		type		The type of the resource to add. Can be either css or
 	 * 		javascript.
-	 * @param name		{String}	The unique name for the resource.
-	 * @param source	{String}	The URL to fetch the resource.
-	 * @param options	{Object}	Various other options for the resource. Available options are
-	 * 		simply any option specify in the property "assets" except for name, source, callbacks,
-	 * 		loading, and loaded.
-	 * @returns {AssetManagerJS}
+	 * @param {string}		name		The unique name for the resource.
+	 * @param {string}		source		The URL to fetch the resource.
+	 * @param {?Object}		options		Various other options for the resource. Available options
+	 * 		are simply any option specify in the property "assets" except for name, source,
+	 * 		callbacks, loading, and loaded.
+	 * @return {AssetManagerJS}
 	 */
 	add: function(type, name, source, options) {
 		var data = [options, {}].pick();
@@ -71,12 +71,11 @@ var AssetManagerJS = {
 	/**
 	 * Load the provided asset and run the provided callback when completed.
 	 *
-	 * @param type			{String}		The type of the asset to load. Can be either css or
+	 * @param {string}		type		The type of the asset to load. Can be either css or
 	 * 		javascript.
-	 * @param asset			{String}		The unique name of the asset to load.
-	 * @param callback		{Function}		The callback to run once the asset has been loaded.
-	 * 		Optional.
-	 * @returns {AssetManagerJS}
+	 * @param {string}		asset		The unique name of the asset to load.
+	 * @param {?function}	callback	The callback to run once the asset has been loaded.
+	 * @return {AssetManagerJS}
 	 */
 	load: function(type, asset, callback) {
 		var asset_data = AssetManagerJS.assets[type][asset];
@@ -125,15 +124,37 @@ var AssetManagerJS = {
 	},
 
 	/**
+	 * Load the requested CSS asset and run the provided callback when completed.
+	 *
+	 * @param {string}		asset		The name of the CSS asset to load.
+	 * @param {?function}	callback	The callback to run once the asset has been loaded.
+	 * @return {AssetManagerJS}
+	 */
+	loadCSS: function(asset, callback) {
+		return AssetManagerJS.load('css', asset, callback);
+	},
+
+	/**
+	 * Load the requested JavaScript asset and run the provided callback when completed.
+	 *
+	 * @param {string}		asset		The name of the JavaScript asset to load.
+	 * @param {?function}	callback	The callback to run once the asset has been loaded.
+	 * @return {AssetManagerJS}
+	 */
+	loadJS: function(asset, callback) {
+		return AssetManagerJS.load('javascript', asset, callback);
+	},
+
+	/**
 	 * Run the provided callback when the provided asset is ready to be used.
 	 *
-	 * @param type			{String}		The type of the asset to load. Can be either css or
+	 * @param {string}				type		The type of the asset to load. Can be either css or
 	 * 		javascript.
-	 * @param assets		{Array}			The list of assets that needs to be loaded before the
-	 * 		provided callback is run.
-	 * @param callback		{Function}		The callback to run once all the provided assets has
-	 * 		been loaded. Optional.
-	 * @returns {AssetManagerJS}
+	 * @param {Array.<string>}		assets		The list of assets that needs to be loaded before
+	 * 		the provided callback is run.
+	 * @param {?function}			callback	The callback to run once all the provided assets has
+	 * 		been loaded.
+	 * @return {AssetManagerJS}
 	 */
 	ready: function(type, assets, callback) {
 		var chain = Class.bindInstances(new Chain());
@@ -160,11 +181,33 @@ var AssetManagerJS = {
 	},
 
 	/**
+	 * Run the provided callback when all the provided CSS is ready to be used.
+	 *
+	 * @param {Array.<string>}		assets		The list of CSS assets to load.
+	 * @param {?function}			callback	The callback to run once all the assets are loaded.
+	 * @return {AssetManagerJS}
+	 */
+	readyCSS: function(assets, callback) {
+		return AssetManagerJS.ready('css', assets, callback);
+	},
+
+	/**
+	 * Run the provided callback when all the provided JS is ready to be used.
+	 *
+	 * @param {Array.<string>}		assets		The list of JS assets to load.
+	 * @param {?function}			callback	The callback to run once all the assets are loaded.
+	 * @return {AssetManagerJS}
+	 */
+	readyJS: function(assets, callback) {
+		return AssetManagerJS.ready('javascript', assets, callback);
+	},
+
+	/**
 	 * Run all the callbacks for the provided asset.
 	 *
-	 * @param type		{String}	The type of the asset.
-	 * @param name		{String}	The unique name of the asset.
-	 * @returns {AssetManagerJS}
+	 * @param {string}		type	The type of the asset.
+	 * @param {string}		name	The unique name of the asset.
+	 * @return {AssetManagerJS}
 	 */
 	runCallbacks: function(type, name) {
 		var asset = AssetManagerJS.assets[type][name];
@@ -184,7 +227,7 @@ var AssetManagerJS = {
  */
 AssetManagerJS.LoadMonitor = new Class({
 	/**
-	 * @type {Function}		The callback to execute once all the assets has been loaded.
+	 * @type {function}		The callback to execute once all the assets has been loaded.
 	 */
 	callback: null,
 
@@ -203,10 +246,10 @@ AssetManagerJS.LoadMonitor = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param total			{int}			The total number of assets to load.
-	 * @param callback		{Function}		The callback to execute once the assets have all been
+	 * @param {int}			total		The total number of assets to load.
+	 * @param {?function}	callback	The callback to execute once the assets have all been
 	 * 		loaded.
-	 * @class AssetManagerJS.LoadMonitor
+	 * @constructor
 	 */
 	initialize: function(total, callback) {
 		Class.bindInstances(this);
@@ -219,7 +262,7 @@ AssetManagerJS.LoadMonitor = new Class({
 	/**
 	 * Specify that one more resource has been loaded.
 	 *
-	 * @returns {AssetManagerJS.LoadMonitor}
+	 * @return {AssetManagerJS.LoadMonitor}
 	 */
 	assetLoaded: function() {
 		++this.loaded;
