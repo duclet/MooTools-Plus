@@ -171,7 +171,7 @@ var LayerJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param {?Object}		options		Refer to the options property.
+	 * @param {Object=}		options		Refer to the options property.
 	 * @constructor
 	 * @implements {HtmlOptionsJS}
 	 */
@@ -250,7 +250,7 @@ var LayerJS = new Class({
 	/**
 	 * Response handler for updating the content of the layer.
 	 *
-	 * @param html		{string}	The HTML for the layer. Note that any JavaScript will be
+	 * @param {string}		html	The HTML for the layer. Note that any JavaScript will be
 	 * 		evaluated.
 	 * @returns {LayerJS}
 	 */
@@ -276,7 +276,7 @@ var LayerJS = new Class({
 	/**
 	 * Build the layer.
 	 *
-	 * @param {?Object}		options		Options as passed by the user.
+	 * @param {Object=}		options		Options as passed by the user.
 	 * @return {LayerJS}
 	 */
 	build: function(options) {
@@ -295,7 +295,7 @@ var LayerJS = new Class({
 	 * requests will be made as a GET.
 	 *
 	 * @param {string}			url			The URL to fetch.
-	 * @param {?NamedChainJS}	caller		Optional and should be used internally. The chain of
+	 * @param {NamedChainJS=}	caller		Optional and should be used internally. The chain of
 	 * 		actions to continue running when the request is completed.
 	 * @return {LayerJS}
 	 */

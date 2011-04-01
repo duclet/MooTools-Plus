@@ -82,7 +82,7 @@ var ResponsesJS = new Class({
 	/**
 	 * Create a new instance.
 	 *
-	 * @param {?Object}		options		Refer to the options property.
+	 * @param {Object=}		options		Refer to the options property.
 	 * @constructor
 	 * @extends {Request.JSON}
 	 */
@@ -228,7 +228,7 @@ var ResponsesJS = new Class({
 	 * Add a custom handler for the response that will be taken care of by this class.
 	 *
 	 * @param {string}		name	The custom handler's name.
-	 * @param {Function}	fn		The custom handler.
+	 * @param {function}	fn		The custom handler.
 	 * @return {ResponsesJS}
 	 */
 	addHandler: function(name, fn) {
@@ -301,7 +301,7 @@ var ResponsesJS = new Class({
 	/**
 	 * Make the request.
 	 *
-	 * @param {?Object}		options		The options for the send Request. Will also accept data as a
+	 * @param {Object=}		options		The options for the send Request. Will also accept data as a
 	 * 		query string for compatibility reasons.
 	 * @return {ResponsesJS}
 	 * @override

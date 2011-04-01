@@ -51,7 +51,7 @@ var AssetManagerJS = {
 	 * 		javascript.
 	 * @param {string}		name		The unique name for the resource.
 	 * @param {string}		source		The URL to fetch the resource.
-	 * @param {?Object}		options		Various other options for the resource. Available options
+	 * @param {Object=}		options		Various other options for the resource. Available options
 	 * 		are simply any option specify in the property "assets" except for name, source,
 	 * 		callbacks, loading, and loaded.
 	 * @return {AssetManagerJS}
@@ -74,7 +74,7 @@ var AssetManagerJS = {
 	 * @param {string}		type		The type of the asset to load. Can be either css or
 	 * 		javascript.
 	 * @param {string}		asset		The unique name of the asset to load.
-	 * @param {?function}	callback	The callback to run once the asset has been loaded.
+	 * @param {function=}	callback	The callback to run once the asset has been loaded.
 	 * @return {AssetManagerJS}
 	 */
 	load: function(type, asset, callback) {
@@ -127,7 +127,7 @@ var AssetManagerJS = {
 	 * Load the requested CSS asset and run the provided callback when completed.
 	 *
 	 * @param {string}		asset		The name of the CSS asset to load.
-	 * @param {?function}	callback	The callback to run once the asset has been loaded.
+	 * @param {function=}	callback	The callback to run once the asset has been loaded.
 	 * @return {AssetManagerJS}
 	 */
 	loadCSS: function(asset, callback) {
@@ -152,7 +152,7 @@ var AssetManagerJS = {
 	 * 		javascript.
 	 * @param {Array.<string>}		assets		The list of assets that needs to be loaded before
 	 * 		the provided callback is run.
-	 * @param {?function}			callback	The callback to run once all the provided assets has
+	 * @param {function=}			callback	The callback to run once all the provided assets has
 	 * 		been loaded.
 	 * @return {AssetManagerJS}
 	 */
@@ -184,7 +184,7 @@ var AssetManagerJS = {
 	 * Run the provided callback when all the provided CSS is ready to be used.
 	 *
 	 * @param {Array.<string>}		assets		The list of CSS assets to load.
-	 * @param {?function}			callback	The callback to run once all the assets are loaded.
+	 * @param {function=}			callback	The callback to run once all the assets are loaded.
 	 * @return {AssetManagerJS}
 	 */
 	readyCSS: function(assets, callback) {
@@ -195,7 +195,7 @@ var AssetManagerJS = {
 	 * Run the provided callback when all the provided JS is ready to be used.
 	 *
 	 * @param {Array.<string>}		assets		The list of JS assets to load.
-	 * @param {?function}			callback	The callback to run once all the assets are loaded.
+	 * @param {function=}			callback	The callback to run once all the assets are loaded.
 	 * @return {AssetManagerJS}
 	 */
 	readyJS: function(assets, callback) {
@@ -247,7 +247,7 @@ AssetManagerJS.LoadMonitor = new Class({
 	 * Create a new instance.
 	 *
 	 * @param {int}			total		The total number of assets to load.
-	 * @param {?function}	callback	The callback to execute once the assets have all been
+	 * @param {function=}	callback	The callback to execute once the assets have all been
 	 * 		loaded.
 	 * @constructor
 	 */

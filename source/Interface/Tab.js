@@ -115,7 +115,7 @@ var TabJS = new Class({
 	 *
 	 * @param {string|Element}		element		Either the element or its identifier that is the
 	 * 		wrapper of the tabs.
-	 * @param {?Object}				options		Refer to the options property.
+	 * @param {Object=}				options		Refer to the options property.
 	 * @constructor
 	 * @implements {HtmlOptionsJS}
 	 */
@@ -196,7 +196,7 @@ var TabJS = new Class({
 	 *
 	 * @param {Element}		element		The element to get the property from.
 	 * @param {string}		property	The name of the property.
-	 * @returns {String}
+	 * @returns {string}
 	 */
 	getProperty: function(element, property) {
 		return element.getProperty('data-tabjs-' + property);

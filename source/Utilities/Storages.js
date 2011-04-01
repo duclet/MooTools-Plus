@@ -82,14 +82,14 @@ StoragesJS.Engines.Cookie = new Class({
 	 * @inheritDoc
 	 */
 	get: function(key) {
-		return Cookie.read(this.$prefix + key);
+		return JSON.decode(Cookie.read(this.$prefix + key));
 	},
 
 	/**
 	 * @inheritDoc
 	 */
 	set: function(key, value, expires) {
-		Cookie.write(this.$prefix + key, value, {
+		Cookie.write(this.$prefix + key, JSON.encode(value), {
 			duration: expires === 0 ? 0 : (expires / 86400)
 		});
 

@@ -180,7 +180,7 @@ var AutoCompleteJS = new Class({
 	 * Create a new instance.
 	 *
 	 * @param {string|function}		server		Refer to the server property.
-	 * @param {?Object}				options		Refer to the options property.
+	 * @param {Object=}				options		Refer to the options property.
 	 * @constructor
 	 * @implements {Events}
 	 * @implements {Options}
