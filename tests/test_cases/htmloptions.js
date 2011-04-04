@@ -36,6 +36,7 @@ YUITest.TestCases.HtmlOptionsJS = {
 		$Y.Assert.areSame('my_id', instance.options.id);
 		$Y.Assert.areSame(15.24, instance.options.price);
 		$Y.Assert.isFalse(instance.options.visible);
+		$Y.Assert.areSame('<strong>Hi</strong>', instance.options.html);
 
 		$Y.Assert.isTrue($C.ChangeMe.asEvent);
 		$Y.Assert.isFalse($C.ChangeMe.asEval);

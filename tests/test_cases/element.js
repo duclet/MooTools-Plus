@@ -29,7 +29,8 @@ YUITest.TestCases.Element = {
 		var generate_id = $C.document.getElement('.give_me_an_id');
 
 		$Y.Assert.areSame('has_id', has_id.get('id'));
-		$Y.Assert.areSame('anonymous_id_1', generate_id.get('id'));
+		$Y.Assert.isNotNull(generate_id.get('id'));
+		$Y.Assert.isTrue(generate_id.get('id').length > 0);
 	},
 
 	testReplacesWith: function() {

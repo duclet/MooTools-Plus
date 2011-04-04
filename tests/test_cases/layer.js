@@ -7,7 +7,7 @@ YUITest.TestCases.LayerJS = {
 		$Y.Assert.isNotNull(element);
 		$Y.Assert.isFalse(element.hasClass('layerjs'));
 
-		var layer = $C.LayerJS.singleton('existing_layer', { element: element });
+		var layer = $C.Class.singleton($C.LayerJS, 'existing_layer', { element: element });
 
 		$Y.Assert.isTrue(element.hasClass('layerjs'));
 

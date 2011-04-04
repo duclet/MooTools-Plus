@@ -1,5 +1,5 @@
 YUITest.TestCases.StoredInstances = {
-	name: 'Tests for Class/StoredInstances.js',
+	name: 'Tests for Class/Class.Mutators.StoredInstances.js',
 
 	testStoredInstances: function() {
 		var MyClass = new $C.Class({
