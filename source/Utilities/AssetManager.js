@@ -93,7 +93,7 @@ var AssetManagerJS = {
 		var chain = Class.bindInstances(new Chain());
 
 		// First, take care of the dependencies if there are any
-		if(asset_data.requires) {
+		if(asset_data.requires && asset_data.requires.length) {
 			chain.chain(AssetManagerJS.ready.curry([type, asset_data.requires, chain.callChain]));
 		}
 
@@ -212,10 +212,10 @@ var AssetManagerJS = {
 	runCallbacks: function(type, name) {
 		var asset = AssetManagerJS.assets[type][name];
 
-		var callback = asset.shift();
+		var callback = asset.callbacks.shift();
 		while(callback) {
 			callback();
-			callback = asset.shift();
+			callback = asset.callbacks.shift();
 		}
 
 		return AssetManagerJS;
@@ -268,7 +268,9 @@ AssetManagerJS.LoadMonitor = new Class({
 		++this.loaded;
 
 		// If all all assets are loaded and we have a callback, run it
-		if((this.loaded === this.total) && (typeOf(this.callback) === 'function')) { callback(); }
+		if((this.loaded === this.total) && (typeOf(this.callback) === 'function')) {
+			this.callback();
+		}
 
 		return this;
 	}

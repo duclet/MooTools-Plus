@@ -189,7 +189,7 @@ var LayerJS = new Class({
 		this.loadAllOptions(this.element, options);
 		this.element.addClass(this.options.layer_classname).get('id');
 
-		return this.setup().this.attach();
+		return this.setup().attach();
 	},
 
 	// ------------------------------------------------------------------------------------------ //

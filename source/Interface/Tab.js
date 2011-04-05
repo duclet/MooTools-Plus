@@ -137,7 +137,7 @@ var TabJS = new Class({
 			this.setProperty(this.elements.contents[index], 'tab-number', index);
 		}, this);
 
-		return this.setup().this.attach().show(this.getActiveTab());
+		return this.setup().attach().show(this.getActiveTab());
 	},
 
 	// ------------------------------------------------------------------------------------------ //
