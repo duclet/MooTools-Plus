@@ -44,10 +44,10 @@ provides:
 			if(class_name.length < 1) { return undefined; }
 
 			name = [name, 'singleton'].pick();
-			var class_instances = [instances[klass], {}].pick();
+			var class_instances = [instances[class_name], {}].pick();
 			if(!class_instances[name]) {
 				// Store the current list of instances
-				instances[klass] = class_instances;
+				instances[class_name] = class_instances;
 
 				// Create the instance but specify it is prototyping so that the initialize method
 				// does not get run
