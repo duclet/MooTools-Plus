@@ -284,6 +284,9 @@ var LayerJS = new Class({
 		if(options && options.template) {
 			var elements = Elements.from(options.template);
 			this.element = elements.getFirst();
+		} else if(this.options.template) {
+			var elements = Elements.from(this.options.template);
+			this.element = elements.getFirst();
 		} else { this.element = new Element('div'); }
 
 		this.element.inject(document.body).hide();
