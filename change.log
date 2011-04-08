@@ -5,7 +5,7 @@ Version 0.3
 	code.
 * Bug fix with the redirect response for ResponsesJS.
 * Added the method md5 and utf8_encode to String.Plus.
-* Added AssetMangerJS, StoragesJS, and TabJS.
+* Added AssetMangerJS, StoragesJS, PopupJS and TabJS.
 * Looks to me like JSDoc changed their specs so guess what, I have updated all my docs to meet these
 	new specs but I'm going to be using whatever is specified on the Goolge Closure page for it.
 * Switch to using String.uniqueID for generating the ID in Element.Plus.
