@@ -4,7 +4,7 @@ author: "Duc Tri Le"
 
 category: utilities
 
-tags: [mutator, element, event, layer, autocomplete, tab, storage, chain, asset]
+tags: [mutator, element, event, layer, autocomplete, tab, storage, chain, asset, popup]
 
 current: 0.3
 
@@ -25,8 +25,10 @@ sources:
   - "source/Request/Responses.js"
   - "source/Types/Array.Plus.js"
   - "source/Types/Function.Plus.js"
+  - "source/Types/Object.Plus.js"
   - "source/Types/String.Plus.js"
   - "source/Utilities/AssetManager.js"
   - "source/Utilities/Cookie.Plus.js"
   - "source/Utilities/NamedChain.js"
+  - "source/Utilities/Popup.js"
   - "source/Utilities/Storages.js"

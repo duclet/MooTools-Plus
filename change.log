@@ -13,6 +13,8 @@ Version 0.3
 	Though you'll only need to change the response handler to use the callback feature. Same with
 	LayerJS as well. Reason for doing this is to provide more flexibility for future changes.
 * Added Class.singleton which can be used to create singular instance classes.
+* Added Object.Plus to include another function that works like toQueryString except that you can
+	specify the separators.
 
 ----------------------------------------------------------------------------------------------------
 

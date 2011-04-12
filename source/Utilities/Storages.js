@@ -188,6 +188,8 @@ StoragesJS.Engines.SessionStorage = new Class({
 	StoragesJS.Persistent = use_local_storage ?
 		new StoragesJS.Engines.LocalStorage() :
 		new StoragesJS.Engines.Cookie();
+
+	StoragesJS.Persistent.isUsingCookie = !use_local_storage;
 })();
 
 /**
@@ -202,4 +204,6 @@ StoragesJS.Engines.SessionStorage = new Class({
 	StoragesJS.Temporary = use_session_storage ?
 		new StoragesJS.Engines.SessionStorage() :
 		new StoragesJS.Engines.CookieSession();
+
+	StoragesJS.Temporary.isUsingCookie = !use_session_storage;
 })();

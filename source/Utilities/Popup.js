@@ -15,6 +15,7 @@ requires:
   - BindInstances
   - Class.Mutators.Static
   - Function.Plus
+  - Object.Plus
 
 provides:
   - PopupJS
@@ -22,7 +23,7 @@ provides:
 ...
 */
 var PopupJS = new Class({
-	Implements: [Events, Options],
+	Implements: [Options],
 	Static: {
 		/**
 		 * For use with Class.singleton. Returns the unique name of this class.
@@ -39,7 +40,7 @@ var PopupJS = new Class({
 	 * 			unloading.
 	 * 		height: (int) The height of the popup window in pixels.
 	 * 		left: (int) The left offset for the popup window. If set, will override center option.
-	 * 		other_features: (string) Other features for the popup window.
+	 * 		other_features: (Object.<string, string>) Other features for the popup window.
 	 * 		popunder: (boolean) Whether or not the popup should be a popunder.
 	 * 		top: (int) The top offset for the popup window. If set, will override center option.
 	 * 		width: (int) The width of the popup window in pixels.
@@ -51,7 +52,7 @@ var PopupJS = new Class({
 		exit_popup:			false,
 		height:				100,
 		left:				null,
-		other_features:		'',
+		other_features:		{},
 		popunder:			false,
 		top:				null,
 		width:				100
@@ -90,7 +91,6 @@ var PopupJS = new Class({
 	 * @param {string}		url			The URL for the popup window.
 	 * @param {Object=}		options		Refer to the options property.
 	 * @constructor
-	 * @implements {Events}
 	 * @implements {Options}
 	 */
 	initialize: function(name, url, options) {
@@ -117,12 +117,36 @@ var PopupJS = new Class({
 	},
 
 	/**
+	 * Get the dimensions for the popup window.
+	 *
+	 * @return {{height: int, width: int}}
+	 */
+	getPopupWindowDimension: function() {
+		return {
+			height: this.options.height,
+			width: this.options.width
+		};
+	},
+
+	/**
 	 * Get the name of the window to pop.
 	 *
 	 * @return {string}
 	 */
 	getPopupWindowName: function() {
 		return this.name;
+	},
+
+	/**
+	 * Get the position for the popup window.
+	 *
+	 * @return {{x: int, y: int}}
+	 */
+	getPopupWindowPosition: function() {
+		return {
+			x: this.options.left,
+			y: this.options.top
+		};
 	},
 
 	/**
@@ -159,36 +183,33 @@ var PopupJS = new Class({
 	 */
 	tryPop: function() {
 		if(this.shouldPop()) {
-			var features = this.options.other_features;
-			if(features.length > 0) { features += ','; }
-			features += 'height=' + this.options.height + ',width=' + this.options.width;
-
-			var left = this.options.left;
-			if(left === null) { left = (screen.width / 2) - (this.options.width / 2); }
-			features += ',left=' + Math.max(left, 0);
-
-			var top = this.options.top;
-			if(top === null) { top = (screen.height / 2) - (this.options.height / 2); }
-			features += ',top=' + Math.max(top, 0);
-
 			this.$popped = false;
-			this.window = window.open(this.url, this.getPopupWindowName(), features);
+
+			var features = Object.clone(this.options.features);
+			var dimension = this.getPopupWindowDimension();
+			var position = this.getPopupWindowPosition();
+
+			Object.extend(features, {
+				height:		dimensions.height,
+				width:		dimensions.width,
+				left:		position.x,
+				top:		position.y
+			});
+
+			this.window = window.open(
+				this.url, this.getPopupWindowName(), Object.toEncodedString(features, ',')
+			);
+
 			if(this.window !== null) {
 				this.$popped = true;
 
 				if(this.options.popunder) {
 					// Blur and focus seems to get executed out of order sometimes so we need to
 					// chain the execution in order to ensure proper order
-					var chain = new Chain();
-					chain.chain(function(widget) {
-						widget.window.blur();
-						this.callChain();
-					}.curry(widget)).chain(function() {
-						window.focus();
-						this.callChain();
-					});
-
-					chain.callChain();
+					new Chain().chain(
+						function(widget) { widget.window.blur(); this.callChain(); }.curry(widget),
+						function() { window.focus(); this.callChain(); }
+					).callChain();
 				}
 			}
 		}
