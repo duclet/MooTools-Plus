@@ -37,7 +37,7 @@ Object.extend({
 		var values = [];
 		Object.each(object, function(key_separator, values, value, key) {
 			if(value != null) { values.push(key + key_separator + encodeURIComponent(value)); }
-		}.curry(key_separator, values));
+		}.curry([key_separator, values]));
 
 		return values.join(value_separator);
 	}

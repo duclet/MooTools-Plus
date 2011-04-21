@@ -24,6 +24,43 @@ provides:
 	 */
 	var instances = {};
 
+	/**
+	 * Get the instance with the provided name for the provided class.
+	 *
+	 * @param {Object}		klass		The klass to create.
+	 * @param {string=}		name		A unique for the instance.
+	 * @param {Array}		args		Any other arguments to be passed to the constructor if
+	 * 		the instance does not exist.
+	 * @return {*}
+	 */
+	var get_instance = function(klass, name, args) {
+		// Make sure the class has a name
+		var class_name = klass.getClassName ? klass.getClassName() : '';
+		if(class_name.length < 1) { return undefined; }
+
+		name = [name, 'singleton'].pick();
+		var class_instances = [instances[class_name], {}].pick();
+		if(!class_instances[name]) {
+			// Store the current list of instances
+			instances[class_name] = class_instances;
+
+			// Create the instance but specify it is prototyping so that the initialize method
+			// does not get run
+			klass.$prototyping = true;
+			class_instances[name] = new klass();
+
+			// Now that we have the instance, run the initialize method if it exists
+			klass.$prototyping = false;
+			if(class_instances[name].initialize) {
+				class_instances[name].initialize.apply(
+					class_instances[name], args.length ? [args] : []
+				);
+			}
+		}
+
+		return class_instances[name];
+	};
+
 	Class.extend({
 		/**
 		 * Get a single instance of the provided class using the provided name. If the instance does
@@ -39,30 +76,22 @@ provides:
 		 * @return {*}
 		 */
 		singleton: function(klass, name) {
-			// Make sure the class has a name
-			var class_name = klass.getClassName ? klass.getClassName() : '';
-			if(class_name.length < 1) { return undefined; }
+			return get_instance(klass, name, Array.from(arguments).slice(1));
+		},
 
-			name = [name, 'singleton'].pick();
-			var class_instances = [instances[class_name], {}].pick();
-			if(!class_instances[name]) {
-				// Store the current list of instances
-				instances[class_name] = class_instances;
-
-				// Create the instance but specify it is prototyping so that the initialize method
-				// does not get run
-				klass.$prototyping = true;
-				class_instances[name] = new klass();
-
-				// Now that we have the instance, run the initialize method if it exists
-				klass.$prototyping = false;
-				if(class_instances[name].initialize) {
-					var args = Array.from(arguments).slice(1);
-					class_instances[name].initialize.apply(class_instances[name], args);
-				}
-			}
-
-			return class_instances[name];
+		/**
+		 * Same as the method "singleton" except that the passed argument to the constructor will
+		 * NOT include the instance name.
+		 *
+		 * @param {Object}		klass		The klass to create.
+		 * @param {string=}		name		A unique for the instance. If not provided, defaults to
+		 * 		"singleton".
+		 * @param {...*}		args		Any other arguments to be passed to the constructor if
+		 * 		the instance does not exist.
+		 * @return {*}
+		 */
+		singletonWithoutName: function(klass, name) {
+			return get_instance(klass, name, Array.from(arguments).slice(2));
 		}
 	});
 })();

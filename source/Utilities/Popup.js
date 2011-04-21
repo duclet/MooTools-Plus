@@ -143,9 +143,15 @@ var PopupJS = new Class({
 	 * @return {{x: int, y: int}}
 	 */
 	getPopupWindowPosition: function() {
+		var left = this.options.left;
+		if(left === null) { left = (screen.width / 2) - (this.options.width / 2); }
+
+		var top = this.options.top;
+		if(top === null) { top = (screen.height / 2) - (this.options.height / 2); }
+
 		return {
-			x: this.options.left,
-			y: this.options.top
+			x: Math.max(left, 0),
+			y: Math.max(top, 0)
 		};
 	},
 
@@ -185,13 +191,13 @@ var PopupJS = new Class({
 		if(this.shouldPop()) {
 			this.$popped = false;
 
-			var features = Object.clone(this.options.features);
+			var features = Object.clone(this.options.other_features);
 			var dimension = this.getPopupWindowDimension();
 			var position = this.getPopupWindowPosition();
 
-			Object.extend(features, {
-				height:		dimensions.height,
-				width:		dimensions.width,
+			Object.append(features, {
+				height:		dimension.height,
+				width:		dimension.width,
 				left:		position.x,
 				top:		position.y
 			});
