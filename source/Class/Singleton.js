@@ -52,9 +52,7 @@ provides:
 			// Now that we have the instance, run the initialize method if it exists
 			klass.$prototyping = false;
 			if(class_instances[name].initialize) {
-				class_instances[name].initialize.apply(
-					class_instances[name], args.length ? [args] : []
-				);
+				class_instances[name].initialize.apply(class_instances[name], args);
 			}
 		}
 

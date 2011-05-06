@@ -6,7 +6,7 @@ category: utilities
 
 tags: [mutator, element, event, layer, autocomplete, tab, storage, chain, asset, popup]
 
-current: 0.3
+current: 0.3.1
 
 exports: "mootools-plus.js"
 
