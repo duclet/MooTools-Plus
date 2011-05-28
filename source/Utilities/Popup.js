@@ -213,7 +213,7 @@ var PopupJS = new Class({
 					// Blur and focus seems to get executed out of order sometimes so we need to
 					// chain the execution in order to ensure proper order
 					new Chain().chain(
-						function(widget) { widget.window.blur(); this.callChain(); }.curry(widget),
+						function(widget) { widget.window.blur(); this.callChain(); }.curry(this),
 						function() { window.focus(); this.callChain(); }
 					).callChain();
 				}

@@ -1,4 +1,9 @@
 
+Version 0.4
+* Fixed bug with PopupJS for the popunder where the class was passed incorrectly.
+
+----------------------------------------------------------------------------------------------------
+
 2011/05/06:
 Version 0.3.1
 * Fixed bug with Class.singleton as the parameters were being passed incorrectly.
